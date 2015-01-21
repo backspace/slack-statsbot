@@ -1,0 +1,23 @@
+{
+  "name": "slack-statsbot",
+  "version": "0.1.0",
+  "description": "A Slack bot that reports channel statistics",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/backspace/slack-statsbot"
+  },
+  "keywords": [
+    "slack",
+    "sjw"
+  ],
+  "author": "Buck Doyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/backspace/slack-statsbot/issues"
+  },
+  "homepage": "https://github.com/backspace/slack-statsbot"
+}

@@ -7,6 +7,7 @@ var fakeClient = {
   login() {},
   on() {},
   joinChannel() {},
+  getChannelByID() {},
   getChannelByName() {},
   getUserByID() {}
 };
@@ -56,8 +57,8 @@ test('StatsBot joins #bot after login and stores the channel', function(t) {
   t.equal(bot.channel, channel, 'should save the channel');
 });
 
-test('StatsBot announces each user\'s message count upon a message from that user', function(t) {
-  t.plan(3);
+test('StatsBot announces each user\'s channel message count upon a message from that user', function(t) {
+  t.plan(4);
 
   var client = fakeClient;
 
@@ -71,21 +72,35 @@ test('StatsBot announces each user\'s message count upon a message from that use
   userStub.withArgs('1').returns({name: 'Alice'});
   userStub.withArgs('2').returns({name: 'Bob'});
 
-  bot.messageReceived({
-    user: '1'
-  });
-
-  t.ok(channel.send.calledWith('Alice message count: 1'), 'announces Alice\'s first message');
+  var channelStub = sinon.stub(client, 'getChannelByID');
+  channelStub.withArgs('Xe').returns({name: 'Xenon'});
+  channelStub.withArgs('Yb').returns({name: 'Ytterbium'});
 
   bot.messageReceived({
-    user: '2'
+    user: '1',
+    channel: 'Xe'
   });
 
-  t.ok(channel.send.calledWith('Bob message count: 1'), 'announces Bob\'s first message');
+  t.ok(channel.send.calledWith('Alice message count in #Xenon: 1'), 'announces Alice\'s first message');
 
   bot.messageReceived({
-    user: '1'
+    user: '2',
+    channel: 'Xe'
   });
 
-  t.ok(channel.send.calledWith('Alice message count: 2'), 'announces Alice\'s second message');
+  t.ok(channel.send.calledWith('Bob message count in #Xenon: 1'), 'announces Bob\'s first message');
+
+  bot.messageReceived({
+    user: '1',
+    channel: 'Xe'
+  });
+
+  t.ok(channel.send.calledWith('Alice message count in #Xenon: 2'), 'announces Alice\'s second message');
+
+  bot.messageReceived({
+    user: '1',
+    channel: 'Yb'
+  });
+
+  t.ok(channel.send.calledWith('Alice message count in #Ytterbium: 1'), 'announces Alice\'s first message in another channel');
 });

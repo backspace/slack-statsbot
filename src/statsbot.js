@@ -8,7 +8,7 @@ class StatsBot {
     this.client.on('loggedIn', this.loggedIn.bind(this));
     this.client.on('message', this.messageReceived.bind(this));
 
-    this.userMessageCount = {};
+    this.channelUserMessageCount = {};
   }
 
   loggedIn() {
@@ -17,14 +17,22 @@ class StatsBot {
   }
 
   messageReceived(message) {
-    if (!this.userMessageCount[message.user]) {
-      this.userMessageCount[message.user] = 0;
+    if (!this.channelUserMessageCount[message.channel]) {
+      this.channelUserMessageCount[message.channel] = {};
     }
 
-    this.userMessageCount[message.user]++;
+    var userMessageCount = this.channelUserMessageCount[message.channel];
+
+    if (!userMessageCount[message.user]) {
+      userMessageCount[message.user] = 0;
+    }
+
+    userMessageCount[message.user]++;
 
     var user = this.client.getUserByID(message.user);
-    this.channel.send(`${user.name} message count: ${this.userMessageCount[message.user]}`);
+    var channel = this.client.getChannelByID(message.channel);
+
+    this.channel.send(`${user.name} message count in #${channel.name}: ${userMessageCount[message.user]}`);
   }
 }
 

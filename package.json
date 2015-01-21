@@ -4,7 +4,7 @@
   "description": "A Slack bot that reports channel statistics",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "iojs --es_staging --use-strict test/*"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,14 @@
   "bugs": {
     "url": "https://github.com/backspace/slack-statsbot/issues"
   },
-  "homepage": "https://github.com/backspace/slack-statsbot"
+  "homepage": "https://github.com/backspace/slack-statsbot",
+  "devDependencies": {
+    "require-subvert": "^0.1.0",
+    "sinon": "^1.12.2",
+    "tape": "^3.4.0"
+  },
+  "dependencies": {
+    "node-bin": "^0.11.14",
+    "slack-client": "^1.2.2"
+  }
 }

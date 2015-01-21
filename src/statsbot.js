@@ -10,6 +10,7 @@ class StatsBot {
 
   loggedIn() {
     this.client.joinChannel('bot');
+    this.channel = this.client.getChannelByName('bot');
   }
 }
 

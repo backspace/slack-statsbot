@@ -26,17 +26,24 @@ test('Constructing a StatsBot starts a SlackClient and logs in', function(t) {
   sandbox.restore();
 });
 
-test('StatsBot joins #bot after login', function(t) {
-  t.plan(2);
+test('StatsBot joins #bot after login and stores the channel', function(t) {
+  t.plan(5);
 
-  var client = {login: function() {}, on: function() {}, joinChannel: function() {}};
+  var client = {login: function() {}, on: function() {}, joinChannel: function() {}, getChannelByName: function() {}};
 
-  var spy = sinon.spy(client, 'joinChannel');
+  var joinSpy = sinon.spy(client, 'joinChannel');
+  var getStub = sinon.stub(client, 'getChannelByName');
+  var channel = 'channel';
+  getStub.returns(channel);
 
   var StatsBot = require('../src/statsbot');
   var bot = new StatsBot(client);
   bot.loggedIn();
 
-  t.ok(spy.calledOnce, 'should call joinChannel');
-  t.ok(spy.calledWith('bot'), 'should join #bot');
+  t.ok(joinSpy.calledOnce, 'should call joinChannel');
+  t.ok(joinSpy.calledWith('bot'), 'should join #bot');
+
+  t.ok(getStub.calledOnce, 'should call getChannelByName');
+  t.ok(getStub.calledWith('bot'), 'with bot');
+  t.equal(bot.channel, channel, 'should save the channel');
 });

@@ -3,12 +3,19 @@ var test = require('tape');
 var sinon = require('sinon');
 var requireSubvert = require('require-subvert')(__dirname);
 
+var fakeClient = {
+  login() {},
+  on() {},
+  joinChannel() {},
+  getChannelByName() {}
+};
+
 test('Constructing a StatsBot starts a SlackClient and logs in', function(t) {
   t.plan(3);
 
   var sandbox = sinon.sandbox.create().stub(process, 'env', {'SLACK_TOKEN': 'atoken'});
 
-  var client = {login: function() {}, on: function() {}};
+  var client = fakeClient;
   var stub = sinon.stub().returns(client);
   requireSubvert.subvert('slack-client', stub);
 
@@ -29,7 +36,7 @@ test('Constructing a StatsBot starts a SlackClient and logs in', function(t) {
 test('StatsBot joins #bot after login and stores the channel', function(t) {
   t.plan(5);
 
-  var client = {login: function() {}, on: function() {}, joinChannel: function() {}, getChannelByName: function() {}};
+  var client = fakeClient;
 
   var joinSpy = sinon.spy(client, 'joinChannel');
   var getStub = sinon.stub(client, 'getChannelByName');

@@ -1,4 +1,5 @@
 var SlackClient = require('slack-client');
+var MessageLog = require('./message-log');
 
 class StatsBot {
   constructor(client) {
@@ -8,7 +9,7 @@ class StatsBot {
     this.client.on('loggedIn', this.loggedIn.bind(this));
     this.client.on('message', this.messageReceived.bind(this));
 
-    this.channelUserMessageCount = {};
+    this.log = new MessageLog();
   }
 
   loggedIn() {
@@ -17,22 +18,12 @@ class StatsBot {
   }
 
   messageReceived(message) {
-    if (!this.channelUserMessageCount[message.channel]) {
-      this.channelUserMessageCount[message.channel] = {};
-    }
-
-    var userMessageCount = this.channelUserMessageCount[message.channel];
-
-    if (!userMessageCount[message.user]) {
-      userMessageCount[message.user] = 0;
-    }
-
-    userMessageCount[message.user]++;
+    this.log.logMessage(message);
 
     var user = this.client.getUserByID(message.user);
     var channel = this.client.getChannelByID(message.channel);
 
-    this.channel.send(`${user.name} message count in #${channel.name}: ${userMessageCount[message.user]}`);
+    this.channel.send(`${user.name} message count in #${channel.name}: ${this.log.getMessageCount(message.channel, message.user)}`);
   }
 }
 

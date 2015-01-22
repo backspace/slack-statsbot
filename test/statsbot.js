@@ -9,6 +9,7 @@ var fakeClient = {
   joinChannel() {},
   getChannelByID() {},
   getChannelByName() {},
+  getChannelGroupOrDMByID() {},
   getUserByID() {}
 };
 
@@ -59,21 +60,25 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   channelByNameStub.withArgs(ytterbium.name).returns(ytterbium);
 
   bot.messageReceived({
+    getChannelType() { return 'Channel' },
     user: '1',
     channel: 'Xe'
   });
 
   bot.messageReceived({
+    getChannelType() { return 'Channel' },
     user: '2',
     channel: 'Xe'
   });
 
   bot.messageReceived({
+    getChannelType() { return 'Channel' },
     user: '1',
     channel: 'Xe'
   });
 
   bot.messageReceived({
+    getChannelType() { return 'Channel' },
     user: '1',
     channel: 'Yb'
   });
@@ -90,4 +95,45 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   userStub.restore();
   channelByIDStub.restore();
   channelByNameStub.restore();
+});
+
+test('StatsBot records a user\'s gender', function(t) {
+  t.plan(2);
+
+  var client = fakeClient;
+
+  var StatsBot = require('../src/statsbot');
+  var bot = new StatsBot(client);
+
+  var userStub = sinon.stub(client, 'getUserByID');
+  userStub.withArgs('P').returns({name: 'Prakash'});
+  userStub.withArgs('L').returns({name: 'Laura'});
+
+  var prakashDM = {id: 'P-DM', send: sinon.stub()};
+  var lauraDM = {id: 'L-DM', send: sinon.stub()};
+
+  var channelByIDStub = sinon.stub(client, 'getChannelGroupOrDMByID');
+  channelByIDStub.withArgs(prakashDM.id).returns(prakashDM);
+  channelByIDStub.withArgs(lauraDM.id).returns(lauraDM);
+
+  bot.messageReceived({
+    getChannelType() { return 'DM' },
+    user: 'P',
+    channel: prakashDM.id,
+    text: 'true'
+  });
+
+  t.ok(prakashDM.send.calledWith('Okay, we have noted that you are a man.'), 'replies affirming that Prakash is a man');
+
+  bot.messageReceived({
+    getChannelType() { return 'DM' },
+    user: 'L',
+    channel: lauraDM.id,
+    text: 'false'
+  });
+
+  t.ok(lauraDM.send.calledWith('Okay, we have noted that you are not a man.'), 'replies affirming that Laura is not a man');
+
+  userStub.restore();
+  channelByIDStub.restore();
 });

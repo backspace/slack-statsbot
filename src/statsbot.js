@@ -16,7 +16,32 @@ class StatsBot {
   }
 
   messageReceived(message) {
+    var channelType = message.getChannelType();
+    if (channelType === 'Channel') {
+      this.handleChannelMessage(message);
+    } else if (channelType == 'DM') {
+      this.handleDirectMessage(message);
+    }
+  }
+
+  handleChannelMessage(message) {
     this.log.logMessage(message);
+  }
+
+  handleDirectMessage(message) {
+    var channel = this.client.getChannelGroupOrDMByID(message.channel);
+
+    var isMan = message.text === 'true';
+
+    var reply;
+
+    if (isMan) {
+      reply = 'Okay, we have noted that you are a man.';
+    } else {
+      reply = 'Okay, we have noted that you are not a man.';
+    }
+
+    channel.send(reply);
   }
 
   reportChannelStatistics(channelName) {

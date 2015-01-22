@@ -13,17 +13,20 @@ class StatsBot {
   }
 
   loggedIn() {
-    this.client.joinChannel('bot');
-    this.channel = this.client.getChannelByName('bot');
   }
 
   messageReceived(message) {
     this.log.logMessage(message);
+  }
 
-    var user = this.client.getUserByID(message.user);
-    var channel = this.client.getChannelByID(message.channel);
+  reportChannelStatistics(channelName) {
+    var channel = this.client.getChannelByName(channelName);
+    var statistics = this.log.getChannelStatistics(channel.id);
 
-    this.channel.send(`${user.name} message count in #${channel.name}: ${this.log.getMessageCount(message.channel, message.user)}`);
+    for (var userID of Object.keys(statistics)) {
+      var user = this.client.getUserByID(userID);
+      channel.send(`${user.name} message count in #${channel.name}: ${statistics[userID]}`);
+    }
   }
 }
 

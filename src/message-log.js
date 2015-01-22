@@ -17,8 +17,8 @@ class MessageLog {
     userMessageCount[message.user]++;
   }
 
-  getMessageCount(channel, user) {
-    return this.channelUserMessageCount[channel][user];
+  getChannelStatistics(channel) {
+    return this.channelUserMessageCount[channel];
   }
 }
 

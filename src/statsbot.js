@@ -2,35 +2,18 @@ var SlackClient = require('slack-client');
 var MessageLog = require('./message-log');
 
 class StatsBot {
-  constructor(client) {
-    this.client = client || new SlackClient(process.env.SLACK_TOKEN);
-    this.client.login();
-
-    this.client.on('loggedIn', this.loggedIn.bind(this));
-    this.client.on('message', this.messageReceived.bind(this));
+  constructor(adapter) {
+    this.adapter = adapter;
+    this.adapter.registerListener(this);
 
     this.log = new MessageLog();
   }
 
-  loggedIn() {
-  }
-
-  messageReceived(message) {
-    var channelType = message.getChannelType();
-    if (channelType === 'Channel') {
-      this.handleChannelMessage(message);
-    } else if (channelType == 'DM') {
-      this.handleDirectMessage(message);
-    }
-  }
-
-  handleChannelMessage(message) {
+  handleChannelMessage(channel, message) {
     this.log.logMessage(message);
   }
 
-  handleDirectMessage(message) {
-    var channel = this.client.getChannelGroupOrDMByID(message.channel);
-
+  handleDirectMessage(channel, message) {
     var isMan = message.text === 'true';
 
     var reply;
@@ -45,11 +28,11 @@ class StatsBot {
   }
 
   reportChannelStatistics(channelName) {
-    var channel = this.client.getChannelByName(channelName);
+    var channel = this.adapter.getChannelByName(channelName);
     var statistics = this.log.getChannelStatistics(channel.id);
 
     for (var userID of Object.keys(statistics)) {
-      var user = this.client.getUserByID(userID);
+      var user = this.adapter.getUser(userID);
       channel.send(`${user.name} message count in #${channel.name}: ${statistics[userID]}`);
     }
   }

@@ -1,86 +1,72 @@
 var test = require('tape');
 
 var sinon = require('sinon');
-var requireSubvert = require('require-subvert')(__dirname);
+
+var StatsBot = require('../src/statsbot');
+var SlackAdapter = require('../src/slack-adapter');
 
 var fakeClient = {
-  login() {},
   on() {},
-  joinChannel() {},
-  getChannelByID() {},
-  getChannelByName() {},
-  getChannelGroupOrDMByID() {},
-  getUserByID() {}
+  login() {}
 };
 
-test('Constructing a StatsBot starts a SlackClient and logs in', function(t) {
-  t.plan(3);
+test('Constructing a StatsBot registers it with the adapter', function(t) {
+  t.plan(1);
 
-  var sandbox = sinon.sandbox.create().stub(process, 'env', {'SLACK_TOKEN': 'atoken'});
+  var fakeAdapter = {
+    registerListener() {}
+  };
 
-  var client = fakeClient;
-  var stub = sinon.stub().returns(client);
-  requireSubvert.subvert('slack-client', stub);
+  var registerListenerStub = sinon.stub(fakeAdapter, 'registerListener');
 
-  var mock = sinon.mock(client);
-  mock.expects('login');
+  var bot = new StatsBot(fakeAdapter);
 
-  var StatsBot = requireSubvert.require('../src/statsbot');
-  var bot = new StatsBot();
-
-  t.ok(stub.calledOnce, 'should call SlackClient constructor once');
-  t.ok(stub.calledWith('atoken'), 'should construct SlackClient with environment variable token');
-
-  t.ok(mock.verify(), 'should log in');
-
-  sandbox.restore();
+  t.ok(registerListenerStub.calledWith(bot), 'should register itself as a listener');
 });
 
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   t.plan(3);
 
-  var client = fakeClient;
+  var adapter = new SlackAdapter(fakeClient);
+  var bot = new StatsBot(adapter);
 
-  var StatsBot = require('../src/statsbot');
-  var bot = new StatsBot(client);
+  var alice = {id: '1', name: 'Alice'};
+  var bob = {id: '2', name: 'Bob'};
 
-  var userStub = sinon.stub(client, 'getUserByID');
-  userStub.withArgs('1').returns({name: 'Alice'});
-  userStub.withArgs('2').returns({name: 'Bob'});
+  var userStub = sinon.stub(adapter, 'getUser');
+  [alice, bob].forEach(function(person) {
+    userStub.withArgs(person.id).returns(person);
+  });
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
   var ytterbium = {id: 'Yb', name: 'Ytterbium', send: sinon.stub()};
 
-  var channelByIDStub = sinon.stub(client, 'getChannelByID');
-  channelByIDStub.withArgs(xenon.id).returns(xenon);
-  channelByIDStub.withArgs(ytterbium.id).returns(ytterbium);
+  var channelByIDStub = sinon.stub(adapter, 'getChannel');
+  var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
 
-  var channelByNameStub = sinon.stub(client, 'getChannelByName');
-  channelByNameStub.withArgs(xenon.name).returns(xenon);
-  channelByNameStub.withArgs(ytterbium.name).returns(ytterbium);
-
-  bot.messageReceived({
-    getChannelType() { return 'Channel' },
-    user: '1',
-    channel: 'Xe'
+  [xenon, ytterbium].forEach(function(channel) {
+    channelByIDStub.withArgs(channel.id).returns(channel);
+    channelByNameStub.withArgs(channel.name).returns(channel);
   });
 
-  bot.messageReceived({
-    getChannelType() { return 'Channel' },
-    user: '2',
-    channel: 'Xe'
+  bot.handleChannelMessage(xenon, {
+    user: alice.id,
+    channel: xenon.id
   });
 
-  bot.messageReceived({
-    getChannelType() { return 'Channel' },
-    user: '1',
-    channel: 'Xe'
+  bot.handleChannelMessage(xenon, {
+    user: bob.id,
+    channel: xenon.id
   });
 
-  bot.messageReceived({
-    getChannelType() { return 'Channel' },
-    user: '1',
-    channel: 'Yb'
+  bot.handleChannelMessage(xenon, {
+    user: alice.id,
+    channel: xenon.id
+  });
+
+  bot.handleChannelMessage(ytterbium, {
+    user: alice.id,
+    channel: ytterbium.id
   });
 
   bot.reportChannelStatistics('Ytterbium');
@@ -100,35 +86,27 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 test('StatsBot records a user\'s gender', function(t) {
   t.plan(2);
 
-  var client = fakeClient;
+  var adapter = new SlackAdapter(fakeClient);
+  var bot = new StatsBot(adapter);
 
-  var StatsBot = require('../src/statsbot');
-  var bot = new StatsBot(client);
-
-  var userStub = sinon.stub(client, 'getUserByID');
+  var userStub = sinon.stub(adapter, 'getUser');
   userStub.withArgs('P').returns({name: 'Prakash'});
   userStub.withArgs('L').returns({name: 'Laura'});
 
   var prakashDM = {id: 'P-DM', send: sinon.stub()};
   var lauraDM = {id: 'L-DM', send: sinon.stub()};
 
-  var channelByIDStub = sinon.stub(client, 'getChannelGroupOrDMByID');
+  var channelByIDStub = sinon.stub(adapter, 'getChannel');
   channelByIDStub.withArgs(prakashDM.id).returns(prakashDM);
   channelByIDStub.withArgs(lauraDM.id).returns(lauraDM);
 
-  bot.messageReceived({
-    getChannelType() { return 'DM' },
-    user: 'P',
-    channel: prakashDM.id,
+  bot.handleDirectMessage(prakashDM, {
     text: 'true'
   });
 
   t.ok(prakashDM.send.calledWith('Okay, we have noted that you are a man.'), 'replies affirming that Prakash is a man');
 
-  bot.messageReceived({
-    getChannelType() { return 'DM' },
-    user: 'L',
-    channel: lauraDM.id,
+  bot.handleDirectMessage(lauraDM, {
     text: 'false'
   });
 

@@ -4,7 +4,7 @@
   "description": "A Slack bot that reports channel statistics",
   "main": "index.js",
   "scripts": {
-    "test": "iojs --es_staging --use-strict test/*"
+    "test": "grunt tape"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/backspace/slack-statsbot",
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-tape": "0.0.2",
     "require-subvert": "^0.1.0",
     "sinon": "^1.12.2",
     "tape": "^3.4.0"

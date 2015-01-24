@@ -67,6 +67,12 @@ class StatsBot {
       });
     });
   }
+
+  reportAllChannelStatistics() {
+    for (let channelID of this.log.getChannels()) {
+      this.reportChannelStatistics(channelID);
+    }
+  }
 }
 
 module.exports = StatsBot

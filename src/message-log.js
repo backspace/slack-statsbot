@@ -20,6 +20,10 @@ class MessageLog {
   getChannelStatistics(channel) {
     return this.channelUserMessageCount[channel];
   }
+
+  getChannels() {
+    return Object.keys(this.channelUserMessageCount);
+  }
 }
 
 module.exports = MessageLog;

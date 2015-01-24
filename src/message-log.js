@@ -1,14 +1,19 @@
 class MessageLog {
   constructor() {
-    this.channelUserMessageCount = {};
+    this.channels = {};
   }
 
   logMessage(message) {
-    if (!this.channelUserMessageCount[message.channel]) {
-      this.channelUserMessageCount[message.channel] = {};
+    if (!this.channels[message.channel]) {
+      this.channels[message.channel] = {
+        statistics: {},
+        metadata: {
+          startTime: new Date()
+        }
+      };
     }
 
-    var userMessageCount = this.channelUserMessageCount[message.channel];
+    var userMessageCount = this.channels[message.channel].statistics;
 
     if (!userMessageCount[message.user]) {
       userMessageCount[message.user] = 0;
@@ -18,11 +23,11 @@ class MessageLog {
   }
 
   getChannelStatistics(channel) {
-    return this.channelUserMessageCount[channel];
+    return this.channels[channel];
   }
 
   getChannels() {
-    return Object.keys(this.channelUserMessageCount);
+    return Object.keys(this.channels);
   }
 }
 

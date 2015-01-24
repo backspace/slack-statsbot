@@ -55,8 +55,8 @@ class StatsBot {
     channel.send(reply);
   }
 
-  reportChannelStatistics(channelName) {
-    var channel = this.adapter.getChannelByName(channelName);
+  reportChannelStatistics(channelID) {
+    var channel = this.adapter.getChannel(channelID);
     var statistics = this.log.getChannelStatistics(channel.id);
 
     var generator = new GenderReportGenerator(statistics, this.userRepository);

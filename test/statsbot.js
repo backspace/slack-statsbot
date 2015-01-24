@@ -50,11 +50,9 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   var ytterbium = {id: 'Yb', name: 'Ytterbium', send: sinon.stub()};
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
-  var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
 
   [xenon, ytterbium].forEach(function(channel) {
     channelByIDStub.withArgs(channel.id).returns(channel);
-    channelByNameStub.withArgs(channel.name).returns(channel);
   });
 
   bot.handleChannelMessage(xenon, {
@@ -77,8 +75,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: ytterbium.id
   });
 
-  bot.reportChannelStatistics('Ytterbium');
-  bot.reportChannelStatistics('Xenon');
+  bot.reportChannelStatistics('Yb');
+  bot.reportChannelStatistics('Xe');
 
   setTimeout(function() {
     t.ok(ytterbium.send.calledWith('Messages by men: 100%'), 'reports that only men spoke in one channel');
@@ -88,7 +86,6 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     userStub.restore();
     channelByIDStub.restore();
-    channelByNameStub.restore();
     retrieveAttributeStub.restore();
 
     t.end();

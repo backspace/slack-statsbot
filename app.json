@@ -1,0 +1,18 @@
+{
+  "name": "Slack Statsbot",
+  "description": "A Slack bot that reports on how much space men are taking up.",
+  "repository": "https://github.com/backspace/slack-statsbot",
+  "keywords": [
+    "slack",
+    "sjw"
+  ],
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "env": {
+    "SLACK_TOKEN": {
+      "description": "The API token in the Slack bot integration settings",
+      "required": true
+    }
+  }
+}

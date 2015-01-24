@@ -82,7 +82,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(ytterbium.send.calledWith('Total message count: 1'), 'reports a message count of 1');
     t.ok(ytterbium.send.calledWith('Messages by men: 100%'), 'reports that only men spoke in one channel');
 
-    t.ok(ytterbium.send.calledWith('Total message count: 3'), 'reports a message count of 3');
+    t.ok(xenon.send.calledWith('Total message count: 3'), 'reports a message count of 3');
     t.ok(xenon.send.calledWith('Messages by men: 67%'), 'reports that men spoke ⅔ of the time in the other channel');
     t.ok(xenon.send.calledWith('Messages by not-men: 33%'), 'reports that not-men spoke ⅓ of the time in the other channel');
 

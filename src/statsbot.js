@@ -65,12 +65,16 @@ class StatsBot {
     var statistics = statisticsPackage.statistics;
     var metadata = statisticsPackage.metadata;
 
-    channel.send(`Statistics since ${moment(metadata.startTime).fromNow()}:`);
-
     var counts = values(statistics);
     var total = counts.reduce(function(total, count) {
       return total + count;
     }, 0);
+
+    if (total === 0) {
+      return;
+    }
+
+    channel.send(`Statistics since ${moment(metadata.startTime).fromNow()}:`);
 
     channel.send(`Total message count: ${total}`);
 

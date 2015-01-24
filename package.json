@@ -4,7 +4,7 @@
   "description": "A Slack bot that reports channel statistics",
   "main": "index.js",
   "scripts": {
-    "start": "iojs --use-strict -es_staging index.js",
+    "start": "iojs --use-strict --es_staging index.js",
     "test": "for I in test/*.js; do $I; done"
   },
   "repository": {
@@ -37,7 +37,8 @@
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.1",
     "sequelize": "^2.0.0-rc8",
-    "slack-client": "^1.2.2"
+    "slack-client": "^1.2.2",
+    "tap": "^0.5.0"
   },
   "engines": {
     "iojs": "1.0.3"

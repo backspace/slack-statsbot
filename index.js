@@ -15,4 +15,8 @@ var userRepository = new UserRepository(sequelize);
 
 var bot = new StatsBot(adapter, userRepository);
 
+setInterval(function() {
+  bot.reportAllChannelStatistics();
+}, 60*60*1000);
+
 module.exports = bot;

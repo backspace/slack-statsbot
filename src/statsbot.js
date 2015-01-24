@@ -85,6 +85,8 @@ class StatsBot {
         channel.send(item);
       });
     });
+
+    channel.send(`Direct message me with “true” if you are a man and “false” otherwise. You can say “info” to check how I have you recorded.`);
   }
 
   reportAllChannelStatistics() {

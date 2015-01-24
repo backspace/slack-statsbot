@@ -29,8 +29,10 @@ class StatsBot {
 
       if (isMan) {
         reply = 'We have you down here as being a man.';
-      } else {
+      } else if (isMan === false) {
         reply = 'We have you down here as not being a man.';
+      } else {
+        reply = 'We don’t have you on record! Please say “true” if you are a man and “false” if you are not.';
       }
 
       channel.send(reply);

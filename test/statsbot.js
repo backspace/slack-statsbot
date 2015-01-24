@@ -140,7 +140,7 @@ test('StatsBot records a user\'s gender', function(t) {
 });
 
 test('StatsBot responds with a user\'s gender when they ask', function(t) {
-  t.plan(1);
+  t.plan(2);
 
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository);
@@ -148,16 +148,26 @@ test('StatsBot responds with a user\'s gender when they ask', function(t) {
   var shane = {id: 'S', name: 'Shane'};
   var shaneDM = {send: sinon.stub()};
 
+  var kama = {id: 'K', name: 'Kama'};
+  var kamaDM = {send: sinon.stub()};
+
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
   retrieveAttributeStub.withArgs(shane.id, 'isMan').returns(Promise.resolve(true));
+  retrieveAttributeStub.withArgs(kama.id, 'isMan').returns(Promise.resolve(null));
 
   bot.handleDirectMessage(shaneDM, {
     text: 'info',
     user: shane.id
   });
 
+  bot.handleDirectMessage(kamaDM, {
+    text: 'info',
+    user: kama.id
+  });
+
   setTimeout(function() {
     t.ok(shaneDM.send.calledWith('We have you down here as being a man.'), 'replies to Shane that he is recorded as a man');
+    t.ok(kamaDM.send.calledWith('We don’t have you on record! Please say “true” if you are a man and “false” if you are not.'), 'replies to Kama that they are unknown');
 
     retrieveAttributeStub.restore();
   }, 0);

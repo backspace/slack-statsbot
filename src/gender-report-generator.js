@@ -21,19 +21,25 @@ class GenderReportGenerator{
 
         if (isMan) {
           counts.men += count;
-        } else {
+        } else if (isMan === false) {
           counts.notMen += count;
+        } else {
+          counts.unknown += count;
         }
 
         return counts;
-      }, {men: 0, notMen: 0});
+      }, {men: 0, notMen: 0, unknown: 0});
 
-      var total = counts.men + counts.notMen;
+      var total = counts.men + counts.notMen + counts.unknown;
 
       var report = [
         `Messages by men: ${(100*counts.men/total).toFixed(0)}%`,
         `Messages by not-men: ${(100*counts.notMen/total).toFixed(0)}%`
       ];
+
+      if (counts.unknown > 0) {
+        report.push(`Messages by unknown: ${(100*counts.unknown/total).toFixed(0)}%`);
+      }
 
       return report;
     });

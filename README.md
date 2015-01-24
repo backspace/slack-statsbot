@@ -8,6 +8,19 @@ To tell the bot you are a man, you send a direct message saying `true`, or `fals
 
 It’s not my tendency to categorise the world as men vs. not-men, but in the case of space-domination, it seems like the necessary dichotomy.
 
+## Known limitations
+
+* any direct message to the bot other than *exactly* `true` or `info` will mark you as not a man
+* if the bot restarts, all gathered statistics are lost
+* there’s no way to check on the current status; the bot will report after an hour has elapsed, and that’s it
+* the report begins with a relative time that the statistics began accumulating, which for a channel that has its first message since the gathering began is the time the message comes in, meaning when the report is shared it will appear to represent less than an hour
+* there’s *no* error handling!
+* there are no automated tests for some functionality, such as:
+  * the triggering of the hourly report
+  * not printing a report when a channel has not had any messages
+  * the message count logger
+  * the `UserRepository`, a wrapper around Sequelize
+
 ## Deployment
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/backspace/slack-statsbot/tree/primary)

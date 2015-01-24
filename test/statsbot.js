@@ -84,11 +84,22 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(xenon.send.calledWith('Messages by men: 67%'), 'reports that men spoke ⅔ of the time in the other channel');
     t.ok(xenon.send.calledWith('Messages by not-men: 33%'), 'reports that not-men spoke ⅓ of the time in the other channel');
 
-    userStub.restore();
-    channelByIDStub.restore();
-    retrieveAttributeStub.restore();
+    bot.handleChannelMessage(xenon, {
+      user: alice.id,
+      channel: xenon.id
+    });
 
-    t.end();
+    bot.reportChannelStatistics('Xe');
+
+    setTimeout(function() {
+      t.ok(xenon.send.calledWith('Messages by men: 100%'), 'starts the statistics over after reporting');
+
+      userStub.restore();
+      channelByIDStub.restore();
+      retrieveAttributeStub.restore();
+
+      t.end();
+    }, 0);
   }, 0);
 });
 

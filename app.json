@@ -14,6 +14,14 @@
     "SLACK_TOKEN": {
       "description": "The API token in the Slack bot integration settings",
       "required": true
+    },
+    "WEB_CONCURRENCY": {
+      "description": "There is no web interface to the bot.",
+      "value": "0"
+    },
+    "WORKER_CONCURRENCY": {
+      "description": "The bot operates as a worker. Sadly, while WEB_CONCURRENCY works to set the number of web processes to 0, this has no effect, so you will have to manually set the number of worker processes to 1 after the application has been created.",
+      "value": "1"
     }
   }
 }

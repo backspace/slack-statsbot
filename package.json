@@ -4,6 +4,7 @@
   "description": "A Slack bot that reports channel statistics",
   "main": "index.js",
   "scripts": {
+    "start": "iojs --use-strict -es_staging index.js",
     "test": "grunt tape"
   },
   "repository": {

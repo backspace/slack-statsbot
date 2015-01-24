@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "iojs --use-strict --es_staging index.js",
-    "test": "for I in test/*.js; do $I; done"
+    "test": "tap --strict --harmony test/*.js"
   },
   "repository": {
     "type": "git",

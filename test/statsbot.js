@@ -32,17 +32,18 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 });
 
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
-  t.plan(3);
-
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter);
+  var bot = new StatsBot(adapter, fakeUserRepository);
 
-  var alice = {id: '1', name: 'Alice'};
-  var bob = {id: '2', name: 'Bob'};
+  var alice = {id: '1', name: 'Alice', isMan: true};
+  var bob = {id: '2', name: 'Bob', isMan: false};
 
   var userStub = sinon.stub(adapter, 'getUser');
+  var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
+
   [alice, bob].forEach(function(person) {
     userStub.withArgs(person.id).returns(person);
+    retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
   });
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
@@ -77,17 +78,21 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   });
 
   bot.reportChannelStatistics('Ytterbium');
-
-  t.ok(ytterbium.send.calledWith('Alice message count in #Ytterbium: 1'), 'reports Alice\'s message count in one channel');
-
   bot.reportChannelStatistics('Xenon');
 
-  t.ok(xenon.send.calledWith('Alice message count in #Xenon: 2'), 'reports Alice\'s message count the other channel');
-  t.ok(xenon.send.calledWith('Bob message count in #Xenon: 1'), 'reports Bob\'s message count in the other channel');
+  setTimeout(function() {
+    t.ok(ytterbium.send.calledWith('Messages by men: 100%'), 'reports that only men spoke in one channel');
 
-  userStub.restore();
-  channelByIDStub.restore();
-  channelByNameStub.restore();
+    t.ok(xenon.send.calledWith('Messages by men: 67%'), 'reports that men spoke ⅔ of the time in the other channel');
+    t.ok(xenon.send.calledWith('Messages by not-men: 33%'), 'reports that not-men spoke ⅓ of the time in the other channel');
+
+    userStub.restore();
+    channelByIDStub.restore();
+    channelByNameStub.restore();
+    retrieveAttributeStub.restore();
+
+    t.end();
+  }, 0);
 });
 
 test('StatsBot records a user\'s gender', function(t) {

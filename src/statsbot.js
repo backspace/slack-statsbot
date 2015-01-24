@@ -2,6 +2,8 @@ var SlackClient = require('slack-client');
 var MessageLog = require('./message-log');
 var GenderReportGenerator = require('./gender-report-generator');
 
+var moment = require('moment');
+
 class StatsBot {
   constructor(adapter, userRepository) {
     this.adapter = adapter;
@@ -62,7 +64,7 @@ class StatsBot {
     var statistics = statisticsPackage.statistics;
     var metadata = statisticsPackage.metadata;
 
-    channel.send(`Statistics since ${metadata.startTime}:`);
+    channel.send(`Statistics since ${moment(metadata.startTime).fromNow()}:`);
 
     var generator = new GenderReportGenerator(statistics, this.userRepository);
 

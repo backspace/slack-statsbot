@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "iojs --use-strict -es_staging index.js",
-    "test": "grunt tape"
+    "test": "for I in test/*.js; do $I; done"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "amp-values": "^1.0.1",
+    "iojs-bin": "^1.0.2",
     "moment": "^2.9.0",
     "node-bin": "^0.11.14",
     "pg": "^4.2.0",

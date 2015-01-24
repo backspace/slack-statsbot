@@ -21,6 +21,28 @@ It’s not my tendency to categorise the world as men vs. not-men, but in the ca
   * the message count logger
   * the `UserRepository`, a wrapper around Sequelize
 
+## Requirements
+
+The bot is for Slack, so you’ll need to set up a bot integration and have an API token ready. The user information is stored in a Postgres database.
+
+## Running
+
+You can run the bot thusly:
+
+    DATABASE_URL=postgres://localhost/databasename \
+    SLACK_TOKEN=your_token \
+    npm start
+
+## Testing
+
+Because this is targeted to io.js and ES6, testing is very much in flux. You *should* be able to run the tests thusly:
+
+    npm test
+
+If that doesn’t work, this might:
+
+    for I in test/*.js; do $I; done
+
 ## Deployment
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/backspace/slack-statsbot/tree/primary)

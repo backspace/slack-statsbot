@@ -30,6 +30,7 @@
     "tape": "^3.4.0"
   },
   "dependencies": {
+    "amp-values": "^1.0.1",
     "moment": "^2.9.0",
     "node-bin": "^0.11.14",
     "pg": "^4.2.0",

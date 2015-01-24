@@ -3,6 +3,7 @@ var MessageLog = require('./message-log');
 var GenderReportGenerator = require('./gender-report-generator');
 
 var moment = require('moment');
+var values = require('amp-values');
 
 class StatsBot {
   constructor(adapter, userRepository) {
@@ -65,6 +66,13 @@ class StatsBot {
     var metadata = statisticsPackage.metadata;
 
     channel.send(`Statistics since ${moment(metadata.startTime).fromNow()}:`);
+
+    var counts = values(statistics);
+    var total = counts.reduce(function(total, count) {
+      return total + count;
+    }, 0);
+
+    channel.send(`Total message count: ${total}`);
 
     var generator = new GenderReportGenerator(statistics, this.userRepository);
 

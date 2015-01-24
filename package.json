@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "iojs --use-strict --es_staging index.js",
-    "test": "prove -rmce \"iojs --use-strict --es_staging\" --ext .js test"
+    "test": "prove -rmce \"iojs --use-strict --es_staging\" --ext .js test -v"
   },
   "repository": {
     "type": "git",

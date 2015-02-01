@@ -1,21 +1,23 @@
+var conf = require('./config');
+
 var StatsBot = require('./src/statsbot');
 var SlackAdapter = require('./src/slack-adapter');
 
 var UserRepository = require('./src/user-repository');
 
 var Sequelize = require('sequelize')
-  , sequelize = new Sequelize(process.env.DATABASE_URL);
+  , sequelize = new Sequelize(conf.get('databaseURL'));
 
 var SlackClient = require('slack-client');
 
-var client = new SlackClient(process.env.SLACK_TOKEN);
+var client = new SlackClient(conf.get('slackToken'));
 var adapter = new SlackAdapter(client);
 
 var userRepository = new UserRepository(sequelize);
 
 var bot = new StatsBot(adapter, userRepository);
 
-var reportingInterval = process.env.REPORTING_INTERVAL || 60*60*1000;
+var reportingInterval = conf.get('reportingInterval');
 
 setInterval(function() {
   bot.reportAllChannelStatistics();

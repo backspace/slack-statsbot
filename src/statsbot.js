@@ -50,9 +50,9 @@ class StatsBot {
     this.userRepository.storeAttribute(message.user, 'isMan', isMan);
 
     if (isMan) {
-      reply = 'Okay, we have noted that you are a man.';
+      reply = 'Okay, we have noted that you are a man. Say “false” if that is not the case.';
     } else {
-      reply = 'Okay, we have noted that you are not a man.';
+      reply = 'Okay, we have noted that you are not a man. Say “true” if you are a man.';
     }
 
     channel.send(reply);

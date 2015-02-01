@@ -77,7 +77,7 @@ class StatsBot {
     var generator = new GenderReportGenerator(statistics, this.userRepository);
 
     generator.generate().then(function(report) {
-      var fullReport = `Of the ${total} messages since ${moment(metadata.startTime).fromNow()}, ${report}. DM me to make sure you’re recognised.`;
+      var fullReport = `Of the ${total} message${total == 1 ? '' : 's'} since ${moment(metadata.startTime).fromNow()}, ${report}. DM me to make sure you’re recognised.`;
 
       channel.send(fullReport);
     });

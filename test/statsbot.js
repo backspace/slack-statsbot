@@ -81,7 +81,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   bot.reportChannelStatistics('Xe');
 
   setTimeout(function() {
-    t.ok(ytterbium.send.calledWithMatch(/the 1 messages/), 'reports a message count of 1');
+    t.ok(ytterbium.send.calledWithMatch(/the 1 message/), 'reports a message count of 1');
     t.ok(ytterbium.send.calledWithMatch(/men sent 100%/), 'reports that only men spoke in one channel');
 
     t.ok(xenon.send.calledWithMatch(/the 3 messages/), 'reports a message count of 3');

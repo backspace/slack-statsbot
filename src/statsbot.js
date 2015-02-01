@@ -74,18 +74,12 @@ class StatsBot {
       return;
     }
 
-    channel.send(`Statistics since ${moment(metadata.startTime).fromNow()}:`);
-
-    channel.send(`Total message count: ${total}`);
-
     var generator = new GenderReportGenerator(statistics, this.userRepository);
 
     generator.generate().then(function(report) {
-      report.forEach(function(item) {
-        channel.send(item);
-      });
+      var fullReport = `Of the ${total} messages since ${moment(metadata.startTime).fromNow()}, ${report}. DM me to make sure you’re recognised.`;
 
-      channel.send(`Direct message me with “true” if you are a man and “false” otherwise. You can say “info” to check how I have you recorded.`);
+      channel.send(fullReport);
     });
   }
 

@@ -32,13 +32,16 @@ class GenderReportGenerator{
 
       var total = counts.men + counts.notMen + counts.unknown;
 
-      var report = [
-        `Messages by men: ${(100*counts.men/total).toFixed(0)}%`,
-        `Messages by not-men: ${(100*counts.notMen/total).toFixed(0)}%`
-      ];
+      var menPercent = (100*counts.men/total).toFixed(0);
+      var notMenPercent = (100*counts.notMen/total).toFixed(0);
 
+      var report;
+
+      // TODO DRY up somehow
       if (counts.unknown > 0) {
-        report.push(`Messages by unknown: ${(100*counts.unknown/total).toFixed(0)}%`);
+        report = `men sent ${menPercent}%, not-men sent ${notMenPercent}%, and not sure of the rest`;
+      } else {
+        report = `men sent ${menPercent}% and not-men sent ${notMenPercent}%`;
       }
 
       return report;

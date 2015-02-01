@@ -15,8 +15,10 @@ var userRepository = new UserRepository(sequelize);
 
 var bot = new StatsBot(adapter, userRepository);
 
+var reportingInterval = process.env.REPORTING_INTERVAL || 60*60*1000;
+
 setInterval(function() {
   bot.reportAllChannelStatistics();
-}, 60*60*1000);
+}, reportingInterval);
 
 module.exports = bot;

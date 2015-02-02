@@ -15,7 +15,8 @@ class GenderReportGenerator{
 
     // TODO DRY up somehow
     if (counts.unknown > 0) {
-      report = `men sent ${menPercent}%, not-men sent ${notMenPercent}%, and not sure of the rest`;
+      var unknownPercent = (100*counts.unknown/total).toFixed(0);
+      report = `men sent ${menPercent}%, not-men sent ${notMenPercent}%, and not sure of the other ${unknownPercent}%`;
     } else {
       report = `men sent ${menPercent}% and not-men sent ${notMenPercent}%`;
     }

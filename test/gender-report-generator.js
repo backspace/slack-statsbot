@@ -46,7 +46,7 @@ test('GenderReportGenerator handles unknown users', function(t) {
 
   t.ok(report.indexOf('men sent 50%') > -1, 'reports 50% of messages were from men');
   t.ok(report.indexOf('not-men sent 25%') > -1, 'reports 25% of messages were from not-men');
-  t.ok(report.indexOf('not sure of the rest') > -1, 'reports that the rest were unknown');
+  t.ok(report.indexOf('not sure of the other 25%') > -1, 'reports that the other 25% were unknown');
 
   t.end();
 });

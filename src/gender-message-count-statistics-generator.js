@@ -1,4 +1,4 @@
-class GenderStatisticsGenerator{
+class GenderMessageCountStatisticsGenerator{
   constructor(statistics, userIsMan) {
     this.statistics = statistics;
     this.userIsMan = userIsMan;
@@ -26,4 +26,4 @@ class GenderStatisticsGenerator{
   }
 }
 
-module.exports = GenderStatisticsGenerator;
+module.exports = GenderMessageCountStatisticsGenerator;

@@ -2,16 +2,16 @@
 
 var test = require('tape');
 
-var GenderReportGenerator = require('../src/gender-report-generator');
+var GenderMessageCountReportGenerator = require('../src/gender-message-count-report-generator');
 
-test('GenderReportGenerator generates a report when equal numbers of men and not-men have spoken', function(t) {
+test('GenderMessageCountReportGenerator generates a report when equal numbers of men and not-men have spoken', function(t) {
   var statistics = {
     men: 1,
     notMen: 1,
     unknown: 0
   };
 
-  var report = new GenderReportGenerator(statistics).generate();
+  var report = new GenderMessageCountReportGenerator(statistics).generate();
 
   t.ok(report.indexOf('men sent 50%') > -1, 'reports 50% of messages were from men');
   t.ok(report.indexOf('not-men sent 50%') > -1, 'reports 50% of messages were from not-men');
@@ -19,14 +19,14 @@ test('GenderReportGenerator generates a report when equal numbers of men and not
   t.end();
 });
 
-test('GenderReportGenerator generates a report with rounding', function(t) {
+test('GenderMessageCountReportGenerator generates a report with rounding', function(t) {
   var statistics = {
     men: 5,
     notMen: 1,
     unknown: 0
   };
 
-  var report = new GenderReportGenerator(statistics).generate();
+  var report = new GenderMessageCountReportGenerator(statistics).generate();
 
   t.ok(report.indexOf('men sent 83%') > -1, 'reports 83% of messages were from men');
   t.ok(report.indexOf('not-men sent 17%') > -1, 'reports 17% of messages were from not-men');
@@ -35,14 +35,14 @@ test('GenderReportGenerator generates a report with rounding', function(t) {
   t.end();
 });
 
-test('GenderReportGenerator handles unknown users', function(t) {
+test('GenderMessageCountReportGenerator handles unknown users', function(t) {
   var statistics = {
     men: 2,
     notMen: 1,
     unknown: 1
   };
 
-  var report = new GenderReportGenerator(statistics).generate();
+  var report = new GenderMessageCountReportGenerator(statistics).generate();
 
   t.ok(report.indexOf('men sent 50%') > -1, 'reports 50% of messages were from men');
   t.ok(report.indexOf('not-men sent 25%') > -1, 'reports 25% of messages were from not-men');

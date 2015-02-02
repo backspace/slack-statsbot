@@ -1,4 +1,4 @@
-class GenderReportGenerator{
+class GenderMessageCountReportGenerator{
   constructor(statistics) {
     this.statistics = statistics;
   }
@@ -21,9 +21,8 @@ class GenderReportGenerator{
       report = `men sent ${menPercent}% and not-men sent ${notMenPercent}%`;
     }
 
-    console.log("returning this report off these statistics", counts, report);
     return report;
   }
 }
 
-module.exports = GenderReportGenerator;
+module.exports = GenderMessageCountReportGenerator;

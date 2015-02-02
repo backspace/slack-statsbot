@@ -95,6 +95,10 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(xenon.send.calledWithMatch(/men sent 67%/), 'reports that men spoke ⅔ of the time in the other channel');
     t.ok(xenon.send.calledWithMatch(/not-men sent 33%/), 'reports that not-men spoke ⅓ of the time in the other channel');
 
+    t.ok(xenon.send.calledWithMatch(/Of the 2 participants/), 'reports that there were 2 participants');
+    t.ok(xenon.send.calledWithMatch(/50% of participants were men/), 'reports that men made up ½ of participants');
+    t.ok(xenon.send.calledWithMatch(/50% were not-men/), 'reports that not-men made up ½ of participants');
+
     bot.handleChannelMessage(xenon, {
       user: alice.id,
       channel: xenon.id

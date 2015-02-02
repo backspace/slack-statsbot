@@ -2,9 +2,9 @@
 
 var test = require('tape');
 
-var GenderStatisticsGenerator = require('../src/gender-statistics-generator');
+var GenderMessageCountStatisticsGenerator = require('../src/gender-message-count-statistics-generator');
 
-test('GenderStatisticsGenerator groups messages by gender', function(t) {
+test('GenderMessageCountStatisticsGenerator groups messages by gender', function(t) {
   var statistics = {
     'Man': 4,
     'Also-man': 3,
@@ -19,7 +19,7 @@ test('GenderStatisticsGenerator groups messages by gender', function(t) {
     'Unknown': undefined
   };
 
-  var generator = new GenderStatisticsGenerator(statistics, userIsMan);
+  var generator = new GenderMessageCountStatisticsGenerator(statistics, userIsMan);
   statistics = generator.generate();
 
   t.equal(statistics.men, 7, 'counts 7 messages from men');

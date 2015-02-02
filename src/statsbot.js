@@ -3,15 +3,8 @@ var MessageLog = require('./message-log');
 
 var RepositoryAttributeExtractor = require('./repository-attribute-extractor');
 
-// TODO these names are unwieldy and can probably be broken up and simplified
+var VerboseGenderReportGenerator = require('./verbose-gender-report-generator');
 
-var GenderMessageCountStatisticsGenerator = require('./gender-message-count-statistics-generator');
-var GenderMessageCountReportGenerator = require('./gender-message-count-report-generator');
-
-var GenderParticipantCountStatisticsGenerator = require('./gender-participant-count-statistics-generator');
-var GenderParticipantCountReportGenerator = require('./gender-participant-count-report-generator');
-
-var moment = require('moment');
 var values = require('amp-values');
 
 class StatsBot {
@@ -103,18 +96,7 @@ class StatsBot {
     var isManExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isMan', Object.keys(statistics));
 
     isManExtractor.extract().then(function(userIsMan) {
-      var messageCountStatistics = new GenderMessageCountStatisticsGenerator(statistics, userIsMan).generate();
-      var messageCountReport = new GenderMessageCountReportGenerator(messageCountStatistics).generate();
-
-      var participantCountStatistics = new GenderParticipantCountStatisticsGenerator(statistics, userIsMan).generate();
-      var participantCountReport = new GenderParticipantCountReportGenerator(participantCountStatistics).generate();
-
-      var participantCount = values(participantCountStatistics).reduce(function(total, genderCount) {
-        return total + genderCount;
-      }, 0);
-
-      var fullReport = `Of the ${total} message${total == 1 ? '' : 's'} since ${moment(metadata.startTime).fromNow()}, ${messageCountReport}. Of the ${participantCount} participant${participantCount == 1 ? '' : 's'}, ${participantCountReport}. DM me to make sure you’re recognised.`;
-
+      var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime).generate();
       channel.send(fullReport);
     });
   }

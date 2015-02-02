@@ -69,7 +69,14 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
   bot.handleChannelMessage(xenon, {
     user: alice.id,
-    channel: xenon.id
+    channel: xenon.id,
+    subtype: 'me_message'
+  });
+
+  bot.handleChannelMessage(xenon, {
+    user: alice.id,
+    channel: xenon.id,
+    subtype: 'message_changed'
   });
 
   bot.handleChannelMessage(ytterbium, {

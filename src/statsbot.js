@@ -15,7 +15,24 @@ class StatsBot {
   }
 
   handleChannelMessage(channel, message) {
+    if (this.mustNotLog(message)) { return; }
     this.log.logMessage(message);
+  }
+
+  mustNotLog(message) {
+    // Message subtypes are listed here:
+    // https://api.slack.com/events/message
+    var subtypesToLog = [
+      'me_message',
+      'file_share',
+      'file_comment'
+    ];
+
+    if (message.subtype) {
+      return subtypesToLog.indexOf(message.subtype) == -1;
+    } else {
+      return false;
+    }
   }
 
   handleDirectMessage(channel, message) {

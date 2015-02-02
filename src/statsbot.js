@@ -1,5 +1,7 @@
 var SlackClient = require('slack-client');
 var MessageLog = require('./message-log');
+
+var GenderStatisticsGenerator = require('./gender-statistics-generator');
 var GenderReportGenerator = require('./gender-report-generator');
 
 var moment = require('moment');
@@ -91,9 +93,10 @@ class StatsBot {
       return;
     }
 
-    var generator = new GenderReportGenerator(statistics, this.userRepository);
+    var generator = new GenderStatisticsGenerator(statistics, this.userRepository);
 
-    generator.generate().then(function(report) {
+    generator.generate().then(function(genderStatistics) {
+      var report = new GenderReportGenerator(genderStatistics).generate();
       var fullReport = `Of the ${total} message${total == 1 ? '' : 's'} since ${moment(metadata.startTime).fromNow()}, ${report}. DM me to make sure you’re recognised.`;
 
       channel.send(fullReport);

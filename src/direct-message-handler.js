@@ -9,6 +9,8 @@ class DirectMessageHandler {
   handle(channel, message) {
     if (message.text === 'info') {
       this.handleInformationRequest(channel, message);
+    } else if (message.text === 'help') {
+      this.handleHelpRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);
     }
@@ -44,6 +46,10 @@ class DirectMessageHandler {
     }
 
     channel.send(reply);
+  }
+
+  handleHelpRequest(channel, message) {
+    channel.send('Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. To come: actual help');
   }
 }
 

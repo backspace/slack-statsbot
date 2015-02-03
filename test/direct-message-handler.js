@@ -80,3 +80,19 @@ test('DirectMessageHandler handles an information request', function(t) {
 
   retrieveAttributeStub.restore();
 });
+
+test('DirectMessageHandler handles a help request', function(t) {
+  var handler = new DirectMessageHandler(fakeUserRepository);
+
+  var person = {id: 'P', name: 'Person'};
+  var personDM = {send: sinon.stub()};
+
+  handler.handle(personDM, {
+    text: 'help',
+    user: person.id
+  });
+
+  t.ok(personDM.send.calledWith('Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. To come: actual help'), 'replies with a help message');
+
+  t.end();
+});

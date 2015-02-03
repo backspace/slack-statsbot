@@ -15,7 +15,7 @@ var adapter = new SlackAdapter(client);
 
 var userRepository = new UserRepository(sequelize);
 
-var bot = new StatsBot(adapter, userRepository);
+var bot = new StatsBot(adapter, userRepository, conf.get('statsChannel'));
 
 var reportingInterval = conf.get('reportingInterval');
 

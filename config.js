@@ -19,6 +19,12 @@ var conf = convict({
     env: 'REPORTING_INTERVAL',
     format: 'nat',
     default: 60*60*1000
+  },
+  statsChannel: {
+    doc: 'The channel where the bot reports verbose statistics.',
+    env: 'STATS_CHANNEL',
+    format: String,
+    default: 'statsbot'
   }
 });
 

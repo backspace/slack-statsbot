@@ -8,12 +8,14 @@ var VerboseGenderReportGenerator = require('./verbose-gender-report-generator');
 var values = require('amp-values');
 
 class StatsBot {
-  constructor(adapter, userRepository) {
+  constructor(adapter, userRepository, statsChannel) {
     this.adapter = adapter;
     this.adapter.registerListener(this);
 
     this.log = new MessageLog();
     this.userRepository = userRepository;
+
+    this.statsChannel = statsChannel;
   }
 
   handleChannelMessage(channel, message) {
@@ -79,6 +81,7 @@ class StatsBot {
 
   reportChannelStatistics(channelID) {
     var channel = this.adapter.getChannel(channelID);
+    var botChannel = this.adapter.getChannelByName(this.statsChannel);
     var statisticsPackage = this.log.getChannelStatistics(channel.id);
 
     var statistics = statisticsPackage.statistics;
@@ -97,7 +100,7 @@ class StatsBot {
 
     isManExtractor.extract().then(function(userIsMan) {
       var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime).generate();
-      channel.send(fullReport);
+      botChannel.send(fullReport);
     });
   }
 

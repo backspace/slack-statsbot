@@ -8,6 +8,8 @@ test('GenderUpdateParser parses whether or not someone is a man', function(t) {
   var inputToResponse = {
     'true': true,
     'false': false,
+    'I AM a man': true,
+    'i’m not a man': false,
     'anything': undefined
   };
 

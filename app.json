@@ -15,6 +15,10 @@
       "description": "The API token in the Slack bot integration settings",
       "required": true
     },
+    "STATS_CHANNEL": {
+      "description": "The channel where the bot reports verbose statistics.",
+      "value": "statsbot"
+    },
     "WEB_CONCURRENCY": {
       "description": "There is no web interface to the bot.",
       "value": "0"

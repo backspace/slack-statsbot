@@ -20,6 +20,8 @@ var conf = convict({
     format: 'nat',
     default: 60*60*1000
   },
+  // TODO This is semi-duplicated in app.json
+  // Any way to connect them?
   statsChannel: {
     doc: 'The channel where the bot reports verbose statistics.',
     env: 'STATS_CHANNEL',

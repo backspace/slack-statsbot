@@ -15,7 +15,7 @@ test('GenderUpdateParser parses whether or not someone is a man', function(t) {
     var parser = new GenderUpdateParser(input);
     var response = parser.parseIsMan();
 
-    t.equal(response, inputToResponse[input], `${input} should represent isMan ${response}`);
+    t.equal(response, inputToResponse[input], `${input} should represent isMan ${inputToResponse[input]} but response was ${response}`);
   });
 
   t.end();

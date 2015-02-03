@@ -4,6 +4,7 @@ var MessageLog = require('./message-log');
 var RepositoryAttributeExtractor = require('./repository-attribute-extractor');
 
 var VerboseGenderReportGenerator = require('./verbose-gender-report-generator');
+var TerseGenderReportGenerator = require('./terse-gender-report-generator');
 
 var values = require('amp-values');
 
@@ -101,6 +102,9 @@ class StatsBot {
     isManExtractor.extract().then(function(userIsMan) {
       var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
       botChannel.send(fullReport);
+
+      var terseReport = new TerseGenderReportGenerator(statistics, userIsMan, metadata.startTime, botChannel.name).generate();
+      channel.send(terseReport);
     });
   }
 

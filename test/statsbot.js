@@ -98,6 +98,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(botChannel.send.calledWithMatch(/the 1 message/), 'reports a message count of 1');
     t.ok(botChannel.send.calledWithMatch(/men sent 100%/), 'reports that only men spoke in one channel');
 
+    t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
+
     t.ok(botChannel.send.calledWithMatch(/#Xenon/), 'reports #Xenon statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/the 3 messages/), 'reports a message count of 3');
     t.ok(botChannel.send.calledWithMatch(/men sent 67%/), 'reports that men spoke ⅔ of the time in the other channel');
@@ -106,6 +108,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(botChannel.send.calledWithMatch(/Of the 2 participants/), 'reports that there were 2 participants');
     t.ok(botChannel.send.calledWithMatch(/50% of participants were men/), 'reports that men made up ½ of participants');
     t.ok(botChannel.send.calledWithMatch(/50% were not-men/), 'reports that not-men made up ½ of participants');
+
+    t.ok(xenon.send.calledWithMatch(/not-men sent 33% of messages/), 'reports in the channel that not-men sent 33% of messages');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,

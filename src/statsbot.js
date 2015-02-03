@@ -25,12 +25,12 @@ class StatsBot {
   }
 
   mustNotLog(message) {
-    // Message subtypes are listed here:
-    // https://api.slack.com/events/message
     if (this.adapter.getChannel(message.channel).name == this.statsChannel) {
       return true;
     }
 
+    // Message subtypes are listed here:
+    // https://api.slack.com/events/message
     var subtypesToLog = [
       'me_message',
       'file_share',

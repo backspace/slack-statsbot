@@ -7,9 +7,11 @@ class DirectMessageHandler {
   }
 
   handle(channel, message) {
-    if (message.text === 'info') {
+    var text = message.text.toLowerCase();
+
+    if (text === 'info') {
       this.handleInformationRequest(channel, message);
-    } else if (message.text === 'help') {
+    } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);

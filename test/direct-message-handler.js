@@ -87,8 +87,10 @@ test('DirectMessageHandler handles a help request', function(t) {
   var person = {id: 'P', name: 'Person'};
   var personDM = {send: sinon.stub()};
 
+  // TODO testing the acceptance of title case here;
+  // maybe should be split out into a command parser
   handler.handle(personDM, {
-    text: 'help',
+    text: 'Help',
     user: person.id
   });
 

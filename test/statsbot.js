@@ -167,7 +167,7 @@ test('StatsBot records a user\'s gender', function(t) {
     user: prakash.id
   });
 
-  t.ok(prakashDM.send.calledWith('Okay, we have noted that you are a man. Say “false” if that is not the case.'), 'replies affirming that Prakash is a man');
+  t.ok(prakashDM.send.calledWithMatch(/Okay, we have noted that you are a man./), 'replies affirming that Prakash is a man');
   t.ok(storeAttributeStub.calledWith('P', 'isMan', true), 'stores that Prakash is a man');
 
   bot.handleDirectMessage(lauraDM, {
@@ -175,7 +175,7 @@ test('StatsBot records a user\'s gender', function(t) {
     user: laura.id
   });
 
-  t.ok(lauraDM.send.calledWith('Okay, we have noted that you are not a man. Say “true” if you are a man.'), 'replies affirming that Laura is not a man');
+  t.ok(lauraDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Laura is not a man');
   t.ok(storeAttributeStub.calledWith('L', 'isMan', false), 'stores that Laura is not a man');
 
   userStub.restore();

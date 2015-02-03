@@ -36,13 +36,13 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
     });
   });
 
-  t.ok(janisDM.send.calledWith('Okay, we have noted that you are not a man. Say “true” if you are a man.'), 'replies affirming that Janis is not a man');
+  t.ok(janisDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Janis is not a man');
   t.ok(storeAttributeStub.calledWith(janis.id, 'isMan', false), 'stores that Janis is not a man');
 
-  t.ok(buckDM.send.calledWith('Okay, we have noted that you are a man. Say “false” if that is not the case.'), 'replies affirming that Buck is a man');
+  t.ok(buckDM.send.calledWithMatch(/Okay, we have noted that you are a man./), 'replies affirming that Buck is a man');
   t.ok(storeAttributeStub.calledWith(buck.id, 'isMan', true), 'stores that Buck is a man');
 
-  t.ok(unknownDM.send.calledWith('I’m sorry, I’m not that advanced and I didn’t understand your message. To come: actual help'), 'replies that it didn’t understand the message');
+  t.ok(unknownDM.send.calledWithMatch(/I’m sorry, I’m not that advanced and I didn’t understand your message./), 'replies that it didn’t understand the message');
   t.ok(storeAttributeStub.neverCalledWith(unknown.id), 'does not store anything about Unknown');
 
   storeAttributeStub.restore();
@@ -101,7 +101,7 @@ test('DirectMessageHandler handles a help request', function(t) {
     user: person.id
   });
 
-  t.ok(personDM.send.calledWith('Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. To come: actual help'), 'replies with a help message');
+  t.ok(personDM.send.calledWithMatch(/Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not./), 'replies with a help message');
 
   t.end();
 });

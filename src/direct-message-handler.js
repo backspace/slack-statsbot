@@ -47,19 +47,21 @@ class DirectMessageHandler {
     }
 
     if (isMan === true) {
-      reply = 'Okay, we have noted that you are a man. Say “false” if that is not the case.';
+      reply = 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”';
     } else if (isMan === false) {
-      reply = 'Okay, we have noted that you are not a man. Say “true” if you are a man.';
+      reply = 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.';
     } else {
-      reply = 'I’m sorry, I’m not that advanced and I didn’t understand your message. To come: actual help';
+      reply = `I’m sorry, I’m not that advanced and I didn’t understand your message. ${DirectMessageHandler.HELP_MESSAGE}`;
     }
 
     channel.send(reply);
   }
 
   handleHelpRequest(channel, message) {
-    channel.send('Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. To come: actual help');
+    channel.send(`Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. ${DirectMessageHandler.HELP_MESSAGE}`);
   }
 }
+
+DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man” or “I am a man”, or ask for my current information on you with “info”.';
 
 module.exports = DirectMessageHandler;

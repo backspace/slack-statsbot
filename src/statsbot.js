@@ -34,7 +34,8 @@ class StatsBot {
     var subtypesToLog = [
       'me_message',
       'file_share',
-      'file_comment'
+      'file_comment',
+      'file_mention'
     ];
 
     if (message.subtype) {

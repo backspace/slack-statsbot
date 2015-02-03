@@ -99,7 +99,7 @@ class StatsBot {
     var isManExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isMan', Object.keys(statistics));
 
     isManExtractor.extract().then(function(userIsMan) {
-      var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime).generate();
+      var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
       botChannel.send(fullReport);
     });
   }

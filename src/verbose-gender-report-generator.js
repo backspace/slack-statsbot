@@ -12,10 +12,11 @@ var GenderParticipantCountStatisticsGenerator = require('./gender-participant-co
 var GenderParticipantCountReportGenerator = require('./gender-participant-count-report-generator');
 
 class VerboseGenderReportGenerator {
-  constructor(userMessageCount, userIsMan, startTime) {
+  constructor(userMessageCount, userIsMan, startTime, channelName) {
     this.userMessageCount = userMessageCount;
     this.userIsMan = userIsMan;
     this.startTime = startTime;
+    this.channelName = channelName;
   }
 
   generate() {
@@ -35,7 +36,7 @@ class VerboseGenderReportGenerator {
       return total + genderCount;
     }, 0);
 
-    var fullReport = `Of the ${messageCount} message${messageCount == 1 ? '' : 's'} since ${moment(this.startTime).fromNow()}, ${messageCountReport}. Of the ${participantCount} participant${participantCount == 1 ? '' : 's'}, ${participantCountReport}. DM me to make sure you’re recognised.`;
+    var fullReport = `Of the ${messageCount} message${messageCount == 1 ? '' : 's'} in #${this.channelName} since ${moment(this.startTime).fromNow()}, ${messageCountReport}. Of the ${participantCount} participant${participantCount == 1 ? '' : 's'}, ${participantCountReport}. DM me to make sure you’re recognised.`;
 
     return fullReport;
   }

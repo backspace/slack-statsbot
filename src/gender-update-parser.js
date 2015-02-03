@@ -7,7 +7,13 @@ class GenderUpdateParser {
   }
 
   parseIsMan() {
-    return this.message == 'true';
+    if (this.message === 'true') {
+      return true;
+    } else if (this.message === 'false') {
+      return false;
+    } else {
+      return undefined;
+    }
   }
 }
 

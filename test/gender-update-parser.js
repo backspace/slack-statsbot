@@ -7,7 +7,8 @@ var GenderUpdateParser = require('../src/gender-update-parser');
 test('GenderUpdateParser parses whether or not someone is a man', function(t) {
   var inputToResponse = {
     'true': true,
-    'anything': false
+    'false': false,
+    'anything': undefined
   };
 
   Object.keys(inputToResponse).forEach(function(input) {

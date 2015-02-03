@@ -42,12 +42,16 @@ class DirectMessageHandler {
 
     var reply;
 
-    this.userRepository.storeAttribute(message.user, 'isMan', isMan);
+    if (isMan !== undefined) {
+      this.userRepository.storeAttribute(message.user, 'isMan', isMan);
+    }
 
-    if (isMan) {
+    if (isMan === true) {
       reply = 'Okay, we have noted that you are a man. Say “false” if that is not the case.';
-    } else {
+    } else if (isMan === false) {
       reply = 'Okay, we have noted that you are not a man. Say “true” if you are a man.';
+    } else {
+      reply = 'I’m sorry, I’m not that advanced and I didn’t understand your message. To come: actual help';
     }
 
     channel.send(reply);

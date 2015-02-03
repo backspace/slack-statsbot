@@ -19,13 +19,17 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
   var buck = {id: 'B', name: 'Buck', isMan: true};
   var buckDM = {send: sinon.stub()};
 
+  var unknown = {id: 'U', name: 'Unknown', isMan: 'what is this'};
+  var unknownDM = {send: sinon.stub()};
+
   var personIDToChannel = {};
   personIDToChannel[janis.id] = janisDM;
   personIDToChannel[buck.id] = buckDM;
+  personIDToChannel[unknown.id] = unknownDM;
 
   var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
-  [janis, buck].forEach(function(person) {
+  [janis, buck, unknown].forEach(function(person) {
     handler.handle(personIDToChannel[person.id], {
       text: `${person.isMan}`,
       user: person.id
@@ -37,6 +41,9 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
 
   t.ok(buckDM.send.calledWith('Okay, we have noted that you are a man. Say “false” if that is not the case.'), 'replies affirming that Buck is a man');
   t.ok(storeAttributeStub.calledWith(buck.id, 'isMan', true), 'stores that Buck is a man');
+
+  t.ok(unknownDM.send.calledWith('I’m sorry, I’m not that advanced and I didn’t understand your message. To come: actual help'), 'replies that it didn’t understand the message');
+  t.ok(storeAttributeStub.neverCalledWith(unknown.id), 'does not store anything about Unknown');
 
   storeAttributeStub.restore();
   t.end();

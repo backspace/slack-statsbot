@@ -55,13 +55,18 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
 
-  [xenon, ytterbium].forEach(function(channel) {
+  [xenon, ytterbium, botChannel].forEach(function(channel) {
     channelByIDStub.withArgs(channel.id).returns(channel);
   });
 
   var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
 
   channelByNameStub.withArgs(botChannel.name).returns(botChannel);
+
+  bot.handleChannelMessage(botChannel, {
+    user: bob.id,
+    channel: botChannel.id
+  });
 
   bot.handleChannelMessage(xenon, {
     user: alice.id,
@@ -90,10 +95,13 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: ytterbium.id
   });
 
+  bot.reportChannelStatistics(botChannel.id);
   bot.reportChannelStatistics('Yb');
   bot.reportChannelStatistics('Xe');
 
   setTimeout(function() {
+    t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
+
     t.ok(botChannel.send.calledWithMatch(/#Ytterbium/), 'reports #Ytterbium statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/the 1 message/), 'reports a message count of 1');
     t.ok(botChannel.send.calledWithMatch(/men sent 100%/), 'reports that only men spoke in one channel');

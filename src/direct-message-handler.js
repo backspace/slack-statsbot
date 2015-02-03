@@ -1,6 +1,8 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
+var GenderUpdateParser = require('./gender-update-parser');
+
 class DirectMessageHandler {
   constructor(userRepository) {
     this.userRepository = userRepository;
@@ -35,7 +37,8 @@ class DirectMessageHandler {
   }
 
   handleInformationUpdate(channel, message) {
-    var isMan = message.text === 'true';
+    var parser = new GenderUpdateParser(message.text);
+    var isMan = parser.parseIsMan();
 
     var reply;
 

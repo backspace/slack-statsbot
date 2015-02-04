@@ -1,4 +1,5 @@
 var convict = require('convict');
+var cronParser = require('cron-parser');
 
 var conf = convict({
   databaseURL: {
@@ -15,10 +16,16 @@ var conf = convict({
     default: null
   },
   reportingInterval: {
-    doc: 'The number of milliseconds between statistics reports.',
+    doc: 'A crontab-style specification of how often the bot should report statistics.',
     env: 'REPORTING_INTERVAL',
-    format: 'nat',
-    default: 60*60*1000
+    format(val) {
+      try {
+        cronParser.parseExpression(val);
+      } catch (err) {
+        throw new Error('REPORTING_INTERVAL should be in crontab format, see https://github.com/harrisiirak/cron-parser');
+      }
+    },
+    default: '0 * * * *'
   },
   // TODO This is semi-duplicated in app.json
   // Any way to connect them?

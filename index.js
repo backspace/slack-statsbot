@@ -17,10 +17,23 @@ var userRepository = new UserRepository(sequelize);
 
 var bot = new StatsBot(adapter, userRepository, conf.get('statsChannel'));
 
+
+// TODO this should probably be its own file
+var cronParser = require('cron-parser');
 var reportingInterval = conf.get('reportingInterval');
 
-setInterval(function() {
-  bot.reportAllChannelStatistics();
-}, reportingInterval);
+var interval = cronParser.parseExpression(reportingInterval);
+
+function setNextTimeout() {
+  var next = interval.next();
+  var timeFromNow = next - new Date();
+
+  setTimeout(function() {
+    bot.reportAllChannelStatistics();
+    setNextTimeout();
+  }, timeFromNow);
+}
+
+setNextTimeout();
 
 module.exports = bot;

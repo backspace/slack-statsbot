@@ -21,22 +21,12 @@ var bot = new StatsBot(adapter, userRepository, {
 });
 
 
-// TODO this should probably be its own file
-var cronParser = require('cron-parser');
 var reportingInterval = conf.get('reportingInterval');
 
-var interval = cronParser.parseExpression(reportingInterval);
+var scheduler = require('./src/scheduler');
 
-function setNextTimeout() {
-  var next = interval.next();
-  var timeFromNow = next - new Date();
-
-  setTimeout(function() {
-    bot.reportAllChannelStatistics();
-    setNextTimeout();
-  }, timeFromNow);
-}
-
-setNextTimeout();
+scheduler(reportingInterval, function() {
+  bot.reportAllChannelStatistics();
+});
 
 module.exports = bot;

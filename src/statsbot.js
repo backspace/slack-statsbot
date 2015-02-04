@@ -8,6 +8,8 @@ var TerseGenderReportGenerator = require('./terse-gender-report-generator');
 
 var DirectMessageHandler = require('./direct-message-handler');
 
+var requestUnknownSelfIdentification = require('./request-unknown-self-identification');
+
 var values = require('amp-values');
 
 class StatsBot {
@@ -77,12 +79,19 @@ class StatsBot {
     var isManExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isMan', Object.keys(statistics));
 
     isManExtractor.extract().then(function(userIsMan) {
+      requestUnknownSelfIdentification({
+        statistics: statistics,
+        userRepository: this.userRepository,
+        userIsMan: userIsMan,
+        adapter: this.adapter
+      });
+
       var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
       botChannel.send(fullReport);
 
       var terseReport = new TerseGenderReportGenerator(statistics, userIsMan, metadata.startTime, botChannel.name).generate();
       channel.send(terseReport);
-    });
+    }.bind(this));
   }
 
   reportAllChannelStatistics() {

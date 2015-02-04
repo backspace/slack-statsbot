@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "amp-includes": "^1.0.2",
+    "amp-unique": "^1.0.1",
     "amp-values": "^1.0.1",
     "convict": "^0.6.1",
     "moment": "^2.9.0",

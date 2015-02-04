@@ -11,6 +11,7 @@ var fakeClient = {
   getChannelGroupOrDMByID() {},
   getUserByID() {},
   getChannelByName() {},
+  getDMByName() {}
 };
 
 var fakeBot = {
@@ -127,4 +128,24 @@ test('SlackAdapter delegates getChannelByName to the client', function(t) {
   t.equal(adapter.getChannelByName(name), channel, 'should return the channel from the client');
 
   getChannelStub.restore();
+});
+
+test('SlackAdapter composes calls to the client to getDMByUser', function(t) {
+  var user = {id: 'user', name: 'name'};
+  var dm = 'a dm';
+
+  var adapter = new SlackAdapter(fakeClient);
+
+  var getUserStub = sinon.stub(adapter, 'getUser');
+  getUserStub.withArgs(user.id).returns(user);
+
+  var getDMByNameStub = sinon.stub(fakeClient, 'getDMByName');
+  getDMByNameStub.withArgs(user.name).returns(dm);
+
+  t.equal(adapter.getDMByUser(user.id), dm, 'should return the DM for the user');
+
+  getUserStub.restore();
+  getDMByNameStub.restore();
+
+  t.end();
 });

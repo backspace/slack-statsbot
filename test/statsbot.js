@@ -139,6 +139,83 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   }, 0);
 });
 
+// FIXME obvs these tests are out of control!
+
+test('StatsBot asks the top two unknowns in a reporting period who have not declined to self-identify', function(t) {
+  var adapter = new SlackAdapter(fakeClient);
+
+  var bot = new StatsBot(adapter, fakeUserRepository, 'statsbot');
+
+  var known = {id: '1', name: 'Known', isMan: true};
+  var topUnknown = {id: 'u1', name: 'Unknown 1', isMan: undefined};
+  var declinedUnknown = {id: 'u2', name: 'Unknown 2', isMan: undefined, hasBeenQueried: true};
+  var nextUnknown = {id: 'u3', name: 'Unknown 3', isMan: undefined};
+  var bottomUnknown = {id: 'u4', name: 'Unknown 4', isMan: undefined};
+
+  var personToDM = new Map();
+
+  var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
+  var dmByUserStub = sinon.stub(adapter, 'getDMByUser');
+
+  [known, topUnknown, declinedUnknown, nextUnknown, bottomUnknown].forEach(function(person) {
+    var dm = {send: sinon.stub()};
+    personToDM.set(person, dm);
+
+    retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
+    retrieveAttributeStub.withArgs(person.id, 'hasBeenQueried').returns(Promise.resolve(person.hasBeenQueried));
+
+    dmByUserStub.withArgs(person.id).returns(dm);
+  });
+
+  var channel = {id: 'Channel', name: 'Channel', send: sinon.stub()};
+  var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
+
+  var channelByIDStub = sinon.stub(adapter, 'getChannel');
+
+  [channel, botChannel].forEach(function(channel) {
+    channelByIDStub.withArgs(channel.id).returns(channel);
+  });
+
+  var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
+
+  channelByNameStub.withArgs(botChannel.name).returns(botChannel);
+
+  function sendMessageFrom(person) {
+    bot.handleChannelMessage(channel, {
+      user: person.id,
+      channel: channel.id
+    });
+  }
+
+  function sendMessagesFrom(person, count) {
+    for (let i = 0; i < count; i++) {
+      sendMessageFrom(person);
+    }
+  }
+
+  sendMessagesFrom(known, 5);
+  sendMessagesFrom(topUnknown, 4);
+  sendMessagesFrom(declinedUnknown, 4);
+  sendMessagesFrom(nextUnknown, 3);
+  sendMessagesFrom(bottomUnknown, 2);
+
+  bot.reportChannelStatistics(channel.id);
+
+  setTimeout(function() {
+    t.equal(personToDM.get(known).send.called, false, 'did not DM the person whose gender was known');
+    t.equal(personToDM.get(topUnknown).send.called, true, 'DMed the top unknown');
+    t.equal(personToDM.get(declinedUnknown).send.called, false, 'did not DM the person who declined to self-identify');
+    t.equal(personToDM.get(nextUnknown).send.called, true, 'DMed the second-to-top unknown');
+    t.equal(personToDM.get(bottomUnknown).send.called, false, 'did not DM the third-to-top unknown');
+
+    retrieveAttributeStub.restore();
+    dmByUserStub.restore();
+    channelByIDStub.restore();
+
+    t.end();
+  });
+});
+
 test('StatsBot records a user\'s gender', function(t) {
   t.plan(4);
 

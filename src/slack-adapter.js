@@ -34,6 +34,10 @@ class SlackAdapter {
   getChannel(id) {
     return this.client.getChannelGroupOrDMByID(id);
   }
+
+  getDMByUser(id) {
+    return this.client.getDMByName(this.getUser(id).name);
+  }
 }
 
 module.exports = SlackAdapter;

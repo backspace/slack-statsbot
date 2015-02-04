@@ -15,7 +15,10 @@ var adapter = new SlackAdapter(client);
 
 var userRepository = new UserRepository(sequelize);
 
-var bot = new StatsBot(adapter, userRepository, conf.get('statsChannel'));
+var bot = new StatsBot(adapter, userRepository, {
+  statsChannel: conf.get('statsChannel'),
+  topUnknownsToQuery: conf.get('topUnknownsToQuery')
+});
 
 
 // TODO this should probably be its own file

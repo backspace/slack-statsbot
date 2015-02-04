@@ -35,7 +35,7 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, 'statsbot');
+  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot'});
 
   var alice = {id: '1', name: 'Alice', isMan: true};
   var bob = {id: '2', name: 'Bob', isMan: false};
@@ -144,7 +144,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 test('StatsBot asks the top two unknowns in a reporting period who have not declined to self-identify', function(t) {
   var adapter = new SlackAdapter(fakeClient);
 
-  var bot = new StatsBot(adapter, fakeUserRepository, 'statsbot');
+  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
 
   var known = {id: '1', name: 'Known', isMan: true};
   var topUnknown = {id: 'u1', name: 'Unknown 1', isMan: undefined};

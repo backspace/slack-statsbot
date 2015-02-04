@@ -38,6 +38,12 @@ var conf = convict({
     env: 'STATS_CHANNEL',
     format: String,
     default: appEnv.STATS_CHANNEL.value
+  },
+  topUnknownsToQuery: {
+    doc: appEnv.TOP_UNKNOWNS_TO_QUERY.description,
+    env: 'TOP_UNKNOWNS_TO_QUERY',
+    format: 'nat',
+    default: appEnv.TOP_UNKNOWNS_TO_QUERY.value
   }
 });
 

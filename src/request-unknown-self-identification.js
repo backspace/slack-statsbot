@@ -14,6 +14,7 @@ module.exports = function(options) {
   var userRepository = options.userRepository;
   var userIsMan = options.userIsMan;
   var adapter = options.adapter;
+  var count = options.count;
 
   var statisticsForUnknowns = selectUnknowns(statistics, userIsMan);
 
@@ -22,7 +23,7 @@ module.exports = function(options) {
   hasBeenQueriedExtractor.extract().then(function(userHasBeenQueried) {
     // TODO this excludes users who have hasBeenQueried=false, maybe okay?
     var statisticsForUnqueriedUnknowns = selectUnknowns(statisticsForUnknowns, userHasBeenQueried);
-    var topTwoUnknowns = selectTopKeys(statisticsForUnqueriedUnknowns, 2);
+    var topTwoUnknowns = selectTopKeys(statisticsForUnqueriedUnknowns, options.count);
 
     topTwoUnknowns.forEach(function(unknown) {
       var dm = adapter.getDMByUser(unknown);

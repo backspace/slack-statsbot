@@ -13,14 +13,16 @@ var requestUnknownSelfIdentification = require('./request-unknown-self-identific
 var values = require('amp-values');
 
 class StatsBot {
-  constructor(adapter, userRepository, statsChannel) {
+  constructor(adapter, userRepository, options) {
     this.adapter = adapter;
     this.adapter.registerListener(this);
 
     this.log = new MessageLog();
     this.userRepository = userRepository;
 
-    this.statsChannel = statsChannel;
+    options = options || {};
+    this.statsChannel = options.statsChannel;
+    this.topUnknownsToQuery = options.topUnknownsToQuery;
 
     this.directMessageHandler = new DirectMessageHandler(this.userRepository);
   }
@@ -83,7 +85,8 @@ class StatsBot {
         statistics: statistics,
         userRepository: this.userRepository,
         userIsMan: userIsMan,
-        adapter: this.adapter
+        adapter: this.adapter,
+        count: this.topUnknownsToQuery
       });
 
       var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();

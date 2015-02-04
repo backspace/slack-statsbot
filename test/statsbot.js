@@ -155,6 +155,7 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
   var personToDM = new Map();
 
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
+  var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
   var dmByUserStub = sinon.stub(adapter, 'getDMByUser');
 
   [known, topUnknown, declinedUnknown, nextUnknown, bottomUnknown].forEach(function(person) {
@@ -208,7 +209,11 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
     t.equal(personToDM.get(nextUnknown).send.called, true, 'DMed the second-to-top unknown');
     t.equal(personToDM.get(bottomUnknown).send.called, false, 'did not DM the third-to-top unknown');
 
+    t.ok(storeAttributeStub.calledWith(topUnknown.id, 'hasBeenQueried', true), 'stores that the top unknown has been queried');
+    t.ok(storeAttributeStub.calledWith(nextUnknown.id, 'hasBeenQueried', true), 'stores that the second-to-top unknown has been queried');
+
     retrieveAttributeStub.restore();
+    storeAttributeStub.restore();
     dmByUserStub.restore();
     channelByIDStub.restore();
 

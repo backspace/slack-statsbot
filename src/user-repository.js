@@ -8,6 +8,7 @@ class UserRepository {
 
     this.User = sequelize.define('User', {
       isMan: Sequelize.BOOLEAN,
+      hasBeenQueried: Sequelize.BOOLEAN,
       slackID: Sequelize.STRING
     });
 

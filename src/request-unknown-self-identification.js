@@ -24,6 +24,8 @@ module.exports = function(options) {
     topTwoUnknowns.forEach(function(unknown) {
       var dm = adapter.getDMByUser(unknown);
       dm.send("I want to ask you a question");
+
+      userRepository.storeAttribute(unknown, 'hasBeenQueried', true);
     });
   });
 }

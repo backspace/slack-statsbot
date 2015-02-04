@@ -4,13 +4,12 @@ This is a [Slack](https://slack.com) bot that monitors and reports on who is spe
 
 It is alpha-quality as we work out what we need. For now, it monitors any channel it’s a member of and reports on who has been speaking by whether or not they are men.
 
-To tell the bot you are a man, you send a direct message saying `true`, or `false` otherwise. You can check how your gender has been recorded by saying `info`. This interface is rudimentary and brutal and will be improved.
+To tell the bot you are a man, you send a direct message saying `I am a man`, or `I’m not a man` otherwise. You can check how your gender has been recorded by saying `info`. This interface is brittle but functional for now.
 
 It’s not my tendency to categorise the world as men vs. not-men, but in the case of space-domination, it seems like the necessary dichotomy.
 
 ## Known limitations
 
-* any direct message to the bot other than *exactly* `true` or `info` will mark you as not a man
 * if the bot restarts, all gathered statistics are lost
 * there’s no way to check on the current status; the bot will report after an hour has elapsed, and that’s it
 * the report begins with a relative time that the statistics began accumulating, which for a channel that has its first message since the gathering began is the time the message comes in, meaning when the report is shared it will appear to represent less than an hour

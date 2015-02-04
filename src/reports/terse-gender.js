@@ -3,7 +3,7 @@
 var moment = require('moment');
 var values = require('amp-values');
 
-var GenderMessageCountStatisticsGenerator = require('./gender-message-count-statistics-generator');
+var GenderMessageCountStatisticsGenerator = require('../calculators/gender-message-count');
 
 class TerseGenderReportGenerator {
   constructor(userMessageCount, userIsMan, startTime, statsChannel) {

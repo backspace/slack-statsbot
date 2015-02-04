@@ -3,7 +3,7 @@
 var test = require('tape');
 var sinon = require('sinon');
 
-var RepositoryAttributeExtractor = require('../src/repository-attribute-extractor');
+var RepositoryAttributeExtractor = require('../../src/persistence/repository-attribute-extractor');
 
 var fakeUserRepository = {
   storeAttribute() {},

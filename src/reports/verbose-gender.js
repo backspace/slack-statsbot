@@ -5,11 +5,11 @@ var values = require('amp-values');
 
 // TODO these names are unwieldy and can probably be broken up and simplified
 
-var GenderMessageCountStatisticsGenerator = require('./gender-message-count-statistics-generator');
-var GenderMessageCountReportGenerator = require('./gender-message-count-report-generator');
+var GenderMessageCountStatisticsGenerator = require('../calculators/gender-message-count');
+var GenderMessageCountReportGenerator = require('./gender-message-count');
 
-var GenderParticipantCountStatisticsGenerator = require('./gender-participant-count-statistics-generator');
-var GenderParticipantCountReportGenerator = require('./gender-participant-count-report-generator');
+var GenderParticipantCountStatisticsGenerator = require('../calculators/gender-participant-count');
+var GenderParticipantCountReportGenerator = require('./gender-participant-count');
 
 class VerboseGenderReportGenerator {
   constructor(userMessageCount, userIsMan, startTime, channelName) {

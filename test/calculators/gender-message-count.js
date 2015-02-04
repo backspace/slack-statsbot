@@ -2,7 +2,7 @@
 
 var test = require('tape');
 
-var GenderMessageCountStatisticsGenerator = require('../src/gender-message-count-statistics-generator');
+var GenderMessageCountStatisticsGenerator = require('../../src/calculators/gender-message-count');
 
 test('GenderMessageCountStatisticsGenerator groups messages by gender', function(t) {
   var statistics = {

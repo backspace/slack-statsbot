@@ -2,7 +2,7 @@
 
 var test = require('tape');
 
-var GenderParticipantCountReportGenerator = require('../src/gender-participant-count-report-generator');
+var GenderParticipantCountReportGenerator = require('../../src/reports/gender-participant-count');
 
 test('GenderParticipantCountReportGenerator reports on the gender of participants', function(t) {
   var participantGenderCount = {

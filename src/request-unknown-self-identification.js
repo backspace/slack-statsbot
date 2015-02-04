@@ -4,7 +4,7 @@
 var selectUnknowns = require('./select-unknowns');
 var selectTopKeys = require('./select-top-keys');
 
-var RepositoryAttributeExtractor = require('./repository-attribute-extractor');
+var RepositoryAttributeExtractor = require('./persistence/repository-attribute-extractor');
 
 // FIXME this seems weird
 var VERBOSE_HELP_MESSAGE = require('./direct-message-handler').VERBOSE_HELP_MESSAGE;

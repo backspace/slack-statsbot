@@ -2,7 +2,7 @@
 
 var test = require('tape');
 
-var GenderMessageCountReportGenerator = require('../src/gender-message-count-report-generator');
+var GenderMessageCountReportGenerator = require('../../src/reports/gender-message-count');
 
 test('GenderMessageCountReportGenerator generates a report when equal numbers of men and not-men have spoken', function(t) {
   var statistics = {

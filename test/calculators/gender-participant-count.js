@@ -2,7 +2,7 @@
 
 var test = require('tape');
 
-var GenderParticipantCountStatisticsGenerator = require('../src/gender-participant-count-statistics-generator');
+var GenderParticipantCountStatisticsGenerator = require('../../src/calculators/gender-participant-count');
 
 test('GenderParticipantCountStatisticsGenerator counts participants by gender', function(t) {
   var userMessages = {

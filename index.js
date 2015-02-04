@@ -3,7 +3,7 @@ var conf = require('./config');
 var StatsBot = require('./src/statsbot');
 var SlackAdapter = require('./src/slack-adapter');
 
-var UserRepository = require('./src/user-repository');
+var UserRepository = require('./src/persistence/user-repository');
 
 var Sequelize = require('sequelize')
   , sequelize = new Sequelize(conf.get('databaseURL'));

@@ -1,10 +1,10 @@
 var SlackClient = require('slack-client');
 var MessageLog = require('./message-log');
 
-var RepositoryAttributeExtractor = require('./repository-attribute-extractor');
+var RepositoryAttributeExtractor = require('./persistence/repository-attribute-extractor');
 
-var VerboseGenderReportGenerator = require('./verbose-gender-report-generator');
-var TerseGenderReportGenerator = require('./terse-gender-report-generator');
+var VerboseGenderReportGenerator = require('./reports/verbose-gender');
+var TerseGenderReportGenerator = require('./reports/terse-gender');
 
 var DirectMessageHandler = require('./direct-message-handler');
 

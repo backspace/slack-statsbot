@@ -58,10 +58,13 @@ class DirectMessageHandler {
   }
 
   handleHelpRequest(channel, message) {
-    channel.send(`Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. ${DirectMessageHandler.HELP_MESSAGE}`);
+    channel.send(DirectMessageHandler.VERBOSE_HELP_MESSAGE);
   }
 }
 
+// TODO maybe messages should be collected somewhere central, and parameterised
+
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man” or “I am a man”, or ask for my current information on you with “info”.';
+DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not. ${DirectMessageHandler.HELP_MESSAGE}`;
 
 module.exports = DirectMessageHandler;

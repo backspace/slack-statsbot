@@ -15,6 +15,11 @@
       "description": "The API token in the Slack bot integration settings",
       "required": true
     },
+    "REPORTING_INTERVAL": {
+      "description": "A crontab-style specification of how often the bot should report statistics.",
+      "required": true,
+      "value": "0 * * * *"
+    },
     "STATS_CHANNEL": {
       "description": "The channel where the bot reports verbose statistics.",
       "value": "statsbot"

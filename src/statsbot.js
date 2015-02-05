@@ -28,6 +28,14 @@ class StatsBot {
     this.directMessageHandler = new DirectMessageHandler(this.userRepository);
   }
 
+  handleConnectedEvent() {
+    var botChannel = this.adapter.getChannelByName(this.statsChannel);
+
+    if (botChannel) {
+      botChannel.send('I just started up!');
+    }
+  }
+
   handleChannelMessage(channel, message) {
     if (this.mustNotLog(message)) { return; }
     this.log.logMessage(message);

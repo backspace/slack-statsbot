@@ -3,6 +3,7 @@ class SlackAdapter {
     this.client = client;
 
     this.client.on('message', this.messageReceived.bind(this));
+    this.client.on('open', this.connected.bind(this));
 
     this.client.login();
   }
@@ -10,6 +11,10 @@ class SlackAdapter {
   registerListener(listener) {
     // TODO *could* maintain a list, but why?
     this.listener = listener;
+  }
+
+  connected() {
+    this.listener.handleConnectedEvent();
   }
 
   messageReceived(message) {

@@ -16,7 +16,8 @@ var fakeClient = {
 
 var fakeBot = {
   handleChannelMessage() {},
-  handleDirectMessage() {}
+  handleDirectMessage() {},
+  handleConnectedEvent() {}
 };
 
 test('Constructing a SlackAdapter logs in to the client', function(t) {
@@ -32,7 +33,7 @@ test('Constructing a SlackAdapter logs in to the client', function(t) {
 });
 
 test('Constructing a SlackAdapter binds to events from the client', function(t) {
-  t.plan(1);
+  t.plan(2);
 
   var onStub = sinon.stub(fakeClient, 'on');
 
@@ -41,8 +42,22 @@ test('Constructing a SlackAdapter binds to events from the client', function(t) 
   // TODO is there a way to test that a bound function is the argument? Unnecessary?
   // Could also test event emitter functionality
   t.ok(onStub.calledWith('message'), 'should observe client message events');
+  t.ok(onStub.calledWith('open'), 'should observe the open event');
 
   onStub.restore();
+});
+
+test('SlackAdapter calls the listener’s loggedIn method upon login', function(t) {
+  var handleConnectedEventStub = sinon.stub(fakeBot, 'handleConnectedEvent');
+
+  var adapter = new SlackAdapter(fakeClient);
+  adapter.registerListener(fakeBot);
+
+  adapter.connected();
+  t.ok(handleConnectedEventStub.called, 'should call the listener’s loggedIn method');
+
+  handleConnectedEventStub.restore();
+  t.end();
 });
 
 test('SlackAdapter forwards categorised messages to the listener', function(t) {

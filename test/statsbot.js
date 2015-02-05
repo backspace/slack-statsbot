@@ -33,6 +33,23 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
   t.ok(registerListenerStub.calledWith(bot), 'should register itself as a listener');
 });
 
+test('StatsBot announces in its channel that it has started', function(t) {
+  var adapter = new SlackAdapter(fakeClient);
+  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot'});
+
+  var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
+
+  var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
+  channelByNameStub.withArgs(botChannel.name).returns(botChannel);
+
+  adapter.connected();
+
+  t.ok(botChannel.send.calledWithMatch(/I just started up!/), 'should announce that it started up');
+
+  channelByNameStub.restore();
+
+  t.end();
+});
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});

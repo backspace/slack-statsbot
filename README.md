@@ -71,6 +71,8 @@ I tried adding a `postdeploy` script to the `app.json` Heroku deployment configu
 
     heroku run -a yourappname sequelize --env production db:migrate
 
+But maybe that doesn’t even work, either. Check out [the issue](https://github.com/backspace/slack-statsbot/issues/8) for details.
+
 ## Acknowledgements
 
 Thanks to my mom for raising me with feminist values, even if they weren’t called that. Many friends and writers have helped me learn more about anti-oppression or social justice or whatever you like to call it.

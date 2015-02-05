@@ -7,13 +7,16 @@ var appEnv = appManifest.env;
 // Could probably be more clever here by transforming the Heroku-specific
 // configuration to node-convict-compatible, but seems okay for now
 
+var isURL = require('validator').isURL;
+
 var conf = convict({
   databaseURL: {
     doc: 'The URL for the Postgres database, including username and password.',
     env: 'DATABASE_URL',
-    // TODO would be nice to have URL validation but postgres:// rejected
-    format: String,
-    default: null
+    format(val) {
+      isURL(val, {require_protocol: true, protocols: ['postgres']}, 'should be a Postgres URL');
+    },
+    default: ''
   },
   slackToken: {
     doc: appEnv.SLACK_TOKEN.description,

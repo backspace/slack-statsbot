@@ -17,7 +17,8 @@ var userRepository = new UserRepository(sequelize);
 
 var bot = new StatsBot(adapter, userRepository, {
   statsChannel: conf.get('statsChannel'),
-  topUnknownsToQuery: conf.get('topUnknownsToQuery')
+  topUnknownsToQuery: conf.get('topUnknownsToQuery'),
+  reportingThreshold: conf.get('reportingThreshold')
 });
 
 

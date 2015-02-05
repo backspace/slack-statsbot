@@ -36,6 +36,12 @@ var conf = convict({
     },
     default: appEnv.REPORTING_INTERVAL.value
   },
+  reportingThreshold: {
+    doc: appEnv.REPORTING_THRESHOLD.description,
+    env: 'REPORTING_THRESHOLD',
+    format: 'nat',
+    default: 10
+  },
   statsChannel: {
     doc: appEnv.STATS_CHANNEL.description,
     env: 'STATS_CHANNEL',

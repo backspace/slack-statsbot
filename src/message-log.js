@@ -20,9 +20,11 @@ class MessageLog {
   getChannelStatistics(channel) {
     var statisticsPackage = this.channels[channel];
 
-    this.channels[channel] = this.buildNewStatisticsPackage();
-
     return statisticsPackage;
+  }
+
+  resetChannelStatistics(channel) {
+    this.channels[channel] = this.buildNewStatisticsPackage();
   }
 
   getChannels() {

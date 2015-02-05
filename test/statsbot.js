@@ -35,7 +35,7 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot'});
+  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});
 
   var alice = {id: '1', name: 'Alice', isMan: true};
   var bob = {id: '2', name: 'Bob', isMan: false};
@@ -95,6 +95,11 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: ytterbium.id
   });
 
+  bot.handleChannelMessage(ytterbium, {
+    user: alice.id,
+    channel: ytterbium.id
+  });
+
   bot.reportChannelStatistics(botChannel.id);
   bot.reportChannelStatistics('Yb');
   bot.reportChannelStatistics('Xe');
@@ -103,7 +108,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
 
     t.ok(botChannel.send.calledWithMatch(/#Ytterbium/), 'reports #Ytterbium statistics in the bot channel');
-    t.ok(botChannel.send.calledWithMatch(/the 1 message/), 'reports a message count of 1');
+    t.ok(botChannel.send.calledWithMatch(/the 2 messages/), 'reports a message count of 1');
     t.ok(botChannel.send.calledWithMatch(/men sent 100%/), 'reports that only men spoke in one channel');
 
     t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
@@ -127,14 +132,25 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     bot.reportChannelStatistics('Xe');
 
     setTimeout(function() {
-      t.ok(botChannel.send.calledWithMatch(/men sent 100%/), 'starts the statistics over after reporting');
+      t.ok(xenon.send.neverCalledWithMatch(/0%/), 'starts the statistics over after reporting but does not report when the message count is below the threshold');
 
-      userStub.restore();
-      channelByIDStub.restore();
-      channelByNameStub.restore();
-      retrieveAttributeStub.restore();
+      bot.handleChannelMessage(xenon, {
+        user: alice.id,
+        channel: xenon.id
+      });
 
-      t.end();
+      bot.reportChannelStatistics('Xe');
+
+      setTimeout(function() {
+        t.ok(xenon.send.calledWithMatch(/0%/), 'does report when the threshold has been reached');
+
+        userStub.restore();
+        channelByIDStub.restore();
+        channelByNameStub.restore();
+        retrieveAttributeStub.restore();
+
+        t.end();
+      }, 0);
     }, 0);
   }, 0);
 });

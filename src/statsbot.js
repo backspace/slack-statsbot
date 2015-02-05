@@ -23,6 +23,7 @@ class StatsBot {
     options = options || {};
     this.statsChannel = options.statsChannel;
     this.topUnknownsToQuery = options.topUnknownsToQuery;
+    this.reportingThreshold = options.reportingThreshold;
 
     this.directMessageHandler = new DirectMessageHandler(this.userRepository);
   }
@@ -74,8 +75,10 @@ class StatsBot {
       return total + count;
     }, 0);
 
-    if (total === 0) {
+    if (total < this.reportingThreshold) {
       return;
+    } else {
+      this.log.resetChannelStatistics(channel.id);
     }
 
     var isManExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isMan', Object.keys(statistics));

@@ -20,6 +20,11 @@
       "required": true,
       "value": "0 * * * *"
     },
+    "REPORTING_THRESHOLD": {
+      "description": "The minimum number of messages that must be sent in a channel before the bot will report.",
+      "required": true,
+      "value": 10
+    },
     "STATS_CHANNEL": {
       "description": "The channel where the bot reports verbose statistics.",
       "value": "statsbot"

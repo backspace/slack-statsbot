@@ -3,7 +3,7 @@
 
 module.exports = function(source, values) {
   return Object.keys(source).reduce(function(selected, key) {
-    if (values[key] === undefined) {
+    if (values[key] === undefined || values[key] === null) {
       selected[key] = source[key];
     }
 

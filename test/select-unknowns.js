@@ -12,13 +12,15 @@ test('selectUnknowns returns an object whose keys are those which have an undefi
     known: 'something',
     unknown: 'else',
     anotherKnown: 'not',
-    anotherUnknown: 'yes'
+    anotherUnknown: 'yes',
+    aNullUnknown: 'hey'
   };
 
   var filter = {
     known: true,
     unknown: undefined,
-    anotherKnown: false
+    anotherKnown: false,
+    aNullUnknown: null
   };
 
   var result = selectUnknowns(source, filter);
@@ -27,6 +29,7 @@ test('selectUnknowns returns an object whose keys are those which have an undefi
   t.equal(result.anotherKnown, undefined, 'should not select a key whose filter value was false');
   t.equal(result.unknown, 'else', 'should preserve a key whose filter value was explicitly set to undefined');
   t.equal(result.anotherUnknown, 'yes', 'should preserve a key whose filter value was implicitly undefined');
+  t.equal(result.aNullUnknown, 'hey', 'should preserve a key whose filter value was null');
 
   t.end();
 });

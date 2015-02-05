@@ -67,6 +67,10 @@ If that doesn’t work, this might:
 
 There seems to be no way to set the number of worker processes via the above Deploy button, so after the application has started, you should set the number of worker processes to 1. You can do this via the Heroku web interface at https://dashboard.heroku.com/apps/yourappname or by running `heroku ps:scale worker=1 -a yourappname`.
 
+I tried adding a `postdeploy` script to the `app.json` Heroku deployment configuration but it fails on an error, so the application has been deployed, you should run the database migrations:
+
+    heroku run -a yourappname sequelize --env production db:migrate
+
 ## Acknowledgements
 
 Thanks to my mom for raising me with feminist values, even if they weren’t called that. Many friends and writers have helped me learn more about anti-oppression or social justice or whatever you like to call it.

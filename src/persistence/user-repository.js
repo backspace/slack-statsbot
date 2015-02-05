@@ -1,18 +1,8 @@
 // TODO tests lol?
 
 class UserRepository {
-  constructor(sequelize) {
-    this.sequelize = sequelize;
-
-    var Sequelize = sequelize.Sequelize;
-
-    this.User = sequelize.define('User', {
-      isMan: Sequelize.BOOLEAN,
-      hasBeenQueried: Sequelize.BOOLEAN,
-      slackID: Sequelize.STRING
-    });
-
-    sequelize.sync();
+  constructor(User) {
+    this.User = User;
   }
 
   storeAttribute(slackID, name, value) {

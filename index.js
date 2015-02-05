@@ -5,15 +5,14 @@ var SlackAdapter = require('./src/slack-adapter');
 
 var UserRepository = require('./src/persistence/user-repository');
 
-var Sequelize = require('sequelize')
-  , sequelize = new Sequelize(conf.get('databaseURL'));
+var db = require('./models');
 
 var SlackClient = require('slack-client');
 
 var client = new SlackClient(conf.get('slackToken'));
 var adapter = new SlackAdapter(client);
 
-var userRepository = new UserRepository(sequelize);
+var userRepository = new UserRepository(db.User);
 
 var bot = new StatsBot(adapter, userRepository, {
   statsChannel: conf.get('statsChannel'),

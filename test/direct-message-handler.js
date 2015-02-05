@@ -80,7 +80,7 @@ test('DirectMessageHandler handles an information request', function(t) {
   setTimeout(function() {
     t.ok(janisDM.send.calledWith('We have you down here as not being a man.'), 'replies to Janis that she is not a man');
     t.ok(buckDM.send.calledWith('We have you down here as being a man.'), 'replies to Buck that he is a man');
-    t.ok(unknownDM.send.calledWith('We don’t have you on record! Please say “true” if you are a man and “false” if you are not.'), 'replies to Unknown that they are unknown');
+    t.ok(unknownDM.send.calledWith('We don’t have you on record! You can let me know “I’m not a man” or “I am a man”, or ask for my current information on you with “info”.'), 'replies to Unknown that they are unknown');
 
     t.end();
   }, 0);

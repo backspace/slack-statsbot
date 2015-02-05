@@ -309,7 +309,7 @@ test('StatsBot responds with a user\'s gender when they ask', function(t) {
 
   setTimeout(function() {
     t.ok(shaneDM.send.calledWith('We have you down here as being a man.'), 'replies to Shane that he is recorded as a man');
-    t.ok(kamaDM.send.calledWith('We don’t have you on record! Please say “true” if you are a man and “false” if you are not.'), 'replies to Kama that they are unknown');
+    t.ok(kamaDM.send.calledWithMatch(/We don’t have you on record!/), 'replies to Kama that they are unknown');
 
     retrieveAttributeStub.restore();
   }, 0);

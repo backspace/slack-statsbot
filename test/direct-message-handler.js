@@ -52,11 +52,14 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
 test('DirectMessageHandler handles an information request', function(t) {
   var handler = new DirectMessageHandler(fakeUserRepository);
 
-  var janis = {id: 'J', name: 'Janis', isMan: false};
+  var janis = {id: 'J', name: 'Janis', isMan: false, isPersonOfColour: false};
   var janisDM = {send: sinon.stub()};
 
-  var buck = {id: 'B', name: 'Buck', isMan: true};
+  var buck = {id: 'B', name: 'Buck', isMan: true, isPersonOfColour: false};
   var buckDM = {send: sinon.stub()};
+
+  var rocio = {id: 'R', name: 'Rocio', isMan: false, isPersonOfColour: true};
+  var rocioDM = {send: sinon.stub()};
 
   var unknown = {id: 'U', name: 'Unknown', isMan: undefined};
   var unknownDM = {send: sinon.stub()};
@@ -64,12 +67,14 @@ test('DirectMessageHandler handles an information request', function(t) {
   var personIDToChannel = {};
   personIDToChannel[janis.id] = janisDM;
   personIDToChannel[buck.id] = buckDM;
+  personIDToChannel[rocio.id] = rocioDM;
   personIDToChannel[unknown.id] = unknownDM;
 
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
 
-  [janis, buck, unknown].forEach(function(person) {
+  [janis, buck, rocio, unknown].forEach(function(person) {
     retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
+    retrieveAttributeStub.withArgs(person.id, 'isPersonOfColour').returns(Promise.resolve(person.isPersonOfColour));
 
     handler.handle(personIDToChannel[person.id], {
       text: 'info',
@@ -78,11 +83,18 @@ test('DirectMessageHandler handles an information request', function(t) {
   });
 
   setTimeout(function() {
-    t.ok(janisDM.send.calledWith('We have you down here as not being a man.'), 'replies to Janis that she is not a man');
-    t.ok(buckDM.send.calledWith('We have you down here as being a man.'), 'replies to Buck that he is a man');
-    t.ok(unknownDM.send.calledWith('We don’t have you on record! You can let me know “I’m not a man” or “I am a man”, or ask for my current information on you with “info”.'), 'replies to Unknown that they are unknown');
+    setTimeout(function() {
+      t.ok(janisDM.send.calledWithMatch(/you are not a man/), 'replies to Janis that she is recorded as not a man');
+      t.ok(janisDM.send.calledWithMatch(/you are not a person of colour/), 'replies to Janis that she is not a person of colour');
 
-    t.end();
+      t.ok(buckDM.send.calledWithMatch(/you are a man/), 'replies to Buck that he is recorded as a man');
+
+      t.ok(rocioDM.send.calledWithMatch(/you are a person of colour/), 'replies to Rocio that she is recorded as a person of colour');
+
+      t.ok(unknownDM.send.calledWithMatch(/We don’t have you on record!/), 'replies to Unknown that they are unknown');
+
+      t.end();
+    }, 0);
   }, 0);
 
   retrieveAttributeStub.restore();

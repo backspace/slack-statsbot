@@ -21,15 +21,44 @@ class DirectMessageHandler {
   }
 
   handleInformationRequest(channel, message) {
-    this.userRepository.retrieveAttribute(message.user, 'isMan').then(function(isMan) {
+    // FIXME fetch the entire user rather than run multiple queries
+    Promise.all([
+        this.userRepository.retrieveAttribute(message.user, 'isMan'),
+        this.userRepository.retrieveAttribute(message.user, 'isPersonOfColour')
+    ]).then(function(attributes) {
+      // var [isMan, isPersonOfColour] = attributes;
+      // TODO use destructuring assignment
+      var isMan = attributes[0];
+      var isPersonOfColour = attributes[1];
+
       var reply;
 
-      if (isMan) {
-        reply = 'We have you down here as being a man.';
-      } else if (isMan === false) {
-        reply = 'We have you down here as not being a man.';
-      } else {
+      if ((isMan === null || isMan === undefined) &&
+          (isPersonOfColour === null || isPersonOfColour === undefined)) {
         reply = `We don’t have you on record! ${DirectMessageHandler.HELP_MESSAGE}`;
+      } else {
+        var genderReply;
+        var raceReply;
+
+        reply = 'Our records indicate that:\n\n';
+
+        if (isMan === true) {
+          genderReply = 'you are a man';
+        } else if (isMan === false) {
+          genderReply = 'you are not a man';
+        } else {
+          genderReply = 'we have no information on whether or not you are a man';
+        }
+
+        if (isPersonOfColour === true) {
+          raceReply = 'you are a person of colour';
+        } else if (isPersonOfColour === false) {
+          raceReply = 'you are not a person of colour';
+        } else {
+          raceReply = 'we have no information on whether or not you are a person of colour';
+        }
+
+        reply += `* ${genderReply}\n* ${raceReply}`;
       }
 
       channel.send(reply);

@@ -302,9 +302,7 @@ test('StatsBot records a user\'s gender', function(t) {
   storeAttributeStub.restore();
 });
 
-test('StatsBot responds with a user\'s gender when they ask', function(t) {
-  t.plan(2);
-
+test('StatsBot responds with a user\'s information when they ask', function(t) {
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository);
 
@@ -316,7 +314,10 @@ test('StatsBot responds with a user\'s gender when they ask', function(t) {
 
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
   retrieveAttributeStub.withArgs(shane.id, 'isMan').returns(Promise.resolve(true));
+  retrieveAttributeStub.withArgs(shane.id, 'isPersonOfColour').returns(Promise.resolve(false));
+
   retrieveAttributeStub.withArgs(kama.id, 'isMan').returns(Promise.resolve(null));
+  retrieveAttributeStub.withArgs(kama.id, 'isPersonOfColour').returns(Promise.resolve(null));
 
   bot.handleDirectMessage(shaneDM, {
     text: 'info',
@@ -329,9 +330,12 @@ test('StatsBot responds with a user\'s gender when they ask', function(t) {
   });
 
   setTimeout(function() {
-    t.ok(shaneDM.send.calledWith('We have you down here as being a man.'), 'replies to Shane that he is recorded as a man');
+    t.ok(shaneDM.send.calledWithMatch(/you are a man/), 'replies to Shane that he is recorded as a man');
+    t.ok(shaneDM.send.calledWithMatch(/you are not a person of colour/), 'replies to Shane that he is recorded as not being a person of colour');
     t.ok(kamaDM.send.calledWithMatch(/We don’t have you on record!/), 'replies to Kama that they are unknown');
 
     retrieveAttributeStub.restore();
+
+    t.end();
   }, 0);
 });

@@ -54,15 +54,17 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});
 
-  var alice = {id: '1', name: 'Alice', isMan: true};
-  var bob = {id: '2', name: 'Bob', isMan: false};
+  var alice = {id: '1', name: 'Alice', isMan: true, isPersonOfColour: false};
+  var bob = {id: '2', name: 'Bob', isMan: false, isPersonOfColour: true};
+  var carol = {id: '3', name: 'Carol', isMan: true, isPersonOfColour: true};
 
   var userStub = sinon.stub(adapter, 'getUser');
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
 
-  [alice, bob].forEach(function(person) {
+  [alice, bob, carol].forEach(function(person) {
     userStub.withArgs(person.id).returns(person);
     retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
+    retrieveAttributeStub.withArgs(person.id, 'isPersonOfColour').returns(Promise.resolve(person.isPersonOfColour));
   });
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
@@ -96,7 +98,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   });
 
   bot.handleChannelMessage(xenon, {
-    user: alice.id,
+    user: carol.id,
     channel: xenon.id,
     subtype: 'me_message'
   });
@@ -129,17 +131,19 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(botChannel.send.calledWithMatch(/men sent 100%/), 'reports that only men spoke in one channel');
 
     t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
+    t.ok(ytterbium.send.calledWithMatch(/people of colour sent 0% of messages/), 'reports in the channel that people of colour sent no messages');
 
     t.ok(botChannel.send.calledWithMatch(/#Xenon/), 'reports #Xenon statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/the 3 messages/), 'reports a message count of 3');
     t.ok(botChannel.send.calledWithMatch(/men sent 67%/), 'reports that men spoke ⅔ of the time in the other channel');
     t.ok(botChannel.send.calledWithMatch(/not-men sent 33%/), 'reports that not-men spoke ⅓ of the time in the other channel');
 
-    t.ok(botChannel.send.calledWithMatch(/Of the 2 participants/), 'reports that there were 2 participants');
-    t.ok(botChannel.send.calledWithMatch(/50% of participants were men/), 'reports that men made up ½ of participants');
-    t.ok(botChannel.send.calledWithMatch(/50% were not-men/), 'reports that not-men made up ½ of participants');
+    t.ok(botChannel.send.calledWithMatch(/Of the 3 participants/), 'reports that there were 3 participants');
+    t.ok(botChannel.send.calledWithMatch(/67% of participants were men/), 'reports that men made up 67% of participants');
+    t.ok(botChannel.send.calledWithMatch(/33% were not-men/), 'reports that not-men made up 33% of participants');
 
     t.ok(xenon.send.calledWithMatch(/not-men sent 33% of messages/), 'reports in the channel that not-men sent 33% of messages');
+    t.ok(xenon.send.calledWithMatch(/people of colour sent 67% of messages/), 'reports in the channel that people of colour sent 67% of messages');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,

@@ -4,7 +4,7 @@ var MessageLog = require('./message-log');
 var RepositoryAttributeExtractor = require('./persistence/repository-attribute-extractor');
 
 var VerboseGenderReportGenerator = require('./reports/verbose-gender');
-var TerseGenderReportGenerator = require('./reports/terse-gender');
+var TerseReportGenerator = require('./reports/terse');
 
 var DirectMessageHandler = require('./direct-message-handler');
 
@@ -100,11 +100,15 @@ class StatsBot {
         count: this.topUnknownsToQuery
       });
 
-      var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
-      botChannel.send(fullReport);
+      var isPersonOfColourExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isPersonOfColour', Object.keys(statistics));
 
-      var terseReport = new TerseGenderReportGenerator(statistics, userIsMan, metadata.startTime, botChannel.name).generate();
-      channel.send(terseReport);
+      isPersonOfColourExtractor.extract().then(function(userIsPersonOfColour) {
+        var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
+        botChannel.send(fullReport);
+
+        var terseReport = new TerseReportGenerator(statistics, userIsMan, userIsPersonOfColour, metadata.startTime, botChannel.name).generate();
+        channel.send(terseReport);
+      });
     }.bind(this));
   }
 

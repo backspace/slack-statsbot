@@ -2,6 +2,7 @@
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define("User", {
     isMan: DataTypes.BOOLEAN,
+    isPersonOfColour: DataTypes.BOOLEAN,
     slackID: DataTypes.STRING,
     hasBeenQueried: DataTypes.BOOLEAN
   }, {

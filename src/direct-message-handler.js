@@ -2,6 +2,7 @@
 // Also should maybe just return a reply which the bot actually sends?
 
 var GenderUpdateParser = require('./gender-update-parser');
+var RaceUpdateParser = require('./race-update-parser');
 
 class DirectMessageHandler {
   constructor(userRepository) {
@@ -66,21 +67,40 @@ class DirectMessageHandler {
   }
 
   handleInformationUpdate(channel, message) {
-    var parser = new GenderUpdateParser(message.text);
-    var isMan = parser.parseIsMan();
-
-    var reply;
+    var genderParser = new GenderUpdateParser(message.text);
+    var isMan = new GenderUpdateParser(message.text).parseIsMan();
+    var isPersonOfColour = new RaceUpdateParser(message.text).parseIsPersonOfColour();
 
     if (isMan !== undefined) {
-      this.userRepository.storeAttribute(message.user, 'isMan', isMan);
+      this.handleGenderUpdate(channel, message.user, isMan);
+    } else if (isPersonOfColour !== undefined) {
+      this.handleRaceUpdate(channel, message.user, isPersonOfColour);
+    } else {
+      channel.send(`I’m sorry, I’m not that advanced and I didn’t understand your message. ${DirectMessageHandler.HELP_MESSAGE}`);
     }
+  }
+
+  handleGenderUpdate(channel, userID, isMan) {
+    var reply;
+    this.userRepository.storeAttribute(userID, 'isMan', isMan);
 
     if (isMan === true) {
       reply = 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”';
     } else if (isMan === false) {
       reply = 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.';
-    } else {
-      reply = `I’m sorry, I’m not that advanced and I didn’t understand your message. ${DirectMessageHandler.HELP_MESSAGE}`;
+    }
+
+    channel.send(reply);
+  }
+
+  handleRaceUpdate(channel, userID, isPersonOfColour) {
+    var reply;
+    this.userRepository.storeAttribute(userID, 'isPersonOfColour', isPersonOfColour);
+
+    if (isPersonOfColour === true) {
+      reply = 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”';
+    } else if (isPersonOfColour === false) {
+      reply = 'We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”';
     }
 
     channel.send(reply);

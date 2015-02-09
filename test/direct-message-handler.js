@@ -49,6 +49,48 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
   t.end();
 });
 
+test('DirectMessageHandler updates whether the user is a person of colour', function(t) {
+  // TODO reduce setup boilerplate
+  // but this is all too acceptance-like and redundant and should just test
+  // that the parsers are called and their results are used
+  var handler = new DirectMessageHandler(fakeUserRepository);
+
+  var chris = {id: 'C', name: 'Chris', isPersonOfColour: true, message: 'i am a person of colour'};
+  var chrisDM = {send: sinon.stub()};
+
+  var david = {id: 'D', name: 'David', isPersonOfColour: false, message: 'I am white'};
+  var davidDM = {send: sinon.stub()};
+
+  var unknown = {id: 'U', name: 'Unknown', isMan: 'what is this'};
+  var unknownDM = {send: sinon.stub()};
+
+  var personIDToChannel = {};
+  personIDToChannel[chris.id] = chrisDM;
+  personIDToChannel[david.id] = davidDM;
+  personIDToChannel[unknown.id] = unknownDM;
+
+  var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
+
+  [chris, david, unknown].forEach(function(person) {
+    handler.handle(personIDToChannel[person.id], {
+      text: `${person.message}`,
+      user: person.id
+    });
+  });
+
+  t.ok(chrisDM.send.calledWithMatch(/you are a person of colour/), 'replies affirming that Chris is a person of colour');
+  t.ok(storeAttributeStub.calledWith(chris.id, 'isPersonOfColour', true), 'stores that Chris is a person of colour');
+
+  t.ok(davidDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that David is not a person of colour');
+  t.ok(storeAttributeStub.calledWith(david.id, 'isPersonOfColour', false), 'stores that David is not a person of colour');
+
+  t.ok(unknownDM.send.calledWithMatch(/I’m sorry, I’m not that advanced and I didn’t understand your message./), 'replies that it didn’t understand the message');
+  t.ok(storeAttributeStub.neverCalledWith(unknown.id), 'does not store anything about Unknown');
+
+  storeAttributeStub.restore();
+  t.end();
+});
+
 test('DirectMessageHandler handles an information request', function(t) {
   var handler = new DirectMessageHandler(fakeUserRepository);
 

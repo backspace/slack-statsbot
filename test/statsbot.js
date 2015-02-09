@@ -258,9 +258,7 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
   });
 });
 
-test('StatsBot records a user\'s gender', function(t) {
-  t.plan(4);
-
+test('StatsBot records a user\'s gender and race', function(t) {
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository);
 
@@ -289,6 +287,14 @@ test('StatsBot records a user\'s gender', function(t) {
   t.ok(prakashDM.send.calledWithMatch(/Okay, we have noted that you are a man./), 'replies affirming that Prakash is a man');
   t.ok(storeAttributeStub.calledWith('P', 'isMan', true), 'stores that Prakash is a man');
 
+  bot.handleDirectMessage(prakashDM, {
+    text: 'i am a person of colour',
+    user: prakash.id
+  });
+
+  t.ok(prakashDM.send.calledWithMatch(/you are a person of colour/), 'replies affirming that Prakash is a person of colour');
+  t.ok(storeAttributeStub.calledWith('P', 'isPersonOfColour', true), 'stores that Prakash is a person of colour');
+
   bot.handleDirectMessage(lauraDM, {
     text: 'false',
     user: laura.id
@@ -297,9 +303,19 @@ test('StatsBot records a user\'s gender', function(t) {
   t.ok(lauraDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Laura is not a man');
   t.ok(storeAttributeStub.calledWith('L', 'isMan', false), 'stores that Laura is not a man');
 
+  bot.handleDirectMessage(lauraDM, {
+    text: 'i am white',
+    user: laura.id
+  });
+
+  t.ok(lauraDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that Laura is not a person of colour');
+  t.ok(storeAttributeStub.calledWith('L', 'isPersonOfColour', false), 'stores that Laura is not a person of colour');
+
   userStub.restore();
   channelByIDStub.restore();
   storeAttributeStub.restore();
+
+  t.end();
 });
 
 test('StatsBot responds with a user\'s information when they ask', function(t) {

@@ -11,6 +11,7 @@ var DirectMessageHandler = require('./direct-message-handler');
 var requestUnknownSelfIdentification = require('./request-unknown-self-identification');
 
 var values = require('amp-values');
+var moment = require('moment');
 
 class StatsBot {
   constructor(adapter, userRepository, options) {
@@ -103,8 +104,9 @@ class StatsBot {
       var isPersonOfColourExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isPersonOfColour', Object.keys(statistics));
 
       isPersonOfColourExtractor.extract().then(function(userIsPersonOfColour) {
+        var preamble = `#${channel.name} since ${moment(metadata.startTime).fromNow()}`;
         var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
-        botChannel.send(fullReport);
+        botChannel.send(`${preamble}:\n${fullReport}`);
 
         var terseReport = new TerseReportGenerator(statistics, userIsMan, userIsPersonOfColour, metadata.startTime, botChannel.name).generate();
         channel.send(terseReport);

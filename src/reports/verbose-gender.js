@@ -1,15 +1,16 @@
 // TODO this is untested, but its components are tested, and it’s semi-covered by the messy integration-y statsbot test
 
-var moment = require('moment');
 var values = require('amp-values');
+
+var Table = require('cli-table');
 
 // TODO these names are unwieldy and can probably be broken up and simplified
 
 var GenderMessageCountStatisticsGenerator = require('../calculators/gender-message-count');
-var GenderMessageCountReportGenerator = require('./gender-message-count');
 
 var GenderParticipantCountStatisticsGenerator = require('../calculators/gender-participant-count');
-var GenderParticipantCountReportGenerator = require('./gender-participant-count');
+
+var percentagesFromCounts = require('../calculators/percentages-from-counts');
 
 class VerboseGenderReportGenerator {
   constructor(userMessageCount, userIsMan, startTime, channelName) {
@@ -27,18 +28,34 @@ class VerboseGenderReportGenerator {
     }, 0);
 
     var messageCountStatistics = new GenderMessageCountStatisticsGenerator(this.userMessageCount, this.userIsMan).generate();
-    var messageCountReport = new GenderMessageCountReportGenerator(messageCountStatistics).generate();
 
     var participantCountStatistics = new GenderParticipantCountStatisticsGenerator(this.userMessageCount, this.userIsMan).generate();
-    var participantCountReport = new GenderParticipantCountReportGenerator(participantCountStatistics).generate();
 
     var participantCount = values(participantCountStatistics).reduce(function(total, genderCount) {
       return total + genderCount;
     }, 0);
 
-    var fullReport = `Of the ${messageCount} message${messageCount == 1 ? '' : 's'} in #${this.channelName} since ${moment(this.startTime).fromNow()}, ${messageCountReport}. Of the ${participantCount} participant${participantCount == 1 ? '' : 's'}, ${participantCountReport}. DM me to make sure you’re recognised.`;
+    var messagePercents = percentagesFromCounts(messageCountStatistics);
+    var participantPercents = percentagesFromCounts(participantCountStatistics);
 
-    return fullReport;
+
+    var table = new Table({
+      head: ['', 'messages', 'participants'],
+      style: {
+        head: [],
+        border: []
+      }
+    });
+
+    table.push(['men', `${messagePercents.men}%`, `${participantPercents.men}%`]);
+    table.push(['not-men', `${messagePercents.notMen}%`, `${participantPercents.notMen}%`]);
+    table.push(['unknown', `${messagePercents.unknown}%`, `${participantPercents.unknown}%`]);
+    table.push([]);
+    table.push(['counts', messageCount, participantCount]);
+
+    var report = '```\n' + table.toString() + '\n```';
+
+    return report;
   }
 }
 

@@ -27,7 +27,7 @@ module.exports = function(messageCounts, participantCounts, propertiesToLabels) 
   Object.keys(propertiesToLabels).forEach(function(property) {
     var label = propertiesToLabels[property];
 
-    table.push([label, `${messagePercents[property]}%`, `${participantPercents[property]}`]);
+    table.push([label, `${messagePercents[property]}%`, `${participantPercents[property]}%`]);
   });
 
   table.push([]);

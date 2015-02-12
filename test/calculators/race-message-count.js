@@ -22,7 +22,7 @@ test('RaceMessageCount groups messages by race', function(t) {
   var generator = new RaceMessageCount(statistics, userIsPersonOfColour);
   statistics = generator.generate();
 
-  t.equal(statistics.whitePeople, 7, 'counts 7 messages from white people');
+  t.equal(statistics.nonPeopleOfColour, 7, 'counts 7 messages from non-people of colour');
   t.equal(statistics.peopleOfColour, 2, 'counts 2 messages from people of colour');
   t.equal(statistics.unknown, 1, 'counts 1 message from unknown');
 

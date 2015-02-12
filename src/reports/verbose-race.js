@@ -23,7 +23,7 @@ class VerboseRaceReportGenerator {
       participantCountStatistics,
       {
         'peopleOfColour': 'PoC',
-        'whitePeople': 'not-PoC',
+        'nonPeopleOfColour': 'not-PoC',
         'unknown': 'unknown'
       }
     );

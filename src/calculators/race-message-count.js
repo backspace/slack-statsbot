@@ -12,7 +12,7 @@ class RaceMessageCount {
       this.userIsPersonOfColour,
       {
         'true': 'peopleOfColour',
-        'false': 'whitePeople',
+        'false': 'nonPeopleOfColour',
         'else': 'unknown'
       }
     );

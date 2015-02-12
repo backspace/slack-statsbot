@@ -105,7 +105,7 @@ class StatsBot {
 
       isPersonOfColourExtractor.extract().then(function(userIsPersonOfColour) {
         var preamble = `#${channel.name} since ${moment(metadata.startTime).fromNow()}`;
-        var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan, metadata.startTime, channel.name).generate();
+        var fullReport = new VerboseGenderReportGenerator(statistics, userIsMan).generate();
         botChannel.send(`${preamble}:\n${fullReport}`);
 
         var terseReport = new TerseReportGenerator(statistics, userIsMan, userIsPersonOfColour, metadata.startTime, botChannel.name).generate();

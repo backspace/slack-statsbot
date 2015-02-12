@@ -13,11 +13,9 @@ var GenderParticipantCountStatisticsGenerator = require('../calculators/gender-p
 var percentagesFromCounts = require('../calculators/percentages-from-counts');
 
 class VerboseGenderReportGenerator {
-  constructor(userMessageCount, userIsMan, startTime, channelName) {
+  constructor(userMessageCount, userIsMan) {
     this.userMessageCount = userMessageCount;
     this.userIsMan = userIsMan;
-    this.startTime = startTime;
-    this.channelName = channelName;
   }
 
   generate() {

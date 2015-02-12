@@ -155,7 +155,7 @@ test('DirectMessageHandler handles a help request', function(t) {
     user: person.id
   });
 
-  t.ok(personDM.send.calledWithMatch(/Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether a participant is a man or not./), 'replies with a help message');
+  t.ok(personDM.send.calledWithMatch(/Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in./), 'replies with a help message');
 
   t.end();
 });

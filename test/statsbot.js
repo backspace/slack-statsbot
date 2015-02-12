@@ -129,6 +129,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(botChannel.send.calledWithMatch(/#Ytterbium/), 'reports #Ytterbium statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/^.*counts.*2.*$/m), 'reports a message count of 2');
     t.ok(botChannel.send.calledWithMatch(/^.*men.*100%.*$/m), 'reports that only men spoke in one channel');
+    t.ok(botChannel.send.calledWithMatch(/^.*PoC.*0%.*$/m), 'reports that no people of colour spoke in one channel');
+    t.ok(botChannel.send.calledWithMatch(/^.*not-PoC.*100%.*$/m), 'reports that only non-PoC spoke in one channel');
 
     t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
     t.ok(ytterbium.send.calledWithMatch(/people of colour sent 0% of messages/), 'reports in the channel that people of colour sent no messages');

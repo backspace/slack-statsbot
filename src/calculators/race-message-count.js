@@ -1,4 +1,4 @@
-// FIXME extract a generalised solution from this and GenderMessageCount
+var trinaryGrouper = require('./trinary-grouper');
 
 class RaceMessageCount {
   constructor(statistics, userIsPersonOfColour) {
@@ -7,24 +7,15 @@ class RaceMessageCount {
   }
 
   generate() {
-    var userIDs = Object.keys(this.statistics);
-
-    var counts = userIDs.reduce(function(counts, userID) {
-      var isPersonOfColour = this.userIsPersonOfColour[userID];
-      var count = this.statistics[userID];
-
-      if (isPersonOfColour) {
-        counts.peopleOfColour += count;
-      } else if (isPersonOfColour === false) {
-        counts.whitePeople += count;
-      } else {
-        counts.unknown += count;
+    return trinaryGrouper(
+      this.statistics,
+      this.userIsPersonOfColour,
+      {
+        'true': 'peopleOfColour',
+        'false': 'whitePeople',
+        'else': 'unknown'
       }
-
-      return counts;
-    }.bind(this), {peopleOfColour: 0, whitePeople: 0, unknown: 0});
-
-    return counts;
+    );
   }
 }
 

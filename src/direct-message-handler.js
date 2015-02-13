@@ -81,26 +81,39 @@ class DirectMessageHandler {
   }
 
   handleGenderUpdate(channel, userID, isMan) {
-    var reply;
-    this.userRepository.storeAttribute(userID, 'isMan', isMan);
-
-    if (isMan === true) {
-      reply = 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”';
-    } else if (isMan === false) {
-      reply = 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.';
-    }
-
-    channel.send(reply);
+    this.handleAttributeUpdate(
+      channel,
+      userID,
+      'isMan',
+      isMan,
+      {
+        true: 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”',
+        false: 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.',
+      }
+    );
   }
 
   handleRaceUpdate(channel, userID, isPersonOfColour) {
-    var reply;
-    this.userRepository.storeAttribute(userID, 'isPersonOfColour', isPersonOfColour);
+    this.handleAttributeUpdate(
+      channel,
+      userID,
+      'isPersonOfColour',
+      isPersonOfColour,
+      {
+        true: 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”',
+        false: 'We have noted that you are white. If I got it wrong, try saying “I am a person of colour”'
+      }
+    );
+  }
 
-    if (isPersonOfColour === true) {
-      reply = 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”';
-    } else if (isPersonOfColour === false) {
-      reply = 'We have noted that you are white. If I got it wrong, try saying “I am a person of colour”';
+  handleAttributeUpdate(channel, userID, attributeName, value, responses) {
+    var reply;
+    this.userRepository.storeAttribute(userID, attributeName, value);
+
+    if (value === true) {
+      reply = responses.true;
+    } else if (value === false) {
+      reply = responses.false;
     }
 
     channel.send(reply);

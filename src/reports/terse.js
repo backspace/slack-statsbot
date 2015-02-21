@@ -28,7 +28,7 @@ class TerseReportGenerator {
 
 
 
-    var report = `Since ${moment(this.startTime).fromNow()}, not-men sent ${notMenPercent}% of messages and people of colour sent ${peopleOfColourPercent}% of messages. See #${this.statsChannel} for more details.`;
+    var report = `Since ${moment(this.startTime).fromNow()}, self-identified not-men sent ${notMenPercent}% of messages and self-identified people of colour sent ${peopleOfColourPercent}% of messages. See #${this.statsChannel} for more details.`;
 
     return report;
   }

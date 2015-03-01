@@ -106,6 +106,14 @@ class StatsBot {
       var isPersonOfColourExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isPersonOfColour', Object.keys(statistics));
 
       isPersonOfColourExtractor.extract().then(function(userIsPersonOfColour) {
+        requestUnknownSelfIdentification({
+          statistics: statistics,
+          userRepository: this.userRepository,
+          knownness: userIsPersonOfColour,
+          adapter: this.adapter,
+          count: this.topUnknownsToQuery
+        });
+
         var preamble = `#${channel.name} since ${moment(metadata.startTime).fromNow()}`;
         var genderReport = new VerboseGenderReportGenerator(statistics, userIsMan).generate();
         var raceReport = new VerboseRaceReportGenerator(statistics, userIsPersonOfColour).generate();
@@ -114,7 +122,7 @@ class StatsBot {
 
         var terseReport = new TerseReportGenerator(statistics, userIsMan, userIsPersonOfColour, metadata.startTime, botChannel.name).generate();
         channel.send(terseReport);
-      });
+      }.bind(this));
     }.bind(this));
   }
 

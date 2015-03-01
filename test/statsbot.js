@@ -202,6 +202,8 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
     personToDM.set(person, dm);
 
     retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
+    // Bypass unknown PoC messaging for this test
+    retrieveAttributeStub.withArgs(person.id, 'isPersonOfColour').returns(true);
     retrieveAttributeStub.withArgs(person.id, 'hasBeenQueried').returns(Promise.resolve(person.hasBeenQueried));
 
     dmByUserStub.withArgs(person.id).returns(dm);

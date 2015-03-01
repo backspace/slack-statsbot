@@ -12,11 +12,11 @@ var VERBOSE_HELP_MESSAGE = require('./direct-message-handler').VERBOSE_HELP_MESS
 module.exports = function(options) {
   var statistics = options.statistics;
   var userRepository = options.userRepository;
-  var userIsMan = options.userIsMan;
+  var knownness = options.knownness;
   var adapter = options.adapter;
   var count = options.count;
 
-  var statisticsForUnknowns = selectUnknowns(statistics, userIsMan);
+  var statisticsForUnknowns = selectUnknowns(statistics, knownness);
 
   var hasBeenQueriedExtractor = new RepositoryAttributeExtractor(userRepository, 'hasBeenQueried', Object.keys(statisticsForUnknowns));
 

@@ -98,7 +98,7 @@ class StatsBot {
       requestUnknownSelfIdentification({
         statistics: statistics,
         userRepository: this.userRepository,
-        userIsMan: userIsMan,
+        knownness: userIsMan,
         adapter: this.adapter,
         count: this.topUnknownsToQuery
       });

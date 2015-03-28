@@ -312,7 +312,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
     user: laura.id
   });
 
-  t.ok(lauraDM.send.calledWithMatch(/you are white/), 'replies affirming that Laura is white');
+  t.ok(lauraDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that Laura is not a person of colour');
   t.ok(storeAttributeStub.calledWith('L', 'isPersonOfColour', false), 'stores that Laura is not a person of colour');
 
   userStub.restore();
@@ -351,7 +351,7 @@ test('StatsBot responds with a user\'s information when they ask', function(t) {
 
   setTimeout(function() {
     t.ok(shaneDM.send.calledWithMatch(/you are a man/), 'replies to Shane that he is recorded as a man');
-    t.ok(shaneDM.send.calledWithMatch(/you are white/), 'replies to Shane that he is recorded as not being white');
+    t.ok(shaneDM.send.calledWithMatch(/you are not a person of colour/), 'replies to Shane that he is recorded as not being a person of colour');
     t.ok(kamaDM.send.calledWithMatch(/We don’t have you on record!/), 'replies to Kama that they are unknown');
 
     retrieveAttributeStub.restore();

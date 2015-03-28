@@ -81,7 +81,7 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   t.ok(chrisDM.send.calledWithMatch(/you are a person of colour/), 'replies affirming that Chris is a person of colour');
   t.ok(storeAttributeStub.calledWith(chris.id, 'isPersonOfColour', true), 'stores that Chris is a person of colour');
 
-  t.ok(davidDM.send.calledWithMatch(/you are white/), 'replies affirming that David is white');
+  t.ok(davidDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that David is not a person of colour');
   t.ok(storeAttributeStub.calledWith(david.id, 'isPersonOfColour', false), 'stores that David is not a person of colour');
 
   t.ok(unknownDM.send.calledWithMatch(/I’m sorry, I’m not that advanced and I didn’t understand your message./), 'replies that it didn’t understand the message');
@@ -127,7 +127,7 @@ test('DirectMessageHandler handles an information request', function(t) {
   setTimeout(function() {
     setTimeout(function() {
       t.ok(janisDM.send.calledWithMatch(/you are not a man/), 'replies to Janis that she is recorded as not a man');
-      t.ok(janisDM.send.calledWithMatch(/you are white/), 'replies to Janis that she is white');
+      t.ok(janisDM.send.calledWithMatch(/you are not a person of colour/), 'replies to Janis that she is not a person of colour');
 
       t.ok(buckDM.send.calledWithMatch(/you are a man/), 'replies to Buck that he is recorded as a man');
 

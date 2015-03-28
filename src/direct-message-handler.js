@@ -54,7 +54,7 @@ class DirectMessageHandler {
         if (isPersonOfColour === true) {
           raceReply = 'you are a person of colour';
         } else if (isPersonOfColour === false) {
-          raceReply = 'you are white';
+          raceReply = 'you are not a person of colour';
         } else {
           raceReply = 'we have no information on whether or not you are a person of colour';
         }
@@ -101,7 +101,7 @@ class DirectMessageHandler {
       isPersonOfColour,
       {
         true: 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”',
-        false: 'We have noted that you are white. If I got it wrong, try saying “I am a person of colour”'
+        false: 'We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”'
       }
     );
   }

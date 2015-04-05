@@ -1,6 +1,7 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
+var find = require('lodash.find');
 var UpdateParser = require('./update-parser');
 
 class DirectMessageHandler {
@@ -42,23 +43,24 @@ class DirectMessageHandler {
 
         reply = 'Our records indicate that:\n\n';
 
-        if (isMan === true) {
-          genderReply = 'you are a man';
-        } else if (isMan === false) {
-          genderReply = 'you are not a man';
-        } else {
-          genderReply = 'we have no information on whether or not you are a man';
-        }
+        var attributeValues = {
+          'manness': isMan,
+          'pocness': isPersonOfColour
+        };
 
-        if (isPersonOfColour === true) {
-          raceReply = 'you are a person of colour';
-        } else if (isPersonOfColour === false) {
-          raceReply = 'you are not a person of colour';
-        } else {
-          raceReply = 'we have no information on whether or not you are a person of colour';
-        }
+        [DirectMessageHandler.MANNESS_CONFIGURATION, DirectMessageHandler.POCNESS_CONFIGURATION].forEach(function(attributeConfiguration) {
+          var value = attributeValues[attributeConfiguration.name];
 
-        reply += `* ${genderReply}\n* ${raceReply}`;
+          var valueConfiguration = find(attributeConfiguration.values, function(valueConfiguration) {
+            return valueConfiguration.value == value;
+          });
+
+          if (valueConfiguration) {
+            reply += `* ${valueConfiguration.labels.information}\n`;
+          } else {
+            reply += `* ${attributeConfiguration.unknownValue.labels.information}\n`;
+          }
+        });
       }
 
       channel.send(reply);
@@ -135,16 +137,27 @@ DirectMessageHandler.MANNESS_CONFIGURATION = {
       matcherSets: [
         [{matches: 'true'}],
         [{matches: 'man'}, {doesNotMatch: 'not'}]
-      ]
+      ],
+      labels: {
+        information: 'you are a man'
+      }
     },
     {
       value: false,
       matcherSets: [
         [{matches: 'false'}],
         [{matches: 'man'}, {matches: 'not'}]
-      ]
+      ],
+      labels: {
+        information: 'you are not a man'
+      }
     }
-  ]
+  ],
+  unknownValue: {
+    labels: {
+      information: 'we have no information on whether or not you are a man'
+    }
+  }
 };
 
 DirectMessageHandler.POCNESS_CONFIGURATION = {
@@ -155,16 +168,27 @@ DirectMessageHandler.POCNESS_CONFIGURATION = {
       matcherSets: [
         [{matches: 'person of colou?r'}, {doesNotMatch: 'not'}],
         [{matches: 'white'}, {matches: 'not'}]
-      ]
+      ],
+      labels: {
+        information: 'you are a person of colour'
+      }
     },
     {
       value: false,
       matcherSets: [
         [{matches: 'person of colou?r'}, {matches: 'not'}],
         [{matches: 'white'}, {doesNotMatch: 'not'}]
-      ]
+      ],
+      labels: {
+        information: 'you are not a person of colour'
+      }
     }
-  ]
+  ],
+  unknownValue: {
+    labels: {
+      information: 'we have no information on whether or not you are a person of colour'
+    }
+  }
 };
 
 module.exports = DirectMessageHandler;

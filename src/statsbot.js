@@ -116,12 +116,6 @@ class StatsBot {
           count: this.topUnknownsToQuery
         });
 
-        var preamble = `#${channel.name} since ${moment(metadata.startTime).fromNow()}`;
-        var genderReport = new VerboseReportGenerator(statistics, userIsMan, MANNESS_CONFIGURATION).generate();
-        var raceReport = new VerboseReportGenerator(statistics, userIsPersonOfColour, POCNESS_CONFIGURATION).generate();
-
-        botChannel.send(`${preamble}:\n${genderReport}\n${raceReport}`);
-
         var configurationAndValues = [
           {
             configuration: MANNESS_CONFIGURATION,
@@ -132,6 +126,16 @@ class StatsBot {
             values: userIsPersonOfColour
           }
         ];
+
+        var verboseReport = `#${channel.name} since ${moment(metadata.startTime).fromNow()}:\n`;
+
+        configurationAndValues.forEach(function(configurationAndValues) {
+          var report = new VerboseReportGenerator(statistics, configurationAndValues.values, configurationAndValues.configuration).generate();
+
+          verboseReport += `${report}\n`;
+        });
+
+        botChannel.send(verboseReport);
 
         var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel.name).generate();
         channel.send(terseReport);

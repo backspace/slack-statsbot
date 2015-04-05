@@ -38,9 +38,6 @@ class DirectMessageHandler {
           (isPersonOfColour === null || isPersonOfColour === undefined)) {
         reply = `We don’t have you on record! ${DirectMessageHandler.HELP_MESSAGE}`;
       } else {
-        var genderReply;
-        var raceReply;
-
         reply = 'Our records indicate that:\n\n';
 
         var attributeValues = {

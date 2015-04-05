@@ -9,7 +9,9 @@
       ],
       "texts": {
         "information": "you are a person of colour",
-        "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”"
+        "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”",
+        "statistics": "peopleOfColour",
+        "table": "PoC"
       }
     },
     {
@@ -20,13 +22,17 @@
       ],
       "texts": {
         "information": "you are not a person of colour",
-        "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”"
+        "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”",
+        "statistics": "nonPeopleOfColour",
+        "table": "not-PoC"
       }
     }
   ],
   "unknownValue": {
     "texts": {
-      "information": "we have no information on whether or not you are a person of colour"
+      "information": "we have no information on whether or not you are a person of colour",
+      "statistics": "unknown",
+      "table": "unknown"
     }
   }
 }

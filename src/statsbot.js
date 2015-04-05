@@ -3,8 +3,10 @@ var MessageLog = require('./message-log');
 
 var RepositoryAttributeExtractor = require('./persistence/repository-attribute-extractor');
 
-var VerboseGenderReportGenerator = require('./reports/verbose-gender');
-var VerboseRaceReportGenerator = require('./reports/verbose-race');
+var VerboseReportGenerator = require('./reports/verbose-attribute');
+
+var MANNESS_CONFIGURATION = require('../config/manness');
+var POCNESS_CONFIGURATION = require('../config/pocness');
 
 var TerseReportGenerator = require('./reports/terse');
 
@@ -115,8 +117,8 @@ class StatsBot {
         });
 
         var preamble = `#${channel.name} since ${moment(metadata.startTime).fromNow()}`;
-        var genderReport = new VerboseGenderReportGenerator(statistics, userIsMan).generate();
-        var raceReport = new VerboseRaceReportGenerator(statistics, userIsPersonOfColour).generate();
+        var genderReport = new VerboseReportGenerator(statistics, userIsMan, MANNESS_CONFIGURATION).generate();
+        var raceReport = new VerboseReportGenerator(statistics, userIsPersonOfColour, POCNESS_CONFIGURATION).generate();
 
         botChannel.send(`${preamble}:\n${genderReport}\n${raceReport}`);
 

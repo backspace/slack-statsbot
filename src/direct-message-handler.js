@@ -44,8 +44,8 @@ class DirectMessageHandler {
         reply = 'Our records indicate that:\n\n';
 
         var attributeValues = {
-          'manness': isMan,
-          'pocness': isPersonOfColour
+          'isMan': isMan,
+          'isPersonOfColour': isPersonOfColour
         };
 
         [DirectMessageHandler.MANNESS_CONFIGURATION, DirectMessageHandler.POCNESS_CONFIGURATION].forEach(function(attributeConfiguration) {
@@ -84,7 +84,6 @@ class DirectMessageHandler {
     this.handleAttributeUpdate(
       channel,
       userID,
-      'isMan',
       isMan,
       DirectMessageHandler.MANNESS_CONFIGURATION
     );
@@ -94,15 +93,14 @@ class DirectMessageHandler {
     this.handleAttributeUpdate(
       channel,
       userID,
-      'isPersonOfColour',
       isPersonOfColour,
       DirectMessageHandler.POCNESS_CONFIGURATION
     );
   }
 
-  handleAttributeUpdate(channel, userID, attributeName, value, attributeConfiguration) {
+  handleAttributeUpdate(channel, userID, value, attributeConfiguration) {
     var reply;
-    this.userRepository.storeAttribute(userID, attributeName, value);
+    this.userRepository.storeAttribute(userID, attributeConfiguration.name, value);
 
     var matchingValue = find(attributeConfiguration.values, function(configurationValue) {
       return configurationValue.value === value;
@@ -126,7 +124,7 @@ DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man” o
 DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}`;
 
 DirectMessageHandler.MANNESS_CONFIGURATION = {
-  name: 'manness',
+  name: 'isMan',
   values: [
     {
       value: true,
@@ -159,7 +157,7 @@ DirectMessageHandler.MANNESS_CONFIGURATION = {
 };
 
 DirectMessageHandler.POCNESS_CONFIGURATION = {
-  name: 'pocness',
+  name: 'isPersonOfColour',
   values: [
     {
       value: true,

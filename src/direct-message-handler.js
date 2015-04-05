@@ -67,7 +67,6 @@ class DirectMessageHandler {
   }
 
   handleInformationUpdate(channel, message) {
-    var genderParser = new GenderUpdateParser(message.text);
     var isMan = new GenderUpdateParser(message.text).parseIsMan();
     var isPersonOfColour = new RaceUpdateParser(message.text).parseIsPersonOfColour();
 

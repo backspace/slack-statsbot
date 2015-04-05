@@ -94,52 +94,45 @@ class StatsBot {
       this.log.resetChannelStatistics(channel.id);
     }
 
-    var isManExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isMan', Object.keys(statistics));
+    var configurations = [
+      MANNESS_CONFIGURATION,
+      POCNESS_CONFIGURATION
+    ];
 
-    isManExtractor.extract().then(function(userIsMan) {
-      requestUnknownSelfIdentification({
-        statistics: statistics,
-        userRepository: this.userRepository,
-        knownness: userIsMan,
-        adapter: this.adapter,
-        count: this.topUnknownsToQuery
+    var extractionPromises = configurations.map(function(configuration) {
+      return new RepositoryAttributeExtractor(this.userRepository, configuration.name, Object.keys(statistics)).extract();
+    }.bind(this));
+
+    Promise.all(extractionPromises).then(function(values) {
+      var configurationAndValues = configurations.map(function(configuration, index) {
+          requestUnknownSelfIdentification({
+            statistics: statistics,
+            userRepository: this.userRepository,
+            knownness: values[index],
+            adapter: this.adapter,
+            count: this.topUnknownsToQuery
+          });
+
+        return {
+          configuration: configuration,
+          values: values[index]
+        };
+      }.bind(this));
+
+
+      var verboseReport = `#${channel.name} since ${moment(metadata.startTime).fromNow()}:\n`;
+
+      configurationAndValues.forEach(function(configurationAndValues) {
+        var report = new VerboseReportGenerator(statistics, configurationAndValues.values, configurationAndValues.configuration).generate();
+
+        verboseReport += `${report}\n`;
       });
 
-      var isPersonOfColourExtractor = new RepositoryAttributeExtractor(this.userRepository, 'isPersonOfColour', Object.keys(statistics));
+      botChannel.send(verboseReport);
 
-      isPersonOfColourExtractor.extract().then(function(userIsPersonOfColour) {
-        requestUnknownSelfIdentification({
-          statistics: statistics,
-          userRepository: this.userRepository,
-          knownness: userIsPersonOfColour,
-          adapter: this.adapter,
-          count: this.topUnknownsToQuery
-        });
+      var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel.name).generate();
+      channel.send(terseReport);
 
-        var configurationAndValues = [
-          {
-            configuration: MANNESS_CONFIGURATION,
-            values: userIsMan
-          },
-          {
-            configuration: POCNESS_CONFIGURATION,
-            values: userIsPersonOfColour
-          }
-        ];
-
-        var verboseReport = `#${channel.name} since ${moment(metadata.startTime).fromNow()}:\n`;
-
-        configurationAndValues.forEach(function(configurationAndValues) {
-          var report = new VerboseReportGenerator(statistics, configurationAndValues.values, configurationAndValues.configuration).generate();
-
-          verboseReport += `${report}\n`;
-        });
-
-        botChannel.send(verboseReport);
-
-        var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel.name).generate();
-        channel.send(terseReport);
-      }.bind(this));
     }.bind(this));
   }
 

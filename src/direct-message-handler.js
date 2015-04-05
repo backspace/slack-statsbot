@@ -60,34 +60,26 @@ class DirectMessageHandler {
   }
 
   handleInformationUpdate(channel, message) {
-    var isMan = new UpdateParser(DirectMessageHandler.MANNESS_CONFIGURATION, message.text).parse();
-    var isPersonOfColour = new UpdateParser(DirectMessageHandler.POCNESS_CONFIGURATION, message.text).parse();
+    var handled = false;
 
-    if (isMan !== undefined) {
-      this.handleGenderUpdate(channel, message.user, isMan);
-    } else if (isPersonOfColour !== undefined) {
-      this.handleRaceUpdate(channel, message.user, isPersonOfColour);
-    } else {
+    this.attributeConfigurations.forEach(function(configuration) {
+      var parser = new UpdateParser(configuration, message.text);
+      var result = parser.parse();
+
+      if (result !== undefined) {
+        handled = true;
+        this.handleAttributeUpdate(
+          channel,
+          message.user,
+          result,
+          configuration
+        );
+      }
+    }.bind(this));
+
+    if (!handled) {
       channel.send(`I’m sorry, I’m not that advanced and I didn’t understand your message. ${DirectMessageHandler.HELP_MESSAGE}`);
     }
-  }
-
-  handleGenderUpdate(channel, userID, isMan) {
-    this.handleAttributeUpdate(
-      channel,
-      userID,
-      isMan,
-      DirectMessageHandler.MANNESS_CONFIGURATION
-    );
-  }
-
-  handleRaceUpdate(channel, userID, isPersonOfColour) {
-    this.handleAttributeUpdate(
-      channel,
-      userID,
-      isPersonOfColour,
-      DirectMessageHandler.POCNESS_CONFIGURATION
-    );
   }
 
   handleAttributeUpdate(channel, userID, value, attributeConfiguration) {

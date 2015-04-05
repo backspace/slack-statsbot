@@ -1,0 +1,32 @@
+{
+  "name": "isMan",
+  "values": [
+    {
+      "value": true,
+      "matcherSets": [
+        [{"matches": "true"}],
+        [{"matches": "man"}, {"doesNotMatch": "not"}]
+      ],
+      "texts": {
+        "information": "you are a man",
+        "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”"
+      }
+    },
+    {
+      "value": false,
+      "matcherSets": [
+        [{"matches": "false"}],
+        [{"matches": "man"}, {"matches": "not"}]
+      ],
+      "texts": {
+        "information": "you are not a man",
+        "update": "Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”."
+      }
+    }
+  ],
+  "unknownValue": {
+    "texts": {
+      "information": "we have no information on whether or not you are a man"
+    }
+  }
+}

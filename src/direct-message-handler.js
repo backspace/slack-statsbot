@@ -123,70 +123,7 @@ class DirectMessageHandler {
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man” or “I am a person of colour” and other such variations, or ask for my current information on you with “info”.';
 DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}`;
 
-DirectMessageHandler.MANNESS_CONFIGURATION = {
-  name: 'isMan',
-  values: [
-    {
-      value: true,
-      matcherSets: [
-        [{matches: 'true'}],
-        [{matches: 'man'}, {doesNotMatch: 'not'}]
-      ],
-      texts: {
-        information: 'you are a man',
-        update: 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”'
-      }
-    },
-    {
-      value: false,
-      matcherSets: [
-        [{matches: 'false'}],
-        [{matches: 'man'}, {matches: 'not'}]
-      ],
-      texts: {
-        information: 'you are not a man',
-        update: 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.'
-      }
-    }
-  ],
-  unknownValue: {
-    texts: {
-      information: 'we have no information on whether or not you are a man'
-    }
-  }
-};
-
-DirectMessageHandler.POCNESS_CONFIGURATION = {
-  name: 'isPersonOfColour',
-  values: [
-    {
-      value: true,
-      matcherSets: [
-        [{matches: 'person of colou?r'}, {doesNotMatch: 'not'}],
-        [{matches: 'white'}, {matches: 'not'}]
-      ],
-      texts: {
-        information: 'you are a person of colour',
-        update: 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”'
-      }
-    },
-    {
-      value: false,
-      matcherSets: [
-        [{matches: 'person of colou?r'}, {matches: 'not'}],
-        [{matches: 'white'}, {doesNotMatch: 'not'}]
-      ],
-      texts: {
-        information: 'you are not a person of colour',
-        update: 'We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”'
-      }
-    }
-  ],
-  unknownValue: {
-    texts: {
-      information: 'we have no information on whether or not you are a person of colour'
-    }
-  }
-};
+DirectMessageHandler.MANNESS_CONFIGURATION = require('../config/manness');
+DirectMessageHandler.POCNESS_CONFIGURATION = require('../config/pocness');
 
 module.exports = DirectMessageHandler;

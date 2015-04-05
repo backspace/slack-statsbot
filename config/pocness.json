@@ -1,0 +1,32 @@
+{
+  "name": "isPersonOfColour",
+  "values": [
+    {
+      "value": true,
+      "matcherSets": [
+        [{"matches": "person of colou?r"}, {"doesNotMatch": "not"}],
+        [{"matches": "white"}, {"matches": "not"}]
+      ],
+      "texts": {
+        "information": "you are a person of colour",
+        "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”"
+      }
+    },
+    {
+      "value": false,
+      "matcherSets": [
+        [{"matches": "person of colou?r"}, {"matches": "not"}],
+        [{"matches": "white"}, {"doesNotMatch": "not"}]
+      ],
+      "texts": {
+        "information": "you are not a person of colour",
+        "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”"
+      }
+    }
+  ],
+  "unknownValue": {
+    "texts": {
+      "information": "we have no information on whether or not you are a person of colour"
+    }
+  }
+}

@@ -7,14 +7,14 @@
 // };
 //
 // mappings = {
-//   true: 'men',
-//   false: 'notMen',
+//   'M': 'men',
+//   'N': 'notMen',
 //   else: 'unknown'
 // };
 //
 // values = {
-//   a: true,
-//   b: false,
+//   a: 'M',
+//   b: 'N',
 // };
 //
 // =>
@@ -29,18 +29,24 @@ module.exports = function(statistics, values, mappings) {
   var userIDs = Object.keys(statistics);
 
   var emptyResult = {};
-  emptyResult[mappings.true] = 0;
-  emptyResult[mappings.false] = 0;
-  emptyResult[mappings.else] = 0;
+
+  var mappingKeys = Object.keys(mappings).map(function(key) {
+    return key.toString();
+  });
+
+  mappingKeys.forEach(function(mappingKey) {
+    emptyResult[mappings[mappingKey]] = 0;
+  });
 
   var counts = userIDs.reduce(function(counts, userID) {
     var value = values[userID];
+    if (value !== undefined) value = value.toString();
     var count = statistics[userID];
 
-    if (value) {
-      counts[mappings.true] += count;
-    } else if (value === false) {
-      counts[mappings.false] += count;
+    var indexOfMatchingMappingKey = mappingKeys.indexOf(value);
+
+    if (indexOfMatchingMappingKey > -1) {
+      counts[mappings[value]] += count;
     } else {
       counts[mappings.else] += count;
     }

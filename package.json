@@ -30,7 +30,6 @@
     "tape": "^3.4.0"
   },
   "dependencies": {
-    "amp-includes": "^1.0.2",
     "amp-unique": "^1.0.1",
     "amp-values": "^1.0.1",
     "cli-table": "^0.3.1",

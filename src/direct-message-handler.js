@@ -1,8 +1,7 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
-var GenderUpdateParser = require('./gender-update-parser');
-var RaceUpdateParser = require('./race-update-parser');
+var UpdateParser = require('./update-parser');
 
 class DirectMessageHandler {
   constructor(userRepository) {
@@ -67,8 +66,8 @@ class DirectMessageHandler {
   }
 
   handleInformationUpdate(channel, message) {
-    var isMan = new GenderUpdateParser(message.text).parseIsMan();
-    var isPersonOfColour = new RaceUpdateParser(message.text).parseIsPersonOfColour();
+    var isMan = new UpdateParser(DirectMessageHandler.MANNESS_CONFIGURATION, message.text).parse();
+    var isPersonOfColour = new UpdateParser(DirectMessageHandler.POCNESS_CONFIGURATION, message.text).parse();
 
     if (isMan !== undefined) {
       this.handleGenderUpdate(channel, message.user, isMan);
@@ -127,5 +126,45 @@ class DirectMessageHandler {
 
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man” or “I am a person of colour” and other such variations, or ask for my current information on you with “info”.';
 DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}`;
+
+DirectMessageHandler.MANNESS_CONFIGURATION = {
+  name: 'manness',
+  values: [
+    {
+      value: true,
+      matcherSets: [
+        [{matches: 'true'}],
+        [{matches: 'man'}, {doesNotMatch: 'not'}]
+      ]
+    },
+    {
+      value: false,
+      matcherSets: [
+        [{matches: 'false'}],
+        [{matches: 'man'}, {matches: 'not'}]
+      ]
+    }
+  ]
+};
+
+DirectMessageHandler.POCNESS_CONFIGURATION = {
+  name: 'pocness',
+  values: [
+    {
+      value: true,
+      matcherSets: [
+        [{matches: 'person of colou?r'}, {doesNotMatch: 'not'}],
+        [{matches: 'white'}, {matches: 'not'}]
+      ]
+    },
+    {
+      value: false,
+      matcherSets: [
+        [{matches: 'person of colou?r'}, {matches: 'not'}],
+        [{matches: 'white'}, {doesNotMatch: 'not'}]
+      ]
+    }
+  ]
+};
 
 module.exports = DirectMessageHandler;

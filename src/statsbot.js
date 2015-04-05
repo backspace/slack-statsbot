@@ -122,7 +122,18 @@ class StatsBot {
 
         botChannel.send(`${preamble}:\n${genderReport}\n${raceReport}`);
 
-        var terseReport = new TerseReportGenerator(statistics, userIsMan, userIsPersonOfColour, metadata.startTime, botChannel.name).generate();
+        var configurationAndValues = [
+          {
+            configuration: MANNESS_CONFIGURATION,
+            values: userIsMan
+          },
+          {
+            configuration: POCNESS_CONFIGURATION,
+            values: userIsPersonOfColour
+          }
+        ];
+
+        var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel.name).generate();
         channel.send(terseReport);
       }.bind(this));
     }.bind(this));

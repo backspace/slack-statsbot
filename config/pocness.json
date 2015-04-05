@@ -11,7 +11,8 @@
         "information": "you are a person of colour",
         "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”",
         "statistics": "peopleOfColour",
-        "table": "PoC"
+        "table": "PoC",
+        "terse": "people of colour"
       }
     },
     {
@@ -34,5 +35,6 @@
       "statistics": "unknown",
       "table": "unknown"
     }
-  }
+  },
+  "terseReportValue": true
 }

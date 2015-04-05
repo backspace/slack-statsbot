@@ -24,7 +24,8 @@
         "information": "you are not a man",
         "update": "Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.",
         "statistics": "notMen",
-        "table": "not-men"
+        "table": "not-men",
+        "terse": "not-men"
       }
     }
   ],
@@ -34,5 +35,6 @@
       "statistics": "unknown",
       "table": "unknown"
     }
-  }
+  },
+  "terseReportValue": false
 }

@@ -2,33 +2,61 @@
 
 var moment = require('moment');
 var values = require('amp-values');
+var find = require('lodash.find');
 
-var GenderMessageCountStatisticsGenerator = require('../calculators/gender-message-count');
-var RaceMessageCount = require('../calculators/race-message-count');
+var trinaryGrouper = require('../calculators/trinary-grouper');
 
 class TerseReportGenerator {
-  constructor(userMessageCount, userIsMan, userIsPersonOfColour, startTime, statsChannel) {
+  constructor(userMessageCount, configurationAndValues, startTime, statsChannel) {
     this.userMessageCount = userMessageCount;
     // FIXME should collect attributes into an object?
     // also querying the table multiple times, inefficient
-    this.userIsMan = userIsMan;
-    this.userIsPersonOfColour = userIsPersonOfColour;
+    this.configurationAndValues = configurationAndValues;
     this.startTime = startTime;
     this.statsChannel = statsChannel;
   }
 
   generate() {
-    var genderMessageCountStatistics = new GenderMessageCountStatisticsGenerator(this.userMessageCount, this.userIsMan).generate();
-    var raceMessageCount = new RaceMessageCount(this.userMessageCount, this.userIsPersonOfColour).generate();
+    var total = values(this.userMessageCount).reduce(function(sum, value) {
+      return sum + value;
+    }, 0);
 
-    var total = genderMessageCountStatistics.men + genderMessageCountStatistics.notMen + genderMessageCountStatistics.unknown;
+    var report = `Since ${moment(this.startTime).fromNow()}, `;
 
-    var notMenPercent = (100*genderMessageCountStatistics.notMen/total).toFixed(0);
-    var peopleOfColourPercent = (100*raceMessageCount.peopleOfColour/total).toFixed(0);
+    this.configurationAndValues.forEach(function(configurationAndValues, index) {
+      var configuration = configurationAndValues.configuration;
+      var values = configurationAndValues.values;
 
+      var valueToReport = find(configuration.values, function(value) {
+        return value.value === configuration.terseReportValue;
+      });
 
+      // TODO this is duplicated in reports/verbose-attribute
+      var countMappings = {};
 
-    var report = `Since ${moment(this.startTime).fromNow()}, self-identified not-men sent ${notMenPercent}% of messages and self-identified people of colour sent ${peopleOfColourPercent}% of messages. See #${this.statsChannel} for more details.`;
+      configuration.values.forEach(function(valueConfiguration) {
+        countMappings[valueConfiguration.value] = valueConfiguration.texts.statistics;
+      });
+
+      countMappings.else = configuration.unknownValue.texts.statistics;
+
+      var messageCounts = trinaryGrouper(
+        this.userMessageCount,
+        values,
+        countMappings
+      );
+
+      var relevantMessageCount = messageCounts[valueToReport.texts.statistics];
+      var percent = (100*relevantMessageCount/total).toFixed(0);
+
+      if (index > 0) {
+        report += 'and ';
+      }
+
+      report += `self-identified ${valueToReport.texts.terse} sent ${percent}% of messages`;
+    }.bind(this));
+
+    report += `. See #${this.statsChannel} for more details.`;
 
     return report;
   }

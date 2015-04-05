@@ -56,9 +56,9 @@ class DirectMessageHandler {
           });
 
           if (valueConfiguration) {
-            reply += `* ${valueConfiguration.labels.information}\n`;
+            reply += `* ${valueConfiguration.texts.information}\n`;
           } else {
-            reply += `* ${attributeConfiguration.unknownValue.labels.information}\n`;
+            reply += `* ${attributeConfiguration.unknownValue.texts.information}\n`;
           }
         });
       }
@@ -86,10 +86,7 @@ class DirectMessageHandler {
       userID,
       'isMan',
       isMan,
-      {
-        true: 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”',
-        false: 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.',
-      }
+      DirectMessageHandler.MANNESS_CONFIGURATION
     );
   }
 
@@ -99,21 +96,20 @@ class DirectMessageHandler {
       userID,
       'isPersonOfColour',
       isPersonOfColour,
-      {
-        true: 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”',
-        false: 'We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”'
-      }
+      DirectMessageHandler.POCNESS_CONFIGURATION
     );
   }
 
-  handleAttributeUpdate(channel, userID, attributeName, value, responses) {
+  handleAttributeUpdate(channel, userID, attributeName, value, attributeConfiguration) {
     var reply;
     this.userRepository.storeAttribute(userID, attributeName, value);
 
-    if (value === true) {
-      reply = responses.true;
-    } else if (value === false) {
-      reply = responses.false;
+    var matchingValue = find(attributeConfiguration.values, function(configurationValue) {
+      return configurationValue.value === value;
+    });
+
+    if (matchingValue) {
+      reply = matchingValue.texts.update;
     }
 
     channel.send(reply);
@@ -138,8 +134,9 @@ DirectMessageHandler.MANNESS_CONFIGURATION = {
         [{matches: 'true'}],
         [{matches: 'man'}, {doesNotMatch: 'not'}]
       ],
-      labels: {
-        information: 'you are a man'
+      texts: {
+        information: 'you are a man',
+        update: 'Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”'
       }
     },
     {
@@ -148,13 +145,14 @@ DirectMessageHandler.MANNESS_CONFIGURATION = {
         [{matches: 'false'}],
         [{matches: 'man'}, {matches: 'not'}]
       ],
-      labels: {
-        information: 'you are not a man'
+      texts: {
+        information: 'you are not a man',
+        update: 'Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.'
       }
     }
   ],
   unknownValue: {
-    labels: {
+    texts: {
       information: 'we have no information on whether or not you are a man'
     }
   }
@@ -169,8 +167,9 @@ DirectMessageHandler.POCNESS_CONFIGURATION = {
         [{matches: 'person of colou?r'}, {doesNotMatch: 'not'}],
         [{matches: 'white'}, {matches: 'not'}]
       ],
-      labels: {
-        information: 'you are a person of colour'
+      texts: {
+        information: 'you are a person of colour',
+        update: 'We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”'
       }
     },
     {
@@ -179,13 +178,14 @@ DirectMessageHandler.POCNESS_CONFIGURATION = {
         [{matches: 'person of colou?r'}, {matches: 'not'}],
         [{matches: 'white'}, {doesNotMatch: 'not'}]
       ],
-      labels: {
-        information: 'you are not a person of colour'
+      texts: {
+        information: 'you are not a person of colour',
+        update: 'We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”'
       }
     }
   ],
   unknownValue: {
-    labels: {
+    texts: {
       information: 'we have no information on whether or not you are a person of colour'
     }
   }

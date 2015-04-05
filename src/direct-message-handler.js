@@ -1,12 +1,19 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
+var every = require('lodash.every');
 var find = require('lodash.find');
+
 var UpdateParser = require('./update-parser');
 
 class DirectMessageHandler {
   constructor(userRepository) {
     this.userRepository = userRepository;
+
+    this.attributeConfigurations = [
+      DirectMessageHandler.MANNESS_CONFIGURATION,
+      DirectMessageHandler.POCNESS_CONFIGURATION
+    ];
   }
 
   handle(channel, message) {
@@ -23,30 +30,18 @@ class DirectMessageHandler {
 
   handleInformationRequest(channel, message) {
     // FIXME fetch the entire user rather than run multiple queries
-    Promise.all([
-        this.userRepository.retrieveAttribute(message.user, 'isMan'),
-        this.userRepository.retrieveAttribute(message.user, 'isPersonOfColour')
-    ]).then(function(attributes) {
-      // var [isMan, isPersonOfColour] = attributes;
-      // TODO use destructuring assignment
-      var isMan = attributes[0];
-      var isPersonOfColour = attributes[1];
-
+    Promise.all(this.attributeConfigurations.map(function(configuration) {
+      return this.userRepository.retrieveAttribute(message.user, configuration.name);
+    }.bind(this))).then(function(values) {
       var reply;
 
-      if ((isMan === null || isMan === undefined) &&
-          (isPersonOfColour === null || isPersonOfColour === undefined)) {
+      if (every(values, function(value) {return value == null || value == undefined})) {
         reply = `We don’t have you on record! ${DirectMessageHandler.HELP_MESSAGE}`;
       } else {
         reply = 'Our records indicate that:\n\n';
 
-        var attributeValues = {
-          'isMan': isMan,
-          'isPersonOfColour': isPersonOfColour
-        };
-
-        [DirectMessageHandler.MANNESS_CONFIGURATION, DirectMessageHandler.POCNESS_CONFIGURATION].forEach(function(attributeConfiguration) {
-          var value = attributeValues[attributeConfiguration.name];
+        this.attributeConfigurations.forEach(function(attributeConfiguration, index) {
+          var value = values[index];
 
           var valueConfiguration = find(attributeConfiguration.values, function(valueConfiguration) {
             return valueConfiguration.value == value;
@@ -61,7 +56,7 @@ class DirectMessageHandler {
       }
 
       channel.send(reply);
-    });
+    }.bind(this));
   }
 
   handleInformationUpdate(channel, message) {

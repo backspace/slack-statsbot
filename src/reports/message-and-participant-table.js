@@ -1,5 +1,5 @@
 var Table = require('cli-table');
-var values = require('amp-values');
+var values = require('lodash.values');
 
 var percentagesFromCounts = require('../calculators/percentages-from-counts');
 

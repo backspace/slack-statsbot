@@ -1,7 +1,7 @@
 // TODO also untested except by integration
 
 var moment = require('moment');
-var values = require('amp-values');
+var values = require('lodash.values');
 var find = require('lodash.find');
 
 var trinaryGrouper = require('../calculators/trinary-grouper');

@@ -1,7 +1,7 @@
 // Selects the keys from an object whose values are in the top N of all values
 
-var values = require('amp-values');
-var unique = require('amp-unique');
+var values = require('lodash.values');
+var unique = require('lodash.uniq');
 
 module.exports = function(object, n) {
   var objectValues = values(object);

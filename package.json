@@ -30,14 +30,14 @@
     "tape": "^3.4.0"
   },
   "dependencies": {
-    "amp-unique": "^1.0.1",
-    "amp-values": "^1.0.1",
     "cli-table": "^0.3.1",
     "convict": "^0.6.1",
     "cron-parser": "^0.6.1",
     "lodash.every": "^3.2.0",
     "lodash.find": "^3.2.0",
     "lodash.some": "^3.2.0",
+    "lodash.uniq": "^3.1.0",
+    "lodash.values": "^3.0.0",
     "moment": "^2.9.0",
     "node-bin": "^0.11.14",
     "pg": "^4.2.0",

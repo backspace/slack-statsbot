@@ -14,7 +14,7 @@ var DirectMessageHandler = require('./direct-message-handler');
 
 var requestUnknownSelfIdentification = require('./request-unknown-self-identification');
 
-var values = require('amp-values');
+var values = require('lodash.values');
 var moment = require('moment');
 
 class StatsBot {

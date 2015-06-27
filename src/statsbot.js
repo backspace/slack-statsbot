@@ -34,10 +34,25 @@ class StatsBot {
   }
 
   handleConnectedEvent() {
-    var botChannel = this.adapter.getChannelByName(this.statsChannel);
+    this.getStatsChannel().send('I just started up!');
+  }
+
+  handleErrorEvent(error) {
+    console.log('error:', error);
+    this.getStatsChannel().send(`Error! \`${JSON.stringify(error)}\``);
+  }
+
+  getStatsChannel() {
+    let botChannel = this.adapter.getChannelByName(this.statsChannel);
 
     if (botChannel) {
-      botChannel.send('I just started up!');
+      return botChannel;
+    } else {
+      let nullChannel = {
+        send() {}
+      };
+
+      return nullChannel;
     }
   }
 

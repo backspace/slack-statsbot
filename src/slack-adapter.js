@@ -4,6 +4,7 @@ class SlackAdapter {
 
     this.client.on('message', this.messageReceived.bind(this));
     this.client.on('open', this.connected.bind(this));
+    this.client.on('error', this.error.bind(this));
 
     this.client.login();
   }
@@ -15,6 +16,10 @@ class SlackAdapter {
 
   connected() {
     this.listener.handleConnectedEvent();
+  }
+
+  error(error) {
+    this.listener.handleErrorEvent(error);
   }
 
   messageReceived(message) {

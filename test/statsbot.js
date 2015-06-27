@@ -134,6 +134,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
     t.ok(ytterbium.send.calledWithMatch(/people of colour sent 0% of messages/), 'reports in the channel that people of colour sent no messages');
+    t.ok(ytterbium.send.calledWithMatch(/:sb_10::sb_0::sb_0:/), 'reports compactly in the channel that men dominated');
+    t.ok(ytterbium.send.calledWithMatch(/:sb_0::sb_10::sb_0:/), 'reports compactly in the channel that non-PoC dominated');
 
     t.ok(botChannel.send.calledWithMatch(/#Xenon/), 'reports #Xenon statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/^.*counts.*3.*$/m), 'reports a message count of 3');
@@ -146,6 +148,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     t.ok(xenon.send.calledWithMatch(/not-men sent 33% of messages/), 'reports in the channel that not-men sent 33% of messages');
     t.ok(xenon.send.calledWithMatch(/people of colour sent 67% of messages/), 'reports in the channel that people of colour sent 67% of messages');
+    t.ok(xenon.send.calledWithMatch(/:sb_6::sb_3::sb_0:/), 'reports compactly in the channel that men dominated');
+    t.ok(xenon.send.calledWithMatch(/:sb_6::sb_3::sb_0:/), 'reports compactly in the channel that non-PoC did not dominate');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,

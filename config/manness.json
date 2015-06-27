@@ -12,7 +12,8 @@
         "information": "you are a man",
         "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”",
         "statistics": "men",
-        "table": "men"
+        "table": "men",
+        "short": "M"
       }
     },
     {
@@ -27,7 +28,8 @@
         "update": "Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.",
         "statistics": "notMen",
         "table": "not-men",
-        "terse": "not-men"
+        "terse": "not-men",
+        "short": "NM"
       }
     }
   ],
@@ -35,7 +37,8 @@
     "texts": {
       "information": "we have no information on whether or not you are a man",
       "statistics": "unknown",
-      "table": "unknown"
+      "table": "unknown",
+      "short": "?"
     }
   },
   "terseReportValue": false

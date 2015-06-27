@@ -6,6 +6,13 @@ var find = require('lodash.find');
 
 var trinaryGrouper = require('../calculators/trinary-grouper');
 
+function emojiForProportion(p) {
+  p = Math.min(p, 1);
+  p = Math.max(p, 0);
+  let out_of_10 = Math.floor(p*10);
+  return `:sb_${out_of_10}:`;
+}
+
 class TerseReportGenerator {
   constructor(userMessageCount, configurationAndValues, startTime, statsChannel) {
     this.userMessageCount = userMessageCount;
@@ -22,6 +29,7 @@ class TerseReportGenerator {
     }, 0);
 
     var report = `Since ${moment(this.startTime).fromNow()}, `;
+    var shortLabelsAndValues = [];
 
     this.configurationAndValues.forEach(function(configurationAndValues, index) {
       var configuration = configurationAndValues.configuration;
@@ -49,11 +57,21 @@ class TerseReportGenerator {
       var relevantMessageCount = messageCounts[valueToReport.texts.statistics];
       var percent = (100*relevantMessageCount/total).toFixed(0);
 
+      var shortLabels = [];
+      var shortValues = [];
+      configuration.values.forEach(function(valueConfiguration) {
+        shortLabels.push(valueConfiguration.texts.short);
+        shortValues.push(emojiForProportion(messageCounts[valueConfiguration.texts.statistics]/total));
+      });
+
+      shortLabels.push(configuration.unknownValue.texts.short);
+      shortValues.push(emojiForProportion(messageCounts[configuration.unknownValue.texts.statistics]/total));
+
       if (index > 0) {
         report += 'and ';
       }
 
-      report += `self-identified ${valueToReport.texts.terse} sent ${percent}% of messages`;
+      report += `self-identified ${valueToReport.texts.terse} sent ${percent}% of messages (${shortLabels.join('|')} ${shortValues.join('')}) `;
     }.bind(this));
 
     report += `. See <#${this.statsChannel}> for more details. DM me to self-identify.`;

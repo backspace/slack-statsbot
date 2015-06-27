@@ -12,7 +12,8 @@
         "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”",
         "statistics": "peopleOfColour",
         "table": "PoC",
-        "terse": "people of colour"
+        "terse": "people of colour",
+        "short": "PoC"
       }
     },
     {
@@ -25,7 +26,8 @@
         "information": "you are not a person of colour",
         "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”",
         "statistics": "nonPeopleOfColour",
-        "table": "not-PoC"
+        "table": "not-PoC",
+        "short": "N"
       }
     }
   ],
@@ -33,7 +35,8 @@
     "texts": {
       "information": "we have no information on whether or not you are a person of colour",
       "statistics": "unknown",
-      "table": "unknown"
+      "table": "unknown",
+      "short": "?"
     }
   },
   "terseReportValue": true

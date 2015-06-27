@@ -61,17 +61,21 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   var david = {id: 'D', name: 'David', message: 'I am white'};
   var davidDM = {send: sinon.stub()};
 
+  var complicated = {id: 'Com', name: 'Complicated', message: 'it’s complicated whether I’m a person of colour'};
+  var complicatedDM = {send: sinon.stub()};
+
   var unknown = {id: 'U', name: 'Unknown', pocness: 'what is this'};
   var unknownDM = {send: sinon.stub()};
 
   var personIDToChannel = {};
   personIDToChannel[chris.id] = chrisDM;
   personIDToChannel[david.id] = davidDM;
+  personIDToChannel[complicated.id] = complicatedDM;
   personIDToChannel[unknown.id] = unknownDM;
 
   var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
-  [chris, david, unknown].forEach(function(person) {
+  [chris, david, complicated, unknown].forEach(function(person) {
     handler.handle(personIDToChannel[person.id], {
       text: `${person.message}`,
       user: person.id
@@ -83,6 +87,9 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
 
   t.ok(davidDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that David is not a person of colour');
   t.ok(storeAttributeStub.calledWith(david.id, 'pocness', 'not a PoC'), 'stores that David is not a person of colour');
+
+  t.ok(complicatedDM.send.calledWithMatch(/it’s complicated whether you are a person of colour/), 'replies affirming that it’s complicated whether Complicated is a person of colour');
+  t.ok(storeAttributeStub.calledWith(complicated.id, 'pocness', 'complicated'), 'stores that it’s complicated whether Complicated is a person of colour');
 
   t.ok(unknownDM.send.calledWithMatch(/I’m sorry, I’m not that advanced and I didn’t understand your message./), 'replies that it didn’t understand the message');
   t.ok(storeAttributeStub.neverCalledWith(unknown.id), 'does not store anything about Unknown');
@@ -103,6 +110,9 @@ test('DirectMessageHandler handles an information request', function(t) {
   var rocio = {id: 'R', name: 'Rocio', 'manness': 'not a man', 'pocness': 'a PoC'};
   var rocioDM = {send: sinon.stub()};
 
+  var complicated = {id: 'C', name: 'Complicated', 'pocness': 'complicated'};
+  var complicatedDM = {send: sinon.stub()};
+
   var unknown = {id: 'U', name: 'Unknown', 'manness': undefined};
   var unknownDM = {send: sinon.stub()};
 
@@ -110,11 +120,12 @@ test('DirectMessageHandler handles an information request', function(t) {
   personIDToChannel[janis.id] = janisDM;
   personIDToChannel[buck.id] = buckDM;
   personIDToChannel[rocio.id] = rocioDM;
+  personIDToChannel[complicated.id] = complicatedDM;
   personIDToChannel[unknown.id] = unknownDM;
 
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
 
-  [janis, buck, rocio, unknown].forEach(function(person) {
+  [janis, buck, rocio, complicated, unknown].forEach(function(person) {
     retrieveAttributeStub.withArgs(person.id, 'manness').returns(Promise.resolve(person.manness));
     retrieveAttributeStub.withArgs(person.id, 'pocness').returns(Promise.resolve(person.pocness));
 
@@ -133,6 +144,7 @@ test('DirectMessageHandler handles an information request', function(t) {
 
       t.ok(rocioDM.send.calledWithMatch(/you are a person of colour/), 'replies to Rocio that she is recorded as a person of colour');
 
+      t.ok(complicatedDM.send.calledWithMatch(/it’s complicated whether you are a person of colour/), 'replies to Complicated that it’s recorded that it’s complicated whether they are a person of colour');
       t.ok(unknownDM.send.calledWithMatch(/We don’t have you on record!/), 'replies to Unknown that they are unknown');
 
       t.end();

@@ -29,6 +29,20 @@
         "table": "not-PoC",
         "short": "N"
       }
+    },
+    {
+      "value": "complicated",
+      "matcherSets": [
+        [{"matches": "person of colou?r"}, {"matches": "complicated"}],
+        [{"matches": "white"}, {"matches": "complicated"}]
+      ],
+      "texts": {
+        "information": "it’s complicated whether you are a person of colour",
+        "update": "We have noted that it’s complicated whether you are a person of colour. If I got it wrong, try saying “I am a person of colour”",
+        "statistics": "complicated",
+        "table": "complicated",
+        "short": "‽"
+      }
     }
   ],
   "unknownValue": {

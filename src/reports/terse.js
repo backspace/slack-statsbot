@@ -56,7 +56,7 @@ class TerseReportGenerator {
       report += `self-identified ${valueToReport.texts.terse} sent ${percent}% of messages`;
     }.bind(this));
 
-    report += `. See #${this.statsChannel} for more details.`;
+    report += `. See <#${this.statsChannel}> for more details.`;
 
     return report;
   }

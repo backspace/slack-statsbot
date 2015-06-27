@@ -135,7 +135,7 @@ class StatsBot {
       }.bind(this));
 
 
-      var verboseReport = `#${channel.name} since ${moment(metadata.startTime).fromNow()}:\n`;
+      var verboseReport = `<#${channel.name}> since ${moment(metadata.startTime).fromNow()}:\n`;
 
       configurationAndValues.forEach(function(configurationAndValues) {
         var report = new VerboseReportGenerator(statistics, configurationAndValues.values, configurationAndValues.configuration).generate();

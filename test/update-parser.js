@@ -8,7 +8,9 @@ test('UpdateParser accepts an attribute configuration and a string and returns w
   var inputToResponse = {
     'I am a student': true,
     'I’m NOT a student': false,
-    'something else': undefined
+    'something else': undefined,
+    'I’m a teacher': false,
+    'I’m *not* a teacher yet I reject this binary!': true
   };
 
   var attributeConfiguration = {
@@ -17,13 +19,15 @@ test('UpdateParser accepts an attribute configuration and a string and returns w
       {
         value: true,
         matcherSets: [
-          [{matches: 'student'}, {doesNotMatch: 'not'}]
+          [{matches: 'student'}, {doesNotMatch: 'not'}],
+          [{matches: 'teacher'}, {matches: 'not'}]
         ]
       },
       {
         value: false,
         matcherSets: [
-          [{matches: 'student'}, {matches: 'not'}]
+          [{matches: 'student'}, {matches: 'not'}],
+          [{matches: 'teacher'}, {doesNotMatch: 'not'}]
         ]
       }
     ]

@@ -1,8 +1,8 @@
 {
-  "name": "isPersonOfColour",
+  "name": "pocness",
   "values": [
     {
-      "value": true,
+      "value": "a PoC",
       "matcherSets": [
         [{"matches": "person of colou?r"}, {"doesNotMatch": "not"}],
         [{"matches": "white"}, {"matches": "not"}]
@@ -17,7 +17,7 @@
       }
     },
     {
-      "value": false,
+      "value": "not a PoC",
       "matcherSets": [
         [{"matches": "person of colou?r"}, {"matches": "not"}],
         [{"matches": "white"}, {"doesNotMatch": "not"}]
@@ -39,5 +39,5 @@
       "short": "?"
     }
   },
-  "terseReportValue": true
+  "terseReportValue": "a PoC"
 }

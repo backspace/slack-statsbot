@@ -54,17 +54,17 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   var adapter = new SlackAdapter(fakeClient);
   var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});
 
-  var alice = {id: '1', name: 'Alice', isMan: true, isPersonOfColour: false};
-  var bob = {id: '2', name: 'Bob', isMan: false, isPersonOfColour: true};
-  var carol = {id: '3', name: 'Carol', isMan: true, isPersonOfColour: true};
+  var alice = {id: '1', name: 'Alice', manness: 'a man', pocness: 'not a PoC'};
+  var bob = {id: '2', name: 'Bob', manness: 'not a man', pocness: 'a PoC'};
+  var carol = {id: '3', name: 'Carol', manness: 'a man', pocness: 'a PoC'};
 
   var userStub = sinon.stub(adapter, 'getUser');
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
 
   [alice, bob, carol].forEach(function(person) {
     userStub.withArgs(person.id).returns(person);
-    retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
-    retrieveAttributeStub.withArgs(person.id, 'isPersonOfColour').returns(Promise.resolve(person.isPersonOfColour));
+    retrieveAttributeStub.withArgs(person.id, 'manness').returns(Promise.resolve(person.manness));
+    retrieveAttributeStub.withArgs(person.id, 'pocness').returns(Promise.resolve(person.pocness));
   });
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
@@ -189,11 +189,11 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
 
   var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
 
-  var known = {id: '1', name: 'Known', isMan: true};
-  var topUnknown = {id: 'u1', name: 'Unknown 1', isMan: undefined};
-  var declinedUnknown = {id: 'u2', name: 'Unknown 2', isMan: undefined, hasBeenQueried: true};
-  var nextUnknown = {id: 'u3', name: 'Unknown 3', isMan: undefined};
-  var bottomUnknown = {id: 'u4', name: 'Unknown 4', isMan: undefined};
+  var known = {id: '1', name: 'Known', manness: 'a man'};
+  var topUnknown = {id: 'u1', name: 'Unknown 1', manness: undefined};
+  var declinedUnknown = {id: 'u2', name: 'Unknown 2', manness: undefined, hasBeenQueried: true};
+  var nextUnknown = {id: 'u3', name: 'Unknown 3', manness: undefined};
+  var bottomUnknown = {id: 'u4', name: 'Unknown 4', manness: undefined};
 
   var personToDM = new Map();
 
@@ -205,9 +205,9 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
     var dm = {send: sinon.stub()};
     personToDM.set(person, dm);
 
-    retrieveAttributeStub.withArgs(person.id, 'isMan').returns(Promise.resolve(person.isMan));
+    retrieveAttributeStub.withArgs(person.id, 'manness').returns(Promise.resolve(person.manness));
     // Bypass unknown PoC messaging for this test
-    retrieveAttributeStub.withArgs(person.id, 'isPersonOfColour').returns(true);
+    retrieveAttributeStub.withArgs(person.id, 'pocness').returns(true);
     retrieveAttributeStub.withArgs(person.id, 'hasBeenQueried').returns(Promise.resolve(person.hasBeenQueried));
 
     dmByUserStub.withArgs(person.id).returns(dm);
@@ -296,7 +296,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
   });
 
   t.ok(prakashDM.send.calledWithMatch(/Okay, we have noted that you are a man./), 'replies affirming that Prakash is a man');
-  t.ok(storeAttributeStub.calledWith('P', 'isMan', true), 'stores that Prakash is a man');
+  t.ok(storeAttributeStub.calledWith('P', 'manness', 'a man'), 'stores that Prakash is a man');
 
   bot.handleDirectMessage(prakashDM, {
     text: 'i am a person of colour',
@@ -304,7 +304,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
   });
 
   t.ok(prakashDM.send.calledWithMatch(/you are a person of colour/), 'replies affirming that Prakash is a person of colour');
-  t.ok(storeAttributeStub.calledWith('P', 'isPersonOfColour', true), 'stores that Prakash is a person of colour');
+  t.ok(storeAttributeStub.calledWith('P', 'pocness', 'a PoC'), 'stores that Prakash is a person of colour');
 
   bot.handleDirectMessage(janetDM, {
     text: 'I am a woman',
@@ -312,7 +312,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
   });
 
   t.ok(janetDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Janet is not a man');
-  t.ok(storeAttributeStub.calledWith('J', 'isMan', false), 'stores that Janet is not a man');
+  t.ok(storeAttributeStub.calledWith('J', 'manness', 'not a man'), 'stores that Janet is not a man');
 
   bot.handleDirectMessage(lauraDM, {
     text: 'false',
@@ -320,7 +320,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
   });
 
   t.ok(lauraDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Laura is not a man');
-  t.ok(storeAttributeStub.calledWith('L', 'isMan', false), 'stores that Laura is not a man');
+  t.ok(storeAttributeStub.calledWith('L', 'manness', 'not a man'), 'stores that Laura is not a man');
 
   bot.handleDirectMessage(lauraDM, {
     text: 'i am white',
@@ -328,7 +328,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
   });
 
   t.ok(lauraDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that Laura is not a person of colour');
-  t.ok(storeAttributeStub.calledWith('L', 'isPersonOfColour', false), 'stores that Laura is not a person of colour');
+  t.ok(storeAttributeStub.calledWith('L', 'pocness', 'not a PoC'), 'stores that Laura is not a person of colour');
 
   userStub.restore();
   channelByIDStub.restore();
@@ -348,11 +348,11 @@ test('StatsBot responds with a user\'s information when they ask', function(t) {
   var kamaDM = {send: sinon.stub()};
 
   var retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
-  retrieveAttributeStub.withArgs(shane.id, 'isMan').returns(Promise.resolve(true));
-  retrieveAttributeStub.withArgs(shane.id, 'isPersonOfColour').returns(Promise.resolve(false));
+  retrieveAttributeStub.withArgs(shane.id, 'manness').returns(Promise.resolve('a man'));
+  retrieveAttributeStub.withArgs(shane.id, 'pocness').returns(Promise.resolve('not a PoC'));
 
-  retrieveAttributeStub.withArgs(kama.id, 'isMan').returns(Promise.resolve(null));
-  retrieveAttributeStub.withArgs(kama.id, 'isPersonOfColour').returns(Promise.resolve(null));
+  retrieveAttributeStub.withArgs(kama.id, 'manness').returns(Promise.resolve(null));
+  retrieveAttributeStub.withArgs(kama.id, 'pocness').returns(Promise.resolve(null));
 
   bot.handleDirectMessage(shaneDM, {
     text: 'info',

@@ -1,8 +1,8 @@
 {
-  "name": "isMan",
+  "name": "manness",
   "values": [
     {
-      "value": true,
+      "value": "a man",
       "matcherSets": [
         [{"matches": "true"}],
         [{"matches": "man"}, {"doesNotMatch": "not"}],
@@ -17,7 +17,7 @@
       }
     },
     {
-      "value": false,
+      "value": "not a man",
       "matcherSets": [
         [{"matches": "false"}],
         [{"matches": "man"}, {"matches": "not"}],
@@ -41,5 +41,5 @@
       "short": "?"
     }
   },
-  "terseReportValue": false
+  "terseReportValue": "not a man"
 }

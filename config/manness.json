@@ -5,7 +5,8 @@
       "value": true,
       "matcherSets": [
         [{"matches": "true"}],
-        [{"matches": "man"}, {"doesNotMatch": "not"}]
+        [{"matches": "man"}, {"doesNotMatch": "not"}],
+        [{"matches": "woman"}, {"matches": "not"}]
       ],
       "texts": {
         "information": "you are a man",
@@ -18,7 +19,8 @@
       "value": false,
       "matcherSets": [
         [{"matches": "false"}],
-        [{"matches": "man"}, {"matches": "not"}]
+        [{"matches": "man"}, {"matches": "not"}],
+        [{"matches": "woman"}, {"doesNotMatch": "not"}]
       ],
       "texts": {
         "information": "you are not a man",

@@ -268,18 +268,21 @@ test('StatsBot records a user\'s gender and race', function(t) {
 
   var prakash = {id: 'P', name: 'Prakash'};
   var laura = {id: 'L', name: 'Laura'};
+  var janet = {id: 'J', name: 'Janet'};
 
   var userStub = sinon.stub(adapter, 'getUser');
-  [prakash, laura].forEach(function(person) {
+  [prakash, laura, janet].forEach(function(person) {
     userStub.withArgs(person.id).returns(person);
   });
 
   var prakashDM = {id: 'P-DM', send: sinon.stub()};
   var lauraDM = {id: 'L-DM', send: sinon.stub()};
+  var janetDM = {id: 'J-DM', send: sinon.stub()};
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
   channelByIDStub.withArgs(prakashDM.id).returns(prakashDM);
   channelByIDStub.withArgs(lauraDM.id).returns(lauraDM);
+  channelByIDStub.withArgs(janetDM.id).returns(janetDM);
 
   var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
@@ -298,6 +301,14 @@ test('StatsBot records a user\'s gender and race', function(t) {
 
   t.ok(prakashDM.send.calledWithMatch(/you are a person of colour/), 'replies affirming that Prakash is a person of colour');
   t.ok(storeAttributeStub.calledWith('P', 'isPersonOfColour', true), 'stores that Prakash is a person of colour');
+
+  bot.handleDirectMessage(janetDM, {
+    text: 'I am a woman',
+    user: janet.id
+  });
+
+  t.ok(janetDM.send.calledWithMatch(/Okay, we have noted that you are not a man./), 'replies affirming that Janet is not a man');
+  t.ok(storeAttributeStub.calledWith('J', 'isMan', false), 'stores that Janet is not a man');
 
   bot.handleDirectMessage(lauraDM, {
     text: 'false',

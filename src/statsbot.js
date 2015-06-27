@@ -120,6 +120,7 @@ class StatsBot {
 
     Promise.all(extractionPromises).then(function(values) {
       var configurationAndValues = configurations.map(function(configuration, index) {
+        try {
           requestUnknownSelfIdentification({
             statistics: statistics,
             userRepository: this.userRepository,
@@ -127,6 +128,9 @@ class StatsBot {
             adapter: this.adapter,
             count: this.topUnknownsToQuery
           });
+        } catch (e) {
+          console.log('Exception requesting unknown self identification:', e);
+        }
 
         return {
           configuration: configuration,

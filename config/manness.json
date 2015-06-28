@@ -2,21 +2,6 @@
   "name": "manness",
   "values": [
     {
-      "value": "a man",
-      "matcherSets": [
-        [{"matches": "true"}],
-        [{"matches": "man"}, {"doesNotMatch": "not"}],
-        [{"matches": "woman"}, {"matches": "not"}]
-      ],
-      "texts": {
-        "information": "you are a man",
-        "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”",
-        "statistics": "men",
-        "table": "men",
-        "short": "M"
-      }
-    },
-    {
       "value": "not a man",
       "matcherSets": [
         [{"matches": "false"}],
@@ -30,6 +15,21 @@
         "table": "not-men",
         "terse": "not-men",
         "short": "NM"
+      }
+    },
+    {
+      "value": "a man",
+      "matcherSets": [
+        [{"matches": "true"}],
+        [{"matches": "man"}, {"doesNotMatch": "not"}, {"doesNotMatch": "woman"}],
+        [{"matches": "woman"}, {"matches": "not"}]
+      ],
+      "texts": {
+        "information": "you are a man",
+        "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”",
+        "statistics": "men",
+        "table": "men",
+        "short": "M"
       }
     }
   ],

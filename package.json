@@ -36,6 +36,7 @@
     "cron-parser": "^0.6.1",
     "lodash.every": "^3.2.0",
     "lodash.find": "^3.2.0",
+    "lodash.map": "^3.1.4",
     "lodash.some": "^3.2.0",
     "lodash.uniq": "^3.1.0",
     "lodash.values": "^3.0.0",

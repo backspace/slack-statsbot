@@ -6,14 +6,13 @@ var find = require('lodash.find');
 
 var UpdateParser = require('./update-parser');
 
+var attributeConfigurations = require('./attribute-configurations');
+
 class DirectMessageHandler {
   constructor(userRepository) {
     this.userRepository = userRepository;
 
-    this.attributeConfigurations = [
-      DirectMessageHandler.MANNESS_CONFIGURATION,
-      DirectMessageHandler.POCNESS_CONFIGURATION
-    ];
+    this.attributeConfigurations = attributeConfigurations;
   }
 
   handle(channel, message) {
@@ -107,8 +106,5 @@ class DirectMessageHandler {
 
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. View my source at https://github.com/backspace/slack-statsbot';
 DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}`;
-
-DirectMessageHandler.MANNESS_CONFIGURATION = require('../config/manness');
-DirectMessageHandler.POCNESS_CONFIGURATION = require('../config/pocness');
 
 module.exports = DirectMessageHandler;

@@ -5,8 +5,7 @@ var RepositoryAttributeExtractor = require('./persistence/repository-attribute-e
 
 var VerboseReportGenerator = require('./reports/verbose-attribute');
 
-var MANNESS_CONFIGURATION = require('../config/manness');
-var POCNESS_CONFIGURATION = require('../config/pocness');
+var attributeConfigurations = require('./attribute-configurations');
 
 var TerseReportGenerator = require('./reports/terse');
 
@@ -109,10 +108,7 @@ class StatsBot {
       this.log.resetChannelStatistics(channel.id);
     }
 
-    var configurations = [
-      MANNESS_CONFIGURATION,
-      POCNESS_CONFIGURATION
-    ];
+    var configurations = attributeConfigurations;
 
     var extractionPromises = configurations.map(function(configuration) {
       return new RepositoryAttributeExtractor(this.userRepository, configuration.name, Object.keys(statistics)).extract();

@@ -16,7 +16,7 @@ class DirectMessageHandler {
   }
 
   handle(channel, message) {
-    if (!message.text) return;
+    if (!message.text || message.subtype === 'bot_message') return;
     var text = message.text.toLowerCase();
 
     if (text === 'info') {

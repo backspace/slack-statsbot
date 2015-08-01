@@ -7,6 +7,14 @@ class SlackAdapter {
     this.client.on('error', this.error.bind(this));
 
     this.client.login();
+
+    // Create a null listener so the adapter can be used alone
+    this.listener = {
+      handleConnectedEvent() {},
+      handleErrorEvent() {},
+      handleChannelMessage() {},
+      handleDirectMessage() {}
+    };
   }
 
   registerListener(listener) {

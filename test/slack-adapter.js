@@ -1,4 +1,4 @@
-#!/usr/bin/env iojs --es_staging --use-strict
+#!/usr/bin/env node --use-strict
 
 var test = require('tape');
 var sinon = require('sinon');

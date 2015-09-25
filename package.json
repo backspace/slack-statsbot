@@ -4,9 +4,9 @@
   "description": "A Slack bot that reports channel statistics",
   "main": "index.js",
   "scripts": {
-    "start": "iojs --use-strict --es_staging index.js",
-    "debug": "iojs debug --use-strict --es_staging index.js",
-    "test": "prove -rmce \"iojs --use-strict --es_staging\" --ext .js test -v"
+    "start": "node --use-strict index.js",
+    "debug": "node debug --use-strict index.js",
+    "test": "prove -rmce \"node --use-strict \" --ext .js test -v"
   },
   "repository": {
     "type": "git",
@@ -51,6 +51,6 @@
     "validator": "^3.28.0"
   },
   "engines": {
-    "iojs": "1.0.3"
+    "node": "4.1.0"
   }
 }

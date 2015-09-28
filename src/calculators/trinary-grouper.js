@@ -40,7 +40,7 @@ module.exports = function(statistics, values, mappings) {
 
   var counts = userIDs.reduce(function(counts, userID) {
     var value = values[userID];
-    if (value !== undefined) value = value.toString();
+    if (value !== undefined && value !== null) value = value.toString();
     var count = statistics[userID];
 
     var indexOfMatchingMappingKey = mappingKeys.indexOf(value);

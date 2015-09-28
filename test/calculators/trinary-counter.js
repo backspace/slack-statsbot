@@ -9,14 +9,16 @@ test('trinaryCounter counts by attribute value', function(t) {
     'Is Purple': 4,
     'Is Also Purple': 3,
     'Is Yellow': 2,
-    'Colour unknown': 1
+    'Colour unknown': 1,
+    'Colour null': 1
   };
 
   var isPurple = {
     'Is Purple': true,
     'Is Also Purple': true,
     'Is Yellow': false,
-    'Colour unknown': undefined
+    'Colour unknown': undefined,
+    'Colour null': null
   };
 
   var mappings = {
@@ -29,7 +31,7 @@ test('trinaryCounter counts by attribute value', function(t) {
 
   t.equal(result.purples, 2, 'counts 2 purples');
   t.equal(result.notPurples, 1, 'counts 1 not-purple');
-  t.equal(result.hmm, 1, 'counts 1 unknown');
+  t.equal(result.hmm, 2, 'counts 1 unknown');
 
   t.end();
 });

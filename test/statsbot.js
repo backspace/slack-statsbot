@@ -126,7 +126,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   setTimeout(function() {
     t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
 
-    t.ok(botChannel.send.calledWithMatch(/#Ytterbium/), 'reports #Ytterbium statistics in the bot channel');
+    t.ok(botChannel.send.calledWithMatch(/#Yb/), 'reports #Ytterbium statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/^.*counts.*2.*$/m), 'reports a message count of 2');
     t.ok(botChannel.send.calledWithMatch(/^.*men.*100%.*$/m), 'reports that only men spoke in one channel');
     t.ok(botChannel.send.calledWithMatch(/^.*PoC.*0%.*$/m), 'reports that no people of colour spoke in one channel');
@@ -137,7 +137,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(ytterbium.send.calledWithMatch(/:sb_10::sb_0::sb_0:/), 'reports compactly in the channel that men dominated');
     t.ok(ytterbium.send.calledWithMatch(/:sb_0::sb_10::sb_0:/), 'reports compactly in the channel that non-PoC dominated');
 
-    t.ok(botChannel.send.calledWithMatch(/#Xenon/), 'reports #Xenon statistics in the bot channel');
+    t.ok(botChannel.send.calledWithMatch(/#Xe/), 'reports #Xenon statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/^.*counts.*3.*$/m), 'reports a message count of 3');
     t.ok(botChannel.send.calledWithMatch(/^.*men.*67%.*$/m), 'reports that men spoke ⅔ of the time in the other channel');
     t.ok(botChannel.send.calledWithMatch(/^.*not-men.*33%.*$/m), 'reports that not-men spoke ⅓ of the time in the other channel');

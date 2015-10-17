@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --use-strict index.js",
     "debug": "node debug --use-strict index.js",
-    "test": "prove -rmce \"node --use-strict \" --ext .js test -v"
+    "test": "tap --strict test/*"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,9 @@
 var fs = require('fs');
 var map = require('lodash.map');
 
-module.exports = map(fs.readdirSync('attributes/'), function(filename) {
+var path = require('path');
+var attributesPath = path.resolve(__dirname, '../attributes/');
+
+module.exports = map(fs.readdirSync(attributesPath), function(filename) {
   return require(`../attributes/${filename}`);
 });

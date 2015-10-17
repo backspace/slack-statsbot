@@ -12,6 +12,7 @@ module.exports = {
         type: DataTypes.BOOLEAN
       },
       slackID: {
+        unique: true,
         type: DataTypes.STRING
       },
       createdAt: {

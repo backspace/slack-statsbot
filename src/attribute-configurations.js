@@ -5,6 +5,6 @@ var path = require('path');
 var attributesPath = path.resolve(__dirname, '../attributes/');
 
 module.exports = [
-    require('../attributes/pocness.json'),
-    require('../attributes/manness.json')
+  require('../attributes/pocness.json'),
+  require('../attributes/manness.json')
 ];

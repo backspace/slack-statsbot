@@ -67,14 +67,10 @@ class TerseReportGenerator {
       shortLabels.push(configuration.unknownValue.texts.short);
       shortValues.push(emojiForProportion(messageCounts[configuration.unknownValue.texts.statistics]/total));
 
-      if (index > 0) {
-        report += 'and ';
-      }
-
-      report += `self-identified ${valueToReport.texts.terse} sent ${percent}% of messages (${shortLabels.join('|')} ${shortValues.join('')}) `;
+      report += `Self-identified ${valueToReport.texts.terse} sent ${percent}% of messages (${shortLabels.join('|')} ${shortValues.join('')}).\n`;
     }.bind(this));
 
-    report += `. See <#${this.statsChannel.id}> for more details. DM me to self-identify.`;
+    report += `See <#${this.statsChannel.id}> for more details. DM me to self-identify.`;
 
     return report;
   }

@@ -28,7 +28,7 @@ class TerseReportGenerator {
       return sum + value;
     }, 0);
 
-    var report = `Since ${moment(this.startTime).fromNow()}, `;
+    var report = `Since ${moment(this.startTime).fromNow()}:\n`;
     var shortLabelsAndValues = [];
 
     this.configurationAndValues.forEach(function(configurationAndValues, index) {

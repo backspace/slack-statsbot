@@ -43,6 +43,20 @@
         "table": "complicated",
         "short": "‽"
       }
+    },
+    {
+      "value": null,
+      "matcherSets": [
+        [{"matches": "person of colou?r"}, {"matches": "unknown"}],
+        [{"matches": "white"}, {"matches": "unknown"}]
+      ],
+      "texts": {
+        "information": "we have no information on whether or not you are a person of colour",
+        "update": "We have erased our record of whether you are a person of colour.",
+        "statistics": "unknown",
+        "table": "unknown",
+        "short": "?"
+      }
     }
   ],
   "unknownValue": {

@@ -45,6 +45,20 @@
         "table": "complicated",
         "short": "‽"
       }
+    },
+    {
+      "value": null,
+      "matcherSets": [
+        [{"matches": "man"}, {"matches": "unknown"}],
+        [{"matches": "woman"}, {"matches": "unknown"}]
+      ],
+      "texts": {
+        "information": "we have no information on whether or not you are a man",
+        "update": "Okay, we have erased our record of whether you are a man.",
+        "statistics": "unknown",
+        "table": "unknown",
+        "short": "?"
+      }
     }
   ],
   "unknownValue": {

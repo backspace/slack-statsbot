@@ -19,17 +19,21 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
   var buck = {id: 'B', name: 'Buck', manness: 'a man'};
   var buckDM = {send: sinon.stub()};
 
+  var tyler = {id: 'T', name: 'Tyler', manness: 'unknown man'};
+  var tylerDM = {send: sinon.stub()};
+
   var unknown = {id: 'U', name: 'Unknown', manness: 'what is this'};
   var unknownDM = {send: sinon.stub()};
 
   var personIDToChannel = {};
   personIDToChannel[janis.id] = janisDM;
   personIDToChannel[buck.id] = buckDM;
+  personIDToChannel[tyler.id] = tylerDM;
   personIDToChannel[unknown.id] = unknownDM;
 
   var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
-  [janis, buck, unknown].forEach(function(person) {
+  [janis, buck, tyler, unknown].forEach(function(person) {
     handler.handle(personIDToChannel[person.id], {
       text: `${person.manness}`,
       user: person.id
@@ -41,6 +45,9 @@ test('DirectMessageHandler updates whether or not the user is a man', function(t
 
   t.ok(buckDM.send.calledWithMatch(/Okay, we have noted that you are a man./), 'replies affirming that Buck is a man');
   t.ok(storeAttributeStub.calledWith(buck.id, 'manness', 'a man'), 'stores that Buck is a man');
+
+  t.ok(tylerDM.send.calledWithMatch(/Okay, we have erased our record of whether you are a man./), 'replies affirming that the record of Tyler’s manness has been erased');
+  t.ok(storeAttributeStub.calledWith(tyler.id, 'manness', null), 'erases Tyler’s manness');
 
   t.ok(unknownDM.send.calledWithMatch(/I’m sorry, I’m not that advanced and I didn’t understand your message./), 'replies that it didn’t understand the message');
   t.ok(storeAttributeStub.neverCalledWith(unknown.id), 'does not store anything about Unknown');
@@ -61,6 +68,9 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   var david = {id: 'D', name: 'David', message: 'I am white'};
   var davidDM = {send: sinon.stub()};
 
+  var tyler = {id: 'T', name: 'Tyler', message: 'unknown whether i am white'};
+  var tylerDM = {send: sinon.stub()};
+
   var complicated = {id: 'Com', name: 'Complicated', message: 'it’s complicated whether I’m a person of colour'};
   var complicatedDM = {send: sinon.stub()};
 
@@ -70,12 +80,13 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   var personIDToChannel = {};
   personIDToChannel[chris.id] = chrisDM;
   personIDToChannel[david.id] = davidDM;
+  personIDToChannel[tyler.id] = tylerDM;
   personIDToChannel[complicated.id] = complicatedDM;
   personIDToChannel[unknown.id] = unknownDM;
 
   var storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
-  [chris, david, complicated, unknown].forEach(function(person) {
+  [chris, david, tyler, complicated, unknown].forEach(function(person) {
     handler.handle(personIDToChannel[person.id], {
       text: `${person.message}`,
       user: person.id
@@ -87,6 +98,9 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
 
   t.ok(davidDM.send.calledWithMatch(/you are not a person of colour/), 'replies affirming that David is not a person of colour');
   t.ok(storeAttributeStub.calledWith(david.id, 'pocness', 'not a PoC'), 'stores that David is not a person of colour');
+
+  t.ok(tylerDM.send.calledWithMatch(/erased our record of whether you are a person of colour/), 'replies affirming that the record of Tyler’s whiteness has been erased');
+  t.ok(storeAttributeStub.calledWith(tyler.id, 'pocness', null), 'erases Tyler’s whiteness');
 
   t.ok(complicatedDM.send.calledWithMatch(/it’s complicated whether you are a person of colour/), 'replies affirming that it’s complicated whether Complicated is a person of colour');
   t.ok(storeAttributeStub.calledWith(complicated.id, 'pocness', 'complicated'), 'stores that it’s complicated whether Complicated is a person of colour');

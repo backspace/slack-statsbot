@@ -64,9 +64,6 @@ class TerseReportGenerator {
         shortValues.push(emojiForProportion(messageCounts[valueConfiguration.texts.statistics]/total));
       });
 
-      shortLabels.push(configuration.unknownValue.texts.short);
-      shortValues.push(emojiForProportion(messageCounts[configuration.unknownValue.texts.statistics]/total));
-
       report += `Self-identified ${valueToReport.texts.terse} sent ${percent}% of messages (${shortLabels.join('|')} ${shortValues.join('')}).\n`;
     }.bind(this));
 

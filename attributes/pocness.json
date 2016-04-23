@@ -59,13 +59,5 @@
       }
     }
   ],
-  "unknownValue": {
-    "texts": {
-      "information": "we have no information on whether or not you are a person of colour",
-      "statistics": "unknown",
-      "table": "unknown",
-      "short": "?"
-    }
-  },
   "terseReportValue": "a PoC"
 }

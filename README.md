@@ -37,7 +37,7 @@ I am a man myself, and recognise my own complicity in these patterns even as I w
   * not printing a report when a channel has not had any messages
   * the message count logger
   * the `UserRepository`, a wrapper around Sequelize
-* software can only do so much to undermine patriarchy
+* software can only do so much to undermine patriarchy and white supremacy
 
 ## Requirements
 

@@ -12,17 +12,18 @@ var VERBOSE_HELP_MESSAGE = require('./direct-message-handler').VERBOSE_HELP_MESS
 module.exports = function(options) {
   var statistics = options.statistics;
   var userRepository = options.userRepository;
-  var knownness = options.knownness;
+  // FIXME what is a better name for this?
+  var knownnesses = options.knownnesses;
   var adapter = options.adapter;
   var count = options.count;
 
-  var statisticsForUnknowns = selectUnknowns(statistics, knownness);
+  var statisticsForUnknowns = selectUnknowns(statistics, knownnesses);
 
   var hasBeenQueriedExtractor = new RepositoryAttributeExtractor(userRepository, 'hasBeenQueried', Object.keys(statisticsForUnknowns));
 
   hasBeenQueriedExtractor.extract().then(function(userHasBeenQueried) {
     // TODO this excludes users who have hasBeenQueried=false, maybe okay?
-    var statisticsForUnqueriedUnknowns = selectUnknowns(statisticsForUnknowns, userHasBeenQueried);
+    var statisticsForUnqueriedUnknowns = selectUnknowns(statisticsForUnknowns, [userHasBeenQueried]);
     var topTwoUnknowns = selectTopKeys(statisticsForUnqueriedUnknowns, options.count);
 
     topTwoUnknowns.forEach(function(unknown) {

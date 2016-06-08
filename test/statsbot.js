@@ -189,7 +189,7 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
 
   var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
 
-  var known = {id: '1', name: 'Known', manness: 'a man'};
+  var known = {id: '1', name: 'Known', manness: 'a man', pocness: 'a person of colour'};
   var topUnknown = {id: 'u1', name: 'Unknown 1', manness: undefined};
   var declinedUnknown = {id: 'u2', name: 'Unknown 2', manness: undefined, hasBeenQueried: true};
   var nextUnknown = {id: 'u3', name: 'Unknown 3', manness: undefined};
@@ -206,8 +206,8 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
     personToDM.set(person, dm);
 
     retrieveAttributeStub.withArgs(person.id, 'manness').returns(Promise.resolve(person.manness));
-    // Bypass unknown PoC messaging for this test
-    retrieveAttributeStub.withArgs(person.id, 'pocness').returns(true);
+    // Use manness as pocness for this test
+    retrieveAttributeStub.withArgs(person.id, 'pocness').returns(Promise.resolve(person.pocness || person.pocness));
     retrieveAttributeStub.withArgs(person.id, 'hasBeenQueried').returns(Promise.resolve(person.hasBeenQueried));
 
     dmByUserStub.withArgs(person.id).returns(dm);
@@ -249,9 +249,9 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
 
   setTimeout(function() {
     t.equal(personToDM.get(known).send.called, false, 'did not DM the person whose gender was known');
-    t.equal(personToDM.get(topUnknown).send.called, true, 'DMed the top unknown');
+    t.equal(personToDM.get(topUnknown).send.calledOnce, true, 'DMed the top unknown only once');
     t.equal(personToDM.get(declinedUnknown).send.called, false, 'did not DM the person who declined to self-identify');
-    t.equal(personToDM.get(nextUnknown).send.called, true, 'DMed the second-to-top unknown');
+    t.equal(personToDM.get(nextUnknown).send.calledOnce, true, 'DMed the second-to-top unknown only once');
     t.equal(personToDM.get(bottomUnknown).send.called, false, 'did not DM the third-to-top unknown');
 
     t.ok(storeAttributeStub.calledWith(topUnknown.id, 'hasBeenQueried', true), 'stores that the top unknown has been queried');

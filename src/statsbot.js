@@ -116,24 +116,23 @@ class StatsBot {
 
     Promise.all(extractionPromises).then(function(values) {
       var configurationAndValues = configurations.map(function(configuration, index) {
-        try {
-          requestUnknownSelfIdentification({
-            statistics: statistics,
-            userRepository: this.userRepository,
-            knownness: values[index],
-            adapter: this.adapter,
-            count: this.topUnknownsToQuery
-          });
-        } catch (e) {
-          console.log('Exception requesting unknown self identification:', e);
-        }
-
         return {
           configuration: configuration,
           values: values[index]
         };
-      }.bind(this));
+      });
 
+      try {
+        requestUnknownSelfIdentification({
+          statistics: statistics,
+          userRepository: this.userRepository,
+          knownnesses: values,
+          adapter: this.adapter,
+          count: this.topUnknownsToQuery
+        });
+      } catch (e) {
+        console.log('Exception requesting unknown self identification:', e);
+      }
 
       var verboseReport = `<#${channel.id}> since ${moment(metadata.startTime).fromNow()}:\n`;
 

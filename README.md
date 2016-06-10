@@ -4,7 +4,7 @@ This is a [Slack](https://slack.com) bot that monitors and reports on who is spe
 
 It is alpha-quality as we work out what we need. For now, it monitors any channel it’s a member of and reports on who has been speaking by whether or not they are men.
 
-To tell the bot you are a man, you send a direct message saying `I am a man`, or `I’m not a man` otherwise. You can check how your gender has been recorded by saying `info`. This interface is brittle but functional for now.
+To tell the bot you are a man, you send a direct message saying `I am a man`, or `I’m not a man` otherwise. You can say `I am a person of colour` or `I am white`. You can check what information has been recorded by saying `info`. This interface is brittle but functional for now.
 
 It’s not my tendency to categorise the world as men vs. not-men, but in the case of space-domination, it seems like the necessary dichotomy.
 

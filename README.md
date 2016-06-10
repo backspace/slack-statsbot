@@ -41,6 +41,8 @@ I am a man myself, and recognise my own complicity in these patterns even as I w
 
 ## Requirements
 
+This uses ES2015 features and runs on (at least) Node 4.2.0.
+
 The bot is for Slack, so you’ll need to set up a bot integration and have an API token ready. The user information is stored in a Postgres database.
 
 ## Running
@@ -53,7 +55,7 @@ You can run the bot thusly:
 
 ## Testing
 
-Because this is targeted to io.js and ES6, testing is very much in flux. You *should* be able to run the tests thusly:
+You *should* be able to run the tests thusly:
 
     npm test
 

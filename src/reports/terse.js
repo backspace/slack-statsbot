@@ -10,7 +10,7 @@ function emojiForProportion(p) {
   p = Math.min(p, 1);
   p = Math.max(p, 0);
   let out_of_10 = Math.floor(p*10);
-  return `:sb_${out_of_10}:`;
+  return `:sb-${out_of_10}:`;
 }
 
 class TerseReportGenerator {

@@ -8,6 +8,20 @@ To tell the bot you are a man, you send a direct message saying `I am a man`, or
 
 It’s not my tendency to categorise the world as men vs. not-men, but in the case of space-domination, it seems like the necessary dichotomy.
 
+## How does it work?
+
+The bot observes messages in channels it’s invited to. On every hour (configurable with `REPORTING_INTERVAL`), it posts a brief report in each channel it has monitored, as long as a minimum `REPORTING_THRESHOLD` of messages has been reached, 10 by default.
+
+![Example terse report](img/terse-example.png)
+
+It also reports the detailed statistics for each channel in the `STATS_CHANNEL`, which is `#statsbot` by default.
+
+![Example verbose report](img/verbose-example.png)
+
+If `TOP_UNKNOWNS_TO_QUERY` is set to greater than 0 (it defaults to 2), the bot will message the two most talkative users who have not self-identified and have not yet been queried to ask them to self-identify.
+
+> Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. View my source at https://github.com/backspace/slack-statsbot If you don’t want to answer that’s okay, I won’t ask again.
+
 ## But why?
 
 From [Seven Studies That Prove Mansplaining Exists](http://bitchmagazine.org/post/seven-studies-proving-mansplaining-exists):

@@ -38,6 +38,7 @@ I am a man myself, and recognise my own complicity in these patterns even as I w
   * the message count logger
   * the `UserRepository`, a wrapper around Sequelize
 * software can only do so much to undermine patriarchy and white supremacy
+* some people are annoyed by the appearance of new messages in a channel only to find it’s the bot’s report, but Slack doesn’t (yet?) provide a way to send silent messages or the like
 
 ## Requirements
 

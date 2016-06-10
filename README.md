@@ -45,6 +45,8 @@ This uses ES2015 features and runs on (at least) Node 4.2.0.
 
 The bot is for Slack, so you’ll need to set up a bot integration and have an API token ready. The user information is stored in a Postgres database.
 
+The terse, in-channel reports use emoji for a concise, sparkline-like experience. Add the images at `img/sb-*.png` as emoji manually or with one of the many brittle-seeming tools.
+
 ## Running
 
 You can run the bot thusly:
@@ -79,4 +81,4 @@ But maybe that doesn’t even work, either. Check out [the issue](https://github
 
 Thanks to my mom for raising me with feminist values, even if they weren’t called that. Many friends and writers have helped me learn more about anti-oppression or social justice or whatever you like to call it.
 
-The people in the Slack have been supportive as I worked on this, particularly @aredridel and @iarna. Thanks to @seldo for setting it up.
+The people in the Slack have been supportive as I worked on this, particularly @aredridel and @iarna. Thanks to @seldo for setting it up. Thanks to @joxn for the sparkline emoji.

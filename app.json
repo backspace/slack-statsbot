@@ -32,14 +32,15 @@
     "TOP_UNKNOWNS_TO_QUERY": {
       "description": "The bot will query (only once) the top N people who have yet to self-identify to ask them to do so.",
       "value": "2"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 0
     },
-    "WEB_CONCURRENCY": {
-      "description": "There is no web interface to the bot.",
-      "value": "0"
-    },
-    "WORKER_CONCURRENCY": {
-      "description": "The bot operates as a worker. Sadly, while WEB_CONCURRENCY works to set the number of web processes to 0, this has no effect, so you will have to manually set the number of worker processes to 1 after the application has been created.",
-      "value": "1"
+    "worker": {
+      "quantity": 1,
+      "size": "free"
     }
   }
 }

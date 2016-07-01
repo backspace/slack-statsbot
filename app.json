@@ -10,6 +10,9 @@
   "addons": [
     "heroku-postgresql"
   ],
+  "scripts": {
+    "postdeploy": "./node_modules/.bin/sequelize --env production db:migrate"
+  },
   "env": {
     "SLACK_TOKEN": {
       "description": "The API token in the Slack bot integration settings",

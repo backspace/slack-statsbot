@@ -84,13 +84,7 @@ If that doesn’t work, this might:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/backspace/slack-statsbot/tree/primary)
 
-There seems to be no way to set the number of worker processes via the above Deploy button, so after the application has started, you should set the number of worker processes to 1. You can do this via the Heroku web interface at https://dashboard.heroku.com/apps/yourappname or by running `heroku ps:scale worker=1 -a yourappname`.
-
-I tried adding a `postdeploy` script to the `app.json` Heroku deployment configuration but it fails on an error, so the application has been deployed, you should run the database migrations:
-
-    heroku run -a yourappname sequelize --env production db:migrate
-
-But maybe that doesn’t even work, either. Check out [the issue](https://github.com/backspace/slack-statsbot/issues/8) for details.
+If you have a Heroku account, you can deploy the statsbot with minimal effort with the above button. You’ll need your Slack token, but everything else has sufficient defaults. With Heroku’s new pricing structure, if you like the bot, you may need to move to a Hobby dyno to prevent it from being [shut down](https://devcenter.heroku.com/articles/free-dyno-hours).
 
 ## Acknowledgements
 

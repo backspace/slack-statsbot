@@ -23,6 +23,7 @@ class StatsBot {
 
     this.log = new MessageLog();
     this.userRepository = userRepository;
+    this.channelRepository = channelRepository;
 
     this.statsChannel = options.statsChannel;
     this.topUnknownsToQuery = options.topUnknownsToQuery;
@@ -113,7 +114,11 @@ class StatsBot {
       return new RepositoryAttributeExtractor(this.userRepository, configuration.name, Object.keys(statistics)).extract();
     }.bind(this));
 
-    Promise.all(extractionPromises).then(function(values) {
+    var ignoredAttributesPromise = this.channelRepository.retrieveIgnoredAttributes(channel.id);
+
+    Promise.all([...extractionPromises, ignoredAttributesPromise]).then(function(results) {
+      var ignoredAttributes = results.pop();
+      var values = results;
       var configurationAndValues = configurations.map(function(configuration, index) {
         return {
           configuration: configuration,
@@ -143,7 +148,9 @@ class StatsBot {
 
       botChannel.send(verboseReport);
 
-      var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel).generate();
+      configurationAndValues.forEach(({configuration}) => console.log(configuration.name));
+      var filteredConfigurationAndValues = configurationAndValues.filter(({configuration}) => !ignoredAttributes.includes(configuration.name));
+      var terseReport = new TerseReportGenerator(statistics, filteredConfigurationAndValues, metadata.startTime, botChannel).generate();
       channel.send(terseReport);
 
     }.bind(this));

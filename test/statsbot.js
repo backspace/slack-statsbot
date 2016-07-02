@@ -18,8 +18,7 @@ var fakeUserRepository = {
 };
 
 var fakeChannelRepository = {
-  storeAttribute() {},
-  retrieveAttribute() {}
+  retrieveIgnoredAttributes() { return []; }
 };
 
 // TODO these are a weird mix of unit and acceptance tests
@@ -74,13 +73,21 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
   var ytterbium = {id: 'Yb', name: 'Ytterbium', send: sinon.stub()};
+  var zirconium = {id: 'Zr', name: 'Zirconium', send: sinon.stub()};
 
   var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
+  var retrieveIgnoredAttributesStub = sinon.stub(fakeChannelRepository, 'retrieveIgnoredAttributes');
 
-  [xenon, ytterbium, botChannel].forEach(function(channel) {
+  [xenon, ytterbium, zirconium, botChannel].forEach(function(channel) {
     channelByIDStub.withArgs(channel.id).returns(channel);
+
+    if (channel === zirconium) {
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns(['manness']);
+    } else {
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns([]);
+    }
   });
 
   var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
@@ -124,9 +131,20 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: ytterbium.id
   });
 
+  bot.handleChannelMessage(zirconium, {
+    user: alice.id,
+    channel: zirconium.id
+  });
+
+  bot.handleChannelMessage(zirconium, {
+    user: alice.id,
+    channel: zirconium.id
+  });
+
   bot.reportChannelStatistics(botChannel.id);
   bot.reportChannelStatistics('Yb');
   bot.reportChannelStatistics('Xe');
+  bot.reportChannelStatistics('Zr');
 
   setTimeout(function() {
     t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
@@ -155,6 +173,9 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(xenon.send.calledWithMatch(/people of colour sent 67% of messages/), 'reports in the channel that people of colour sent 67% of messages');
     t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that men dominated');
     t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that non-PoC did not dominate');
+
+    t.ok(zirconium.send.calledWithMatch(/people of colour/), 'reports about people of colour in the channel with an ignored attribute');
+    t.ok(zirconium.send.neverCalledWithMatch(/not-men/), 'does not report about not-men in the channel with an ignored attribute');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,

@@ -1,20 +1,18 @@
 "use strict";
 
 module.exports = {
-  up: function(migration, DataTypes, done) {
-    migration.addColumn(
+  up: function(migration, DataTypes) {
+    return migration.addColumn(
       'Users',
       'isPersonOfColour',
       DataTypes.BOOLEAN
     );
-    done();
   },
 
-  down: function(migration, DataTypes, done) {
-    migration.removeColumn(
+  down: function(migration, DataTypes) {
+    return migration.removeColumn(
       'Users',
       'isPersonOfColour'
     );
-    done();
   }
 };

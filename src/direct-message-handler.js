@@ -9,7 +9,7 @@ var UpdateParser = require('./update-parser');
 var attributeConfigurations = require('./attribute-configurations');
 
 class DirectMessageHandler {
-  constructor(userRepository) {
+  constructor({userRepository, channelRepository}) {
     this.userRepository = userRepository;
 
     this.attributeConfigurations = attributeConfigurations;

@@ -8,10 +8,14 @@ var fakeUserRepository = {
   retrieveAttribute() {}
 };
 
+var fakeChannelRepository = {
+  retrieveIgnoredAttributes() {}
+};
+
 var DirectMessageHandler = require('../src/direct-message-handler');
 
 test('DirectMessageHandler updates whether or not the user is a man', function(t) {
-  var handler = new DirectMessageHandler(fakeUserRepository);
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
 
   var janis = {id: 'J', name: 'Janis', manness: 'not a man'};
   var janisDM = {send: sinon.stub()};
@@ -60,7 +64,7 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   // TODO reduce setup boilerplate
   // but this is all too acceptance-like and redundant and should just test
   // that the parsers are called and their results are used
-  var handler = new DirectMessageHandler(fakeUserRepository);
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
 
   var chris = {id: 'C', name: 'Chris', message: 'i am a person of colour'};
   var chrisDM = {send: sinon.stub()};
@@ -113,7 +117,7 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
 });
 
 test('DirectMessageHandler handles an information request', function(t) {
-  var handler = new DirectMessageHandler(fakeUserRepository);
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
 
   var janis = {id: 'J', name: 'Janis', 'manness': 'not a man', 'pocness': 'not a PoC'};
   var janisDM = {send: sinon.stub()};
@@ -169,7 +173,7 @@ test('DirectMessageHandler handles an information request', function(t) {
 });
 
 test('DirectMessageHandler handles a help request', function(t) {
-  var handler = new DirectMessageHandler(fakeUserRepository);
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
 
   var person = {id: 'P', name: 'Person'};
   var personDM = {send: sinon.stub()};

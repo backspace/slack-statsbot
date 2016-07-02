@@ -14,7 +14,7 @@ var adapter = new SlackAdapter(client);
 
 var userRepository = new UserRepository(db.User);
 
-var bot = new StatsBot(adapter, userRepository, {
+var bot = new StatsBot(adapter, {userRepository}, {
   statsChannel: conf.get('statsChannel'),
   topUnknownsToQuery: conf.get('topUnknownsToQuery'),
   reportingThreshold: conf.get('reportingThreshold')

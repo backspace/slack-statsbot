@@ -17,12 +17,12 @@ var values = require('lodash.values');
 var moment = require('moment');
 
 class StatsBot {
-  constructor(adapter, userRepository, options) {
+  constructor(adapter, repositories, options) {
     this.adapter = adapter;
     this.adapter.registerListener(this);
 
     this.log = new MessageLog();
-    this.userRepository = userRepository;
+    this.userRepository = repositories.userRepository;
 
     options = options || {};
     this.statsChannel = options.statsChannel;

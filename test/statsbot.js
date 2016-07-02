@@ -17,6 +17,11 @@ var fakeUserRepository = {
   retrieveAttribute() {}
 };
 
+var fakeChannelRepository = {
+  storeAttribute() {},
+  retrieveAttribute() {}
+};
+
 // TODO these are a weird mix of unit and acceptance tests
 
 test('Constructing a StatsBot registers it with the adapter', function(t) {
@@ -28,14 +33,14 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 
   var registerListenerStub = sinon.stub(fakeAdapter, 'registerListener');
 
-  var bot = new StatsBot(fakeAdapter);
+  var bot = new StatsBot(fakeAdapter, {});
 
   t.ok(registerListenerStub.calledWith(bot), 'should register itself as a listener');
 });
 
 test('StatsBot announces in its channel that it has started', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot'});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot'});
 
   var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
 
@@ -52,7 +57,7 @@ test('StatsBot announces in its channel that it has started', function(t) {
 });
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot', reportingThreshold: 2});
 
   var alice = {id: '1', name: 'Alice', manness: 'a man', pocness: 'not a PoC'};
   var bob = {id: '2', name: 'Bob', manness: 'not a man', pocness: 'a PoC'};
@@ -187,7 +192,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 test('StatsBot asks the top two unknowns in a reporting period who have not declined to self-identify', function(t) {
   var adapter = new SlackAdapter(fakeClient);
 
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
 
   var known = {id: '1', name: 'Known', manness: 'a man', pocness: 'a person of colour'};
   var topUnknown = {id: 'u1', name: 'Unknown 1', manness: undefined};
@@ -268,7 +273,7 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
 
 test('StatsBot records a user\'s gender and race', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository);
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository});
 
   var prakash = {id: 'P', name: 'Prakash'};
   var laura = {id: 'L', name: 'Laura'};
@@ -339,7 +344,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
 
 test('StatsBot responds with a user\'s information when they ask', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository);
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository});
 
   var shane = {id: 'S', name: 'Shane'};
   var shaneDM = {send: sinon.stub()};

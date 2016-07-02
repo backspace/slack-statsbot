@@ -33,7 +33,7 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 
   var registerListenerStub = sinon.stub(fakeAdapter, 'registerListener');
 
-  var bot = new StatsBot(fakeAdapter, {});
+  var bot = new StatsBot(fakeAdapter);
 
   t.ok(registerListenerStub.calledWith(bot), 'should register itself as a listener');
 });

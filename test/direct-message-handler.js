@@ -255,5 +255,13 @@ test('DirectMessageHandler updates channel options', function(t) {
   t.ok(removeIgnoredAttributeStub.calledOnce, 'expected the channel options to have been updated');
   t.ok(adminDM.send.calledWithMatch(/I will again report on manness in #men-explicit/), 'replies to the admin that the attribute will not be ignored');
 
+  handler.handle(adminDM, {
+    text: `Ignore jortsness in <#${channel.id}>`,
+    user: admin.id
+  });
+
+  t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered with an invalid attribute name');
+  t.ok(adminDM.send.calledWithMatch(/Sorry, that attribute is unknown/), 'replies to the admin that the attribute is unknown');
+
   t.end();
 });

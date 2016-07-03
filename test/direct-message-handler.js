@@ -235,5 +235,13 @@ test('DirectMessageHandler updates channel options', function(t) {
   t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered by the non-admin message');
   t.ok(nonAdminDM.send.calledWithMatch(/sorry/), 'expected the non-admin to receive the not-understood message');
 
+  handler.handle(adminDM, {
+    text: 'Ignore manness in <#nonchannelid>',
+    user: admin.id
+  });
+
+  t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered by an unknown channel');
+  t.ok(adminDM.send.calledWithMatch(/Sorry, I couldn’t find that channel./), 'replies to the admin that the channel is unknown');
+
   t.end();
 });

@@ -114,10 +114,14 @@ class DirectMessageHandler {
     var targetChannelID = messageText.match(/\<#(\w*)>/)[1];
     var targetChannel = this.adapter.getChannel(targetChannelID);
 
-    var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));
+    if (targetChannel) {
+      var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));
 
-    this.channelRepository.addIgnoredAttribute(targetChannel.id, ignoredAttribute);
-    dmChannel.send(`Okay, I will no longer report on ${ignoredAttribute} in #${targetChannel.name}.`);
+      this.channelRepository.addIgnoredAttribute(targetChannel.id, ignoredAttribute);
+      dmChannel.send(`Okay, I will no longer report on ${ignoredAttribute} in #${targetChannel.name}.`);
+    } else {
+      dmChannel.send('Sorry, I couldn’t find that channel.');
+    }
   }
 }
 

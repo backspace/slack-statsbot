@@ -148,7 +148,6 @@ class StatsBot {
 
       botChannel.send(verboseReport);
 
-      configurationAndValues.forEach(({configuration}) => console.log(configuration.name));
       var filteredConfigurationAndValues = configurationAndValues.filter(({configuration}) => !ignoredAttributes.includes(configuration.name));
       var terseReport = new TerseReportGenerator(statistics, filteredConfigurationAndValues, metadata.startTime, botChannel).generate();
       channel.send(terseReport);

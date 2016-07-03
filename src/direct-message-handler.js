@@ -28,6 +28,8 @@ class DirectMessageHandler {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
+    } else if (text.includes('unignore') && user.is_admin) {
+      this.handleUnignoreAttributeRequest(channel, message);
     } else if (text.includes('ignore') && user.is_admin) {
       this.handleIgnoreAttributeRequest(channel, message);
     } else {
@@ -109,6 +111,26 @@ class DirectMessageHandler {
   }
 
   handleIgnoreAttributeRequest(dmChannel, message) {
+    const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.addIgnoredAttribute)
+
+    if (updateResults) {
+      dmChannel.send(`Okay, I will no longer report on ${updateResults.ignoredAttribute} in #${updateResults.targetChannel.name}.`);
+    } else {
+      dmChannel.send('Sorry, I couldn’t find that channel.');
+    }
+  }
+
+  handleUnignoreAttributeRequest(dmChannel, message) {
+    const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.removeIgnoredAttribute);
+
+    if (updateResults) {
+      dmChannel.send(`I will again report on ${updateResults.ignoredAttribute} in #${updateResults.targetChannel.name}.`);
+    } else {
+      dmChannel.send('Sorry, I couldn’t find that channel.');
+    }
+  }
+
+  parseAndUpdateChannelIgnores(dmChannel, message, repositoryFunction) {
     var messageText = message.text;
 
     var targetChannelID = messageText.match(/\<#(\w*)>/)[1];
@@ -117,10 +139,10 @@ class DirectMessageHandler {
     if (targetChannel) {
       var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));
 
-      this.channelRepository.addIgnoredAttribute(targetChannel.id, ignoredAttribute);
-      dmChannel.send(`Okay, I will no longer report on ${ignoredAttribute} in #${targetChannel.name}.`);
+      repositoryFunction(targetChannel.id, ignoredAttribute);
+      return ignoredAttribute;
     } else {
-      dmChannel.send('Sorry, I couldn’t find that channel.');
+      return false;
     }
   }
 }

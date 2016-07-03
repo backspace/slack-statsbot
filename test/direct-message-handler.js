@@ -10,6 +10,7 @@ var fakeUserRepository = {
 
 var fakeChannelRepository = {
   addIgnoredAttribute() {},
+  removeIgnoredAttribute() {},
   retrieveIgnoredAttributes() {}
 };
 
@@ -242,6 +243,17 @@ test('DirectMessageHandler updates channel options', function(t) {
 
   t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered by an unknown channel');
   t.ok(adminDM.send.calledWithMatch(/Sorry, I couldn’t find that channel./), 'replies to the admin that the channel is unknown');
+
+  var removeIgnoredAttributeStub = sinon.stub(fakeChannelRepository, 'removeIgnoredAttribute');
+  removeIgnoredAttributeStub.withArgs(channel.id, 'manness');
+
+  handler.handle(adminDM, {
+    text: `Unignore manness in <#${channel.id}>`,
+    user: admin.id
+  });
+
+  t.ok(removeIgnoredAttributeStub.calledOnce, 'expected the channel options to have been updated');
+  t.ok(adminDM.send.calledWithMatch(/I will again report on manness in #men-explicit/), 'replies to the admin that the attribute will not be ignored');
 
   t.end();
 });

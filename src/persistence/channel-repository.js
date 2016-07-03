@@ -10,6 +10,13 @@ class ChannelRepository {
     });
   }
 
+  removeIgnoredAttribute(slackID, attribute) {
+    return this.Channel.findOrCreate({where: {slackID}}).spread(channel => {
+      channel.ignoredAttributes = channel.ignoredAttributes.filter(existingIgnoredAttribute => attribute != existingIgnoredAttribute);
+      return channel.save();
+    });
+  }
+
   retrieveIgnoredAttributes(slackID) {
     return this.Channel.find({where: {slackID}}).then(channel => {
       if (channel) {

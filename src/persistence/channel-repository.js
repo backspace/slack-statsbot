@@ -7,7 +7,7 @@ class ChannelRepository {
     return this.Channel.findOrCreate({where: {slackID}}).spread(channel => {
       channel.ignoredAttributes = channel.ignoredAttributes.concat([attribute]);
       return channel.save();
-    })
+    });
   }
 
   retrieveIgnoredAttributes(slackID) {

@@ -14,13 +14,16 @@ var fakeChannelRepository = {
 };
 
 var fakeAdapter = {
-  getChannel() {}
+  getChannel() {},
+  getUser() {
+    return {};
+  }
 };
 
 var DirectMessageHandler = require('../src/direct-message-handler');
 
 test('DirectMessageHandler updates whether or not the user is a man', function(t) {
-  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository, adapter: fakeAdapter});
 
   var janis = {id: 'J', name: 'Janis', manness: 'not a man'};
   var janisDM = {send: sinon.stub()};
@@ -69,7 +72,7 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
   // TODO reduce setup boilerplate
   // but this is all too acceptance-like and redundant and should just test
   // that the parsers are called and their results are used
-  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository, adapter: fakeAdapter});
 
   var chris = {id: 'C', name: 'Chris', message: 'i am a person of colour'};
   var chrisDM = {send: sinon.stub()};
@@ -122,7 +125,7 @@ test('DirectMessageHandler updates whether the user is a person of colour', func
 });
 
 test('DirectMessageHandler handles an information request', function(t) {
-  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository, adapter: fakeAdapter});
 
   var janis = {id: 'J', name: 'Janis', 'manness': 'not a man', 'pocness': 'not a PoC'};
   var janisDM = {send: sinon.stub()};
@@ -178,7 +181,7 @@ test('DirectMessageHandler handles an information request', function(t) {
 });
 
 test('DirectMessageHandler handles a help request', function(t) {
-  var handler = new DirectMessageHandler({userRepository: fakeUserRepository});
+  var handler = new DirectMessageHandler({userRepository: fakeUserRepository, adapter: fakeAdapter});
 
   var person = {id: 'P', name: 'Person'};
   var personDM = {send: sinon.stub()};
@@ -198,12 +201,19 @@ test('DirectMessageHandler handles a help request', function(t) {
 test('DirectMessageHandler updates channel options', function(t) {
   const handler = new DirectMessageHandler({channelRepository: fakeChannelRepository, adapter: fakeAdapter});
 
-  var admin = {id: 'A', name: 'Admin'};
+  var admin = {id: 'A', name: 'Admin', is_admin: true};
   var adminDM = {send: sinon.stub()};
+
+  var nonAdmin = {id: 'N', name: 'Non-admin', is_admin: false};
+  var nonAdminDM = {send: sinon.stub()};
 
   var getChannelStub = sinon.stub(fakeAdapter, 'getChannel');
   var channel = {id: 'menexplicitid', name: 'men-explicit', send: sinon.stub()};
   getChannelStub.withArgs(channel.id).returns(channel);
+
+  var getUserStub = sinon.stub(fakeAdapter, 'getUser');
+  getUserStub.withArgs(admin.id).returns(admin);
+  getUserStub.withArgs(nonAdmin.id).returns(nonAdmin);
 
   var addIgnoredAttributeStub = sinon.stub(fakeChannelRepository, 'addIgnoredAttribute');
   addIgnoredAttributeStub.withArgs(channel.id, 'manness').returns(true);
@@ -216,6 +226,14 @@ test('DirectMessageHandler updates channel options', function(t) {
 
   t.ok(addIgnoredAttributeStub.calledWith(channel.id, 'manness'), 'expected the channel options to have been updated');
   t.ok(adminDM.send.calledWithMatch(/I will no longer report on manness in #men-explicit/), 'replies to the admin that the attribute will be ignored');
+
+  handler.handle(nonAdminDM, {
+    text: `Ignore pocness in <#${channel.id}>`,
+    user: nonAdmin.id
+  });
+
+  t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered by the non-admin message');
+  t.ok(nonAdminDM.send.calledWithMatch(/sorry/), 'expected the non-admin to receive the not-understood message');
 
   t.end();
 });

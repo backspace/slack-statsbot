@@ -9,7 +9,10 @@ var SlackAdapter = require('../src/slack-adapter');
 
 var fakeClient = {
   on() {},
-  login() {}
+  login() {},
+  getUserByID() {
+    return {};
+  }
 };
 
 var fakeUserRepository = {

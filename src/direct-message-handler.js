@@ -22,11 +22,13 @@ class DirectMessageHandler {
     if (!message.text || message.subtype === 'bot_message') return;
     var text = message.text.toLowerCase();
 
+    var user = this.adapter.getUser(message.user);
+
     if (text === 'info') {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
-    } else if (text.includes('ignore')) {
+    } else if (text.includes('ignore') && user.is_admin) {
       this.handleIgnoreAttributeRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);

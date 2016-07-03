@@ -9,7 +9,12 @@ var fakeUserRepository = {
 };
 
 var fakeChannelRepository = {
+  addIgnoredAttribute() {},
   retrieveIgnoredAttributes() {}
+};
+
+var fakeAdapter = {
+  getChannel() {}
 };
 
 var DirectMessageHandler = require('../src/direct-message-handler');
@@ -186,6 +191,31 @@ test('DirectMessageHandler handles a help request', function(t) {
   });
 
   t.ok(personDM.send.calledWithMatch(/Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in./), 'replies with a help message');
+
+  t.end();
+});
+
+test('DirectMessageHandler updates channel options', function(t) {
+  const handler = new DirectMessageHandler({channelRepository: fakeChannelRepository, adapter: fakeAdapter});
+
+  var admin = {id: 'A', name: 'Admin'};
+  var adminDM = {send: sinon.stub()};
+
+  var getChannelStub = sinon.stub(fakeAdapter, 'getChannel');
+  var channel = {id: 'menexplicitid', name: 'men-explicit', send: sinon.stub()};
+  getChannelStub.withArgs(channel.id).returns(channel);
+
+  var addIgnoredAttributeStub = sinon.stub(fakeChannelRepository, 'addIgnoredAttribute');
+  addIgnoredAttributeStub.withArgs(channel.id, 'manness').returns(true);
+
+  // The message text contains the channel ID rather than its name.
+  handler.handle(adminDM, {
+    text: `Ignore manness in <#${channel.id}>`,
+    user: admin.id
+  });
+
+  t.ok(addIgnoredAttributeStub.calledWith(channel.id, 'manness'), 'expected the channel options to have been updated');
+  t.ok(adminDM.send.calledWithMatch(/I will no longer report on manness in #men-explicit/), 'replies to the admin that the attribute will be ignored');
 
   t.end();
 });

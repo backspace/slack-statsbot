@@ -9,8 +9,11 @@ var UpdateParser = require('./update-parser');
 var attributeConfigurations = require('./attribute-configurations');
 
 class DirectMessageHandler {
-  constructor({userRepository, channelRepository}) {
+  constructor({userRepository, channelRepository, adapter}) {
     this.userRepository = userRepository;
+    this.channelRepository = channelRepository;
+
+    this.adapter = adapter;
 
     this.attributeConfigurations = attributeConfigurations;
   }
@@ -23,6 +26,8 @@ class DirectMessageHandler {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
+    } else if (text.includes('ignore')) {
+      this.handleIgnoreAttributeRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);
     }
@@ -99,6 +104,18 @@ class DirectMessageHandler {
 
   handleHelpRequest(channel, message) {
     channel.send(DirectMessageHandler.VERBOSE_HELP_MESSAGE);
+  }
+
+  handleIgnoreAttributeRequest(dmChannel, message) {
+    var messageText = message.text;
+
+    var targetChannelID = messageText.match(/\<#(\w*)>/)[1];
+    var targetChannel = this.adapter.getChannel(targetChannelID);
+
+    var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));
+
+    this.channelRepository.addIgnoredAttribute(targetChannel.id, ignoredAttribute);
+    dmChannel.send(`Okay, I will no longer report on ${ignoredAttribute} in #${targetChannel.name}.`);
   }
 }
 

@@ -29,7 +29,7 @@ class StatsBot {
     this.topUnknownsToQuery = options.topUnknownsToQuery;
     this.reportingThreshold = options.reportingThreshold;
 
-    this.directMessageHandler = new DirectMessageHandler({userRepository, channelRepository});
+    this.directMessageHandler = new DirectMessageHandler({userRepository, channelRepository, adapter});
   }
 
   handleConnectedEvent() {

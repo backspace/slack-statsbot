@@ -77,17 +77,21 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
   var ytterbium = {id: 'Yb', name: 'Ytterbium', send: sinon.stub()};
   var zirconium = {id: 'Zr', name: 'Zirconium', send: sinon.stub()};
+  var zinc = {id: 'Zn', name: 'Zinc', send: sinon.stub()};
 
   var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
   var retrieveIgnoredAttributesStub = sinon.stub(fakeChannelRepository, 'retrieveIgnoredAttributes');
 
-  [xenon, ytterbium, zirconium, botChannel].forEach(function(channel) {
+  [xenon, ytterbium, zirconium, zinc, botChannel].forEach(function(channel) {
     channelByIDStub.withArgs(channel.id).returns(channel);
 
     if (channel === zirconium) {
       retrieveIgnoredAttributesStub.withArgs(channel.id).returns(['manness']);
+    } else if (channel === zinc) {
+      // TODO generalise this, it’s meant to have all attributes listed
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns(['manness', 'pocness']);
     } else {
       retrieveIgnoredAttributesStub.withArgs(channel.id).returns([]);
     }
@@ -144,10 +148,21 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: zirconium.id
   });
 
+  bot.handleChannelMessage(zinc, {
+    user: alice.id,
+    channel: zinc.id
+  });
+
+  bot.handleChannelMessage(zinc, {
+    user: alice.id,
+    channel: zinc.id
+  });
+
   bot.reportChannelStatistics(botChannel.id);
   bot.reportChannelStatistics('Yb');
   bot.reportChannelStatistics('Xe');
   bot.reportChannelStatistics('Zr');
+  bot.reportChannelStatistics('Zn');
 
   setTimeout(function() {
     t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
@@ -179,6 +194,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     t.ok(zirconium.send.calledWithMatch(/people of colour/), 'reports about people of colour in the channel with an ignored attribute');
     t.ok(zirconium.send.neverCalledWithMatch(/not-men/), 'does not report about not-men in the channel with an ignored attribute');
+
+    t.equal(zinc.send.callCount, 0, 'does not report when a channel has all attributes ignored');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,

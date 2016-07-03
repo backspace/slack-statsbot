@@ -149,8 +149,11 @@ class StatsBot {
       botChannel.send(verboseReport);
 
       var filteredConfigurationAndValues = configurationAndValues.filter(({configuration}) => !ignoredAttributes.includes(configuration.name));
-      var terseReport = new TerseReportGenerator(statistics, filteredConfigurationAndValues, metadata.startTime, botChannel).generate();
-      channel.send(terseReport);
+
+      if (filteredConfigurationAndValues.length) {
+        var terseReport = new TerseReportGenerator(statistics, filteredConfigurationAndValues, metadata.startTime, botChannel).generate();
+        channel.send(terseReport);
+      }
 
     }.bind(this));
   }

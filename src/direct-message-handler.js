@@ -114,7 +114,7 @@ class DirectMessageHandler {
     const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.addIgnoredAttribute)
 
     if (updateResults.ignoredAttribute) {
-      dmChannel.send(`Okay, I will no longer report on ${updateResults.ignoredAttribute} in #${updateResults.targetChannel.name}.`);
+      dmChannel.send(`Okay, I will no longer report on ${updateResults.ignoredAttribute} in <#${updateResults.targetChannel.id}>.`);
     } else if (updateResults.channelNotFound) {
       dmChannel.send('Sorry, I couldn’t find that channel.');
     } else if (updateResults.attributeNotFound) {
@@ -126,7 +126,7 @@ class DirectMessageHandler {
     const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.removeIgnoredAttribute);
 
     if (updateResults.ignoredAttribute) {
-      dmChannel.send(`I will again report on ${updateResults.ignoredAttribute} in #${updateResults.targetChannel.name}.`);
+      dmChannel.send(`I will again report on ${updateResults.ignoredAttribute} in <#${updateResults.targetChannel.id}>.`);
     } else if (updateResults.channelNotFound) {
       dmChannel.send('Sorry, I couldn’t find that channel.');
     } else if (updateResults.attributeNotFound) {

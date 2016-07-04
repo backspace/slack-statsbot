@@ -226,7 +226,7 @@ test('DirectMessageHandler updates channel options', function(t) {
   });
 
   t.ok(addIgnoredAttributeStub.calledWith(channel.id, 'manness'), 'expected the channel options to have been updated');
-  t.ok(adminDM.send.calledWithMatch(/I will no longer report on manness in #men-explicit/), 'replies to the admin that the attribute will be ignored');
+  t.ok(adminDM.send.calledWithMatch(/I will no longer report on manness in <#menexplicitid>/), 'replies to the admin that the attribute will be ignored');
 
   handler.handle(nonAdminDM, {
     text: `Ignore pocness in <#${channel.id}>`,
@@ -253,7 +253,7 @@ test('DirectMessageHandler updates channel options', function(t) {
   });
 
   t.ok(removeIgnoredAttributeStub.calledOnce, 'expected the channel options to have been updated');
-  t.ok(adminDM.send.calledWithMatch(/I will again report on manness in #men-explicit/), 'replies to the admin that the attribute will not be ignored');
+  t.ok(adminDM.send.calledWithMatch(/I will again report on manness in <#menexplicitid>/), 'replies to the admin that the attribute will not be ignored');
 
   handler.handle(adminDM, {
     text: `Ignore jortsness in <#${channel.id}>`,

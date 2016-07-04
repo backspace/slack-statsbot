@@ -9,8 +9,11 @@ var UpdateParser = require('./update-parser');
 var attributeConfigurations = require('./attribute-configurations');
 
 class DirectMessageHandler {
-  constructor(userRepository) {
+  constructor({userRepository, channelRepository, adapter}) {
     this.userRepository = userRepository;
+    this.channelRepository = channelRepository;
+
+    this.adapter = adapter;
 
     this.attributeConfigurations = attributeConfigurations;
   }
@@ -19,10 +22,18 @@ class DirectMessageHandler {
     if (!message.text || message.subtype === 'bot_message') return;
     var text = message.text.toLowerCase();
 
+    var user = this.adapter.getUser(message.user);
+
     if (text === 'info') {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
+    } else if (text.includes('unignore') && user.is_admin) {
+      this.handleUnignoreAttributeRequest(channel, message);
+    } else if (text.includes('ignore') && user.is_admin) {
+      this.handleIgnoreAttributeRequest(channel, message);
+    } else if (text.includes('options') && user.is_admin) {
+      this.handleOptionsRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);
     }
@@ -99,6 +110,69 @@ class DirectMessageHandler {
 
   handleHelpRequest(channel, message) {
     channel.send(DirectMessageHandler.VERBOSE_HELP_MESSAGE);
+  }
+
+  handleIgnoreAttributeRequest(dmChannel, message) {
+    const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.addIgnoredAttribute)
+
+    if (updateResults.ignoredAttribute) {
+      dmChannel.send(`Okay, I will no longer report on ${updateResults.ignoredAttribute} in <#${updateResults.targetChannel.id}>.`);
+    } else if (updateResults.channelNotFound) {
+      dmChannel.send('Sorry, I couldn’t find that channel.');
+    } else if (updateResults.attributeNotFound) {
+      dmChannel.send('Sorry, that attribute is unknown.');
+    }
+  }
+
+  handleUnignoreAttributeRequest(dmChannel, message) {
+    const updateResults = this.parseAndUpdateChannelIgnores(dmChannel, message, this.channelRepository.removeIgnoredAttribute);
+
+    if (updateResults.ignoredAttribute) {
+      dmChannel.send(`I will again report on ${updateResults.ignoredAttribute} in <#${updateResults.targetChannel.id}>.`);
+    } else if (updateResults.channelNotFound) {
+      dmChannel.send('Sorry, I couldn’t find that channel.');
+    } else if (updateResults.attributeNotFound) {
+      dmChannel.send('Sorry, that attribute is unknown.');
+    }
+  }
+
+  handleOptionsRequest(dmChannel, message) {
+    var messageText = message.text;
+    var targetChannel = this.parseChannelFromMessageText(messageText);
+
+    this.channelRepository.retrieveIgnoredAttributes(targetChannel.id).then(ignoredAttributes => {
+      if (ignoredAttributes.length) {
+        dmChannel.send(`<#${targetChannel.id}> reports ignore: ${ignoredAttributes.join(', ')}`);
+      } else {
+        dmChannel.send(`<#${targetChannel.id}> has no ignored attributes.`);
+      }
+    });
+  }
+
+  parseChannelFromMessageText(text) {
+    var targetChannelID = text.match(/\<#(\w*)>/)[1];
+    var targetChannel = this.adapter.getChannel(targetChannelID);
+
+    return targetChannel;
+  }
+
+  parseAndUpdateChannelIgnores(dmChannel, message, repositoryFunction) {
+    var messageText = message.text;
+    var targetChannel = this.parseChannelFromMessageText(message.text);
+
+    if (targetChannel) {
+      var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));
+
+      if (ignoredAttribute) {
+        repositoryFunction.call(this.channelRepository, targetChannel.id, ignoredAttribute);
+        return {ignoredAttribute, targetChannel};
+      } else {
+        return {attributeNotFound: true};
+      }
+
+    } else {
+      return {channelNotFound: true};
+    }
   }
 }
 

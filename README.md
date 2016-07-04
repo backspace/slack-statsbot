@@ -22,6 +22,20 @@ If `TOP_UNKNOWNS_TO_QUERY` is set to greater than 0 (it defaults to 2), the bot 
 
 > Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. View my source at https://github.com/backspace/slack-statsbot If you don’t want to answer that’s okay, I won’t ask again.
 
+Admins on the Slack can configure the bot to skip reporting on particular attributes on a per-channel basis. For example:
+
+> Admin: ignore manness in #men
+
+> Bot: Okay, I will no longer report on manness in #men.
+
+> Admin: options for #men
+
+> Bot: #men reports ignore: manness
+
+> Admin: unignore manness in #men
+
+> Bot: I will again report on manness in #men.
+
 ## But why?
 
 From [Seven Studies That Prove Mansplaining Exists](http://bitchmagazine.org/post/seven-studies-proving-mansplaining-exists):

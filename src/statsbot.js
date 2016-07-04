@@ -17,19 +17,19 @@ var values = require('lodash.values');
 var moment = require('moment');
 
 class StatsBot {
-  constructor(adapter, userRepository, options) {
+  constructor(adapter, {userRepository, channelRepository} = {}, options = {}) {
     this.adapter = adapter;
     this.adapter.registerListener(this);
 
     this.log = new MessageLog();
     this.userRepository = userRepository;
+    this.channelRepository = channelRepository;
 
-    options = options || {};
     this.statsChannel = options.statsChannel;
     this.topUnknownsToQuery = options.topUnknownsToQuery;
     this.reportingThreshold = options.reportingThreshold;
 
-    this.directMessageHandler = new DirectMessageHandler(this.userRepository);
+    this.directMessageHandler = new DirectMessageHandler({userRepository, channelRepository, adapter});
   }
 
   handleConnectedEvent() {
@@ -114,7 +114,11 @@ class StatsBot {
       return new RepositoryAttributeExtractor(this.userRepository, configuration.name, Object.keys(statistics)).extract();
     }.bind(this));
 
-    Promise.all(extractionPromises).then(function(values) {
+    var ignoredAttributesPromise = this.channelRepository.retrieveIgnoredAttributes(channel.id);
+
+    Promise.all([...extractionPromises, ignoredAttributesPromise]).then(function(results) {
+      var ignoredAttributes = results.pop();
+      var values = results;
       var configurationAndValues = configurations.map(function(configuration, index) {
         return {
           configuration: configuration,
@@ -144,8 +148,12 @@ class StatsBot {
 
       botChannel.send(verboseReport);
 
-      var terseReport = new TerseReportGenerator(statistics, configurationAndValues, metadata.startTime, botChannel).generate();
-      channel.send(terseReport);
+      var filteredConfigurationAndValues = configurationAndValues.filter(({configuration}) => !ignoredAttributes.includes(configuration.name));
+
+      if (filteredConfigurationAndValues.length) {
+        var terseReport = new TerseReportGenerator(statistics, filteredConfigurationAndValues, metadata.startTime, botChannel).generate();
+        channel.send(terseReport);
+      }
 
     }.bind(this));
   }

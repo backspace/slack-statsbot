@@ -9,12 +9,19 @@ var SlackAdapter = require('../src/slack-adapter');
 
 var fakeClient = {
   on() {},
-  login() {}
+  login() {},
+  getUserByID() {
+    return {};
+  }
 };
 
 var fakeUserRepository = {
   storeAttribute() {},
   retrieveAttribute() {}
+};
+
+var fakeChannelRepository = {
+  retrieveIgnoredAttributes() { return []; }
 };
 
 // TODO these are a weird mix of unit and acceptance tests
@@ -35,7 +42,7 @@ test('Constructing a StatsBot registers it with the adapter', function(t) {
 
 test('StatsBot announces in its channel that it has started', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot'});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot'});
 
   var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
 
@@ -52,7 +59,7 @@ test('StatsBot announces in its channel that it has started', function(t) {
 });
 test('StatsBot reports a channel\'s message counts when requested', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', reportingThreshold: 2});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot', reportingThreshold: 2});
 
   var alice = {id: '1', name: 'Alice', manness: 'a man', pocness: 'not a PoC'};
   var bob = {id: '2', name: 'Bob', manness: 'not a man', pocness: 'a PoC'};
@@ -69,13 +76,25 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
   var xenon = {id: 'Xe', name: 'Xenon', send: sinon.stub()};
   var ytterbium = {id: 'Yb', name: 'Ytterbium', send: sinon.stub()};
+  var zirconium = {id: 'Zr', name: 'Zirconium', send: sinon.stub()};
+  var zinc = {id: 'Zn', name: 'Zinc', send: sinon.stub()};
 
   var botChannel = {id: 'Bot', name: 'statsbot', send: sinon.stub()};
 
   var channelByIDStub = sinon.stub(adapter, 'getChannel');
+  var retrieveIgnoredAttributesStub = sinon.stub(fakeChannelRepository, 'retrieveIgnoredAttributes');
 
-  [xenon, ytterbium, botChannel].forEach(function(channel) {
+  [xenon, ytterbium, zirconium, zinc, botChannel].forEach(function(channel) {
     channelByIDStub.withArgs(channel.id).returns(channel);
+
+    if (channel === zirconium) {
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns(['manness']);
+    } else if (channel === zinc) {
+      // TODO generalise this, it’s meant to have all attributes listed
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns(['manness', 'pocness']);
+    } else {
+      retrieveIgnoredAttributesStub.withArgs(channel.id).returns([]);
+    }
   });
 
   var channelByNameStub = sinon.stub(adapter, 'getChannelByName');
@@ -119,9 +138,31 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     channel: ytterbium.id
   });
 
+  bot.handleChannelMessage(zirconium, {
+    user: alice.id,
+    channel: zirconium.id
+  });
+
+  bot.handleChannelMessage(zirconium, {
+    user: alice.id,
+    channel: zirconium.id
+  });
+
+  bot.handleChannelMessage(zinc, {
+    user: alice.id,
+    channel: zinc.id
+  });
+
+  bot.handleChannelMessage(zinc, {
+    user: alice.id,
+    channel: zinc.id
+  });
+
   bot.reportChannelStatistics(botChannel.id);
   bot.reportChannelStatistics('Yb');
   bot.reportChannelStatistics('Xe');
+  bot.reportChannelStatistics('Zr');
+  bot.reportChannelStatistics('Zn');
 
   setTimeout(function() {
     t.ok(botChannel.send.neverCalledWithMatch(/#statsbot/), 'does not report on the stats channel statistics');
@@ -150,6 +191,11 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
     t.ok(xenon.send.calledWithMatch(/people of colour sent 67% of messages/), 'reports in the channel that people of colour sent 67% of messages');
     t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that men dominated');
     t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that non-PoC did not dominate');
+
+    t.ok(zirconium.send.calledWithMatch(/people of colour/), 'reports about people of colour in the channel with an ignored attribute');
+    t.ok(zirconium.send.neverCalledWithMatch(/not-men/), 'does not report about not-men in the channel with an ignored attribute');
+
+    t.equal(zinc.send.callCount, 0, 'does not report when a channel has all attributes ignored');
 
     bot.handleChannelMessage(xenon, {
       user: alice.id,
@@ -187,7 +233,7 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 test('StatsBot asks the top two unknowns in a reporting period who have not declined to self-identify', function(t) {
   var adapter = new SlackAdapter(fakeClient);
 
-  var bot = new StatsBot(adapter, fakeUserRepository, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository, channelRepository: fakeChannelRepository}, {statsChannel: 'statsbot', topUnknownsToQuery: 2});
 
   var known = {id: '1', name: 'Known', manness: 'a man', pocness: 'a person of colour'};
   var topUnknown = {id: 'u1', name: 'Unknown 1', manness: undefined};
@@ -268,7 +314,7 @@ test('StatsBot asks the top two unknowns in a reporting period who have not decl
 
 test('StatsBot records a user\'s gender and race', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository);
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository});
 
   var prakash = {id: 'P', name: 'Prakash'};
   var laura = {id: 'L', name: 'Laura'};
@@ -339,7 +385,7 @@ test('StatsBot records a user\'s gender and race', function(t) {
 
 test('StatsBot responds with a user\'s information when they ask', function(t) {
   var adapter = new SlackAdapter(fakeClient);
-  var bot = new StatsBot(adapter, fakeUserRepository);
+  var bot = new StatsBot(adapter, {userRepository: fakeUserRepository});
 
   var shane = {id: 'S', name: 'Shane'};
   var shaneDM = {send: sinon.stub()};

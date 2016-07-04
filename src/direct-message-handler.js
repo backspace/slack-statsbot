@@ -32,6 +32,8 @@ class DirectMessageHandler {
       this.handleUnignoreAttributeRequest(channel, message);
     } else if (text.includes('ignore') && user.is_admin) {
       this.handleIgnoreAttributeRequest(channel, message);
+    } else if (text.includes('options') && user.is_admin) {
+      this.handleOptionsRequest(channel, message);
     } else {
       this.handleInformationUpdate(channel, message);
     }
@@ -134,11 +136,29 @@ class DirectMessageHandler {
     }
   }
 
+  handleOptionsRequest(dmChannel, message) {
+    var messageText = message.text;
+    var targetChannel = this.parseChannelFromMessageText(messageText);
+
+    this.channelRepository.retrieveIgnoredAttributes(targetChannel.id).then(ignoredAttributes => {
+      if (ignoredAttributes.length) {
+        dmChannel.send(`<#${targetChannel.id}> reports ignore: ${ignoredAttributes.join(', ')}`);
+      } else {
+        dmChannel.send(`<#${targetChannel.id}> has no ignored attributes.`);
+      }
+    });
+  }
+
+  parseChannelFromMessageText(text) {
+    var targetChannelID = text.match(/\<#(\w*)>/)[1];
+    var targetChannel = this.adapter.getChannel(targetChannelID);
+
+    return targetChannel;
+  }
+
   parseAndUpdateChannelIgnores(dmChannel, message, repositoryFunction) {
     var messageText = message.text;
-
-    var targetChannelID = messageText.match(/\<#(\w*)>/)[1];
-    var targetChannel = this.adapter.getChannel(targetChannelID);
+    var targetChannel = this.parseChannelFromMessageText(message.text);
 
     if (targetChannel) {
       var ignoredAttribute = this.attributeConfigurations.map(configuration => configuration.name).find(attribute => messageText.includes(attribute));

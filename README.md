@@ -25,8 +25,15 @@ If `TOP_UNKNOWNS_TO_QUERY` is set to greater than 0 (it defaults to 2), the bot 
 Admins on the Slack can configure the bot to skip reporting on particular attributes on a per-channel basis. For example:
 
 > Admin: ignore manness in #men
+
 > Bot: Okay, I will no longer report on manness in #men.
+
+> Admin: options for #men
+
+> Bot: #men reports ignore: manness
+
 > Admin: unignore manness in #men
+
 > Bot: I will again report on manness in #men.
 
 ## But why?

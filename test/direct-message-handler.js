@@ -199,7 +199,7 @@ test('DirectMessageHandler handles a help request', function(t) {
   t.end();
 });
 
-test('DirectMessageHandler updates channel options', function(t) {
+test('DirectMessageHandler updates channel options and reports them', function(t) {
   const handler = new DirectMessageHandler({channelRepository: fakeChannelRepository, adapter: fakeAdapter});
 
   var admin = {id: 'A', name: 'Admin', is_admin: true};
@@ -263,5 +263,28 @@ test('DirectMessageHandler updates channel options', function(t) {
   t.ok(addIgnoredAttributeStub.calledOnce, 'expected no repository calls to be triggered with an invalid attribute name');
   t.ok(adminDM.send.calledWithMatch(/Sorry, that attribute is unknown/), 'replies to the admin that the attribute is unknown');
 
-  t.end();
+  var retrieveIgnoredAttributesStub = sinon.stub(fakeChannelRepository, 'retrieveIgnoredAttributes');
+  retrieveIgnoredAttributesStub.withArgs(channel.id).returns(Promise.resolve(['manness', 'pocness']));
+
+  handler.handle(adminDM, {
+    text: `options for <#${channel.id}>`,
+    user: admin.id
+  });
+
+  setTimeout(() => {
+    t.ok(adminDM.send.calledWithMatch(/<#menexplicitid> reports ignore: manness, pocness/), 'expected the ignored attributes to be listed');
+
+    retrieveIgnoredAttributesStub.withArgs(channel.id).returns(Promise.resolve([]));
+
+    handler.handle(adminDM, {
+      text: `options for <#${channel.id}>`,
+      user: admin.id
+    });
+
+    setTimeout(() => {      
+      t.ok(adminDM.send.calledWithMatch(/<#menexplicitid> has no ignored attributes/), 'expected no ignored attributes to be listed');
+
+      t.end();
+    });
+  });
 });

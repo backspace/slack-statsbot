@@ -1,3 +1,5 @@
+var unique = require('lodash.uniq');
+
 class ChannelRepository {
   constructor(Channel) {
     this.Channel = Channel;
@@ -5,7 +7,7 @@ class ChannelRepository {
 
   addIgnoredAttribute(slackID, attribute) {
     return this.Channel.findOrCreate({where: {slackID}}).spread(channel => {
-      channel.ignoredAttributes = channel.ignoredAttributes.concat([attribute]);
+      channel.ignoredAttributes = unique(channel.ignoredAttributes.concat([attribute]));
       return channel.save();
     });
   }

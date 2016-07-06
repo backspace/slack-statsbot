@@ -5,13 +5,7 @@ var values = require('lodash.values');
 var find = require('lodash.find');
 
 var trinaryGrouper = require('../calculators/trinary-grouper');
-
-function emojiForProportion(p) {
-  p = Math.min(p, 1);
-  p = Math.max(p, 0);
-  let out_of_10 = Math.floor(p*10);
-  return `:sb-${out_of_10}:`;
-}
+var emojiForProportion = require('../proportion-emoji-generator');
 
 class TerseReportGenerator {
   constructor(userMessageCount, configurationAndValues, startTime, statsChannel) {

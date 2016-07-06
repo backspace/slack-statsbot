@@ -104,4 +104,4 @@ If you have a Heroku account, you can deploy the statsbot with minimal effort wi
 
 Thanks to my mom for raising me with feminist values, even if they weren’t called that. Many friends and writers have helped me learn more about anti-oppression or social justice or whatever you like to call it.
 
-The people in the Slack have been supportive as I worked on this, particularly @aredridel and @iarna. Thanks to @seldo for setting it up. Thanks to @joxn for the sparkline emoji.
+The people in the Slack have been supportive as I worked on this, particularly @aredridel and @iarna. Thanks to @seldo for setting it up. Thanks to @joxn for the original sparkline emoji.

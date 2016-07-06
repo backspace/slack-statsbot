@@ -175,8 +175,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     t.ok(ytterbium.send.calledWithMatch(/not-men sent 0% of messages/), 'reports in the channel that not-men sent no messages');
     t.ok(ytterbium.send.calledWithMatch(/people of colour sent 0% of messages/), 'reports in the channel that people of colour sent no messages');
-    t.ok(ytterbium.send.calledWithMatch(/:sb-10::sb-0::sb-0:/), 'reports compactly in the channel that men dominated');
-    t.ok(ytterbium.send.calledWithMatch(/:sb-0::sb-10::sb-0:/), 'reports compactly in the channel that non-PoC dominated');
+    t.ok(ytterbium.send.calledWithMatch(/:sb-100::sb-00::sb-00:/), 'reports compactly in the channel that men dominated');
+    t.ok(ytterbium.send.calledWithMatch(/:sb-00::sb-100::sb-00:/), 'reports compactly in the channel that non-PoC dominated');
 
     t.ok(botChannel.send.calledWithMatch(/#Xe/), 'reports #Xenon statistics in the bot channel');
     t.ok(botChannel.send.calledWithMatch(/^.*counts.*3.*$/m), 'reports a message count of 3');
@@ -189,8 +189,8 @@ test('StatsBot reports a channel\'s message counts when requested', function(t) 
 
     t.ok(xenon.send.calledWithMatch(/not-men sent 33% of messages/), 'reports in the channel that not-men sent 33% of messages');
     t.ok(xenon.send.calledWithMatch(/people of colour sent 67% of messages/), 'reports in the channel that people of colour sent 67% of messages');
-    t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that men dominated');
-    t.ok(xenon.send.calledWithMatch(/:sb-6::sb-3::sb-0:/), 'reports compactly in the channel that non-PoC did not dominate');
+    t.ok(xenon.send.calledWithMatch(/:sb-65::sb-35::sb-00:/), 'reports compactly in the channel that men dominated');
+    t.ok(xenon.send.calledWithMatch(/:sb-65::sb-35::sb-00:/), 'reports compactly in the channel that non-PoC did not dominate');
 
     t.ok(zirconium.send.calledWithMatch(/people of colour/), 'reports about people of colour in the channel with an ignored attribute');
     t.ok(zirconium.send.neverCalledWithMatch(/not-men/), 'does not report about not-men in the channel with an ignored attribute');

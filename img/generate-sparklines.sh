@@ -24,6 +24,6 @@ for ((step=0; step<=$INTERVAL_COUNT; step++)); do
 
   convert -size "${IMAGE_LENGTH}x${IMAGE_LENGTH}" canvas:none \
     -fill $FILL -draw "rectangle 0, $RECTANGLE_TOP, $IMAGE_LENGTH, $IMAGE_LENGTH" \
-    -insert 0 -gravity center -append -background white -extent "${IMAGE_LENGTH}x${IMAGE_LENGTH}" \
+    -insert 0 -gravity center -append -background none -extent "${IMAGE_LENGTH}x${IMAGE_LENGTH}" \
     "img/sb-${FILENAME}.png"
 done

@@ -24,7 +24,36 @@ class DirectMessageHandler {
 
     var user = this.adapter.getUser(message.user);
 
-    if (text === 'info') {
+    // TODO replace the self-identification request with this
+    if (text === 'interview') {
+      channel.postMessage({
+        text: DirectMessageHandler.INTERVIEW_INTRODUCTION,
+        attachments: [{
+          title: 'Would you like to self-identify?',
+          callback_id: 'initial',
+          color: '#ccc',
+          attachment_type: 'default',
+          actions: [
+            {
+              name: 'yes',
+              text: 'Yes',
+              type: 'button',
+              value: 'yes'
+            }, {
+              name: 'no',
+              text: 'No',
+              type: 'button',
+              value: 'no'
+            }, {
+              name: 'more',
+              text: 'Tell me more',
+              type: 'button',
+              value: 'more'
+            }
+          ]
+        }]
+      });
+    } else if (text === 'info') {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
@@ -179,6 +208,7 @@ class DirectMessageHandler {
 // TODO maybe messages should be collected somewhere central, and parameterised
 
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. View my source at https://github.com/backspace/slack-statsbot';
-DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}`;
+DirectMessageHandler.INTERVIEW_INTRODUCTION = 'Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour.';
+DirectMessageHandler.VERBOSE_HELP_MESSAGE = `${DirectMessageHandler.INTERVIEW_INTRODUCTION} ${DirectMessageHandler.HELP_MESSAGE}`;
 
 module.exports = DirectMessageHandler;

@@ -10,7 +10,8 @@
       ],
       "texts": {
         "information": "you are a person of colour",
-        "update": "We have noted that you are a person of colour. If I got it wrong, try saying “I am not a person of colour”",
+        "update": "We have noted that you are a person of colour.",
+        "wrong": "If I got it wrong, try saying “I am not a person of colour”",
         "statistics": "peopleOfColour",
         "table": "PoC",
         "terse": "people of colour",
@@ -26,7 +27,8 @@
       ],
       "texts": {
         "information": "you are not a person of colour",
-        "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”",
+        "update": "We have noted that you are not a person of colour.",
+        "wrong": "If I got it wrong, try saying “I am a person of colour”",
         "statistics": "nonPeopleOfColour",
         "table": "not-PoC",
         "short": "N",
@@ -41,7 +43,8 @@
       ],
       "texts": {
         "information": "it’s complicated whether you are a person of colour",
-        "update": "We have noted that it’s complicated whether you are a person of colour. If I got it wrong, try saying “I am a person of colour”",
+        "update": "We have noted that it’s complicated whether you are a person of colour.",
+        "wrong": "If I got it wrong, try saying “I am a person of colour”",
         "statistics": "complicated",
         "table": "complicated",
         "short": "‽",

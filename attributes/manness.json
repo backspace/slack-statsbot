@@ -11,7 +11,8 @@
       ],
       "texts": {
         "information": "you are not a man",
-        "update": "Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.",
+        "update": "Okay, we have noted that you are not a man.",
+        "wrong": "If I got it wrong, try saying “I am a man”.",
         "statistics": "notMen",
         "table": "not-men",
         "terse": "not-men",
@@ -28,7 +29,8 @@
       ],
       "texts": {
         "information": "you are a man",
-        "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”",
+        "update": "Okay, we have noted that you are a man. ",
+        "wrong": "If I got it wrong, try saying “I am *not* a man!”",
         "statistics": "men",
         "table": "men",
         "short": "M",

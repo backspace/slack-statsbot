@@ -131,7 +131,7 @@ class DirectMessageHandler {
     });
 
     if (matchingValue) {
-      reply = matchingValue.texts.update;
+      reply = `${matchingValue.texts.update} ${matchingValue.texts.wrong || ''}`;
     }
 
     channel.send(reply);

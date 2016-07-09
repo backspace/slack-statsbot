@@ -30,12 +30,17 @@ const firstAttributeConfiguration = {
   }]
 };
 
+const secondAttributeConfiguration = {
+  name: 'jants'
+};
+
 const attributeConfigurations = [
-  firstAttributeConfiguration
+  firstAttributeConfiguration,
+  secondAttributeConfiguration
 ];
 
-function questionForAttributeConfiguration() {
-  return 'a question';
+function questionForAttributeConfiguration(attributeConfiguration) {
+  return `${attributeConfiguration.name}Question`;
 }
 
 test('it handles acceptance of the initial interview question by responding with a question for the first attribute', function(t) {
@@ -49,7 +54,21 @@ test('it handles acceptance of the initial interview question by responding with
         value: 'yes'
       }]
     })})
-    .expect(200, questionForAttributeConfiguration(), t.end);
+    .expect(200, 'jortsQuestion', t.end);
+});
+
+test('it handles a response to the first attribute question by asking the second attribute question', function(t) {
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
+    .post('/slack/actions')
+    .type('form')
+    .send({payload: JSON.stringify({
+      callback_id: 'jorts',
+      actions: [{
+        name: 'yes',
+        value: 'yes'
+      }]
+    })})
+    .expect(200, 'jantsQuestion', t.end);
 });
 
 test('it handles a more information request from the initial interview question', function(t) {

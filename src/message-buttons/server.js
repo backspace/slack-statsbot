@@ -11,14 +11,19 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
   router.post('/slack/actions', function* (next) {
     const payload = JSON.parse(this.request.body.payload);
+    const attributeName = payload.callback_id;
     const action = payload.actions[0];
 
-    if (action.value === 'yes') {
-      this.body = questionForAttributeConfiguration(attributeConfigurations[0]);
-    } else if (action.value === 'more') {
-      this.body = 'Here is more information.';
+    if (attributeName === 'initial') {
+      if (action.value === 'yes') {
+        this.body = questionForAttributeConfiguration(attributeConfigurations[0]);
+      } else if (action.value === 'more') {
+        this.body = 'Here is more information.';
+      } else {
+        this.body = 'Aww!';
+      }
     } else {
-      this.body = 'Aww!';
+      this.body = questionForAttributeConfiguration(getNextAttributeConfiguration(attributeConfigurations, attributeName));
     }
 
     yield next;
@@ -29,3 +34,8 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
   return app;
 };
+
+function getNextAttributeConfiguration(attributeConfigurations, attributeName) {
+  const attributeConfigurationIndex = attributeConfigurations.findIndex(attributeConfiguration => attributeConfiguration.name === attributeName);
+  return attributeConfigurations[attributeConfigurationIndex + 1];
+}

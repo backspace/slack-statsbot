@@ -1,5 +1,6 @@
 {
   "name": "pocness",
+  "interviewQuestion": "Are you a person of colour?",
   "values": [
     {
       "value": "a PoC",
@@ -13,7 +14,8 @@
         "statistics": "peopleOfColour",
         "table": "PoC",
         "terse": "people of colour",
-        "short": "PoC"
+        "short": "PoC",
+        "interviewAnswer": "Yes"
       }
     },
     {
@@ -27,7 +29,8 @@
         "update": "We have noted that you are not a person of colour. If I got it wrong, try saying “I am a person of colour”",
         "statistics": "nonPeopleOfColour",
         "table": "not-PoC",
-        "short": "N"
+        "short": "N",
+        "interviewAnswer": "No"
       }
     },
     {
@@ -41,7 +44,8 @@
         "update": "We have noted that it’s complicated whether you are a person of colour. If I got it wrong, try saying “I am a person of colour”",
         "statistics": "complicated",
         "table": "complicated",
-        "short": "‽"
+        "short": "‽",
+        "interviewAnswer": "It’s complicated"
       }
     },
     {
@@ -55,7 +59,8 @@
         "update": "We have erased our record of whether you are a person of colour.",
         "statistics": "unknown",
         "table": "unknown",
-        "short": "?"
+        "short": "?",
+        "interviewAnswer": "Decline"
       }
     }
   ],

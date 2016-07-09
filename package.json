@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --use-strict index.js",
     "debug": "node debug --use-strict index.js",
-    "test": "tap --strict test/*"
+    "test": "tap --strict test/*",
+    "web": "node --use-strict web.js"
   },
   "repository": {
     "type": "git",

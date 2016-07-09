@@ -16,19 +16,28 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
     if (attributeName === 'initial') {
       if (action.value === 'yes') {
-        this.body = questionForAttributeConfiguration(attributeConfigurations[0]);
+        this.body = {
+          text: 'Here is the first question???',
+          attachments: questionForAttributeConfiguration(attributeConfigurations[0])
+        };
       } else if (action.value === 'more') {
         this.body = 'Here is more information.';
       } else {
         this.body = 'Aww!';
       }
     } else {
+      const responseAttributeConfiguration = attributeConfigurations.find(configuration => configuration.name === attributeName);
+      const responseAttributeValue = responseAttributeConfiguration.values.find(attributeValue => attributeValue.value === action.value);
+
       const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
 
       if (nextAttributeConfiguration) {
-        this.body = questionForAttributeConfiguration(nextAttributeConfiguration);
+        this.body = {
+          text: responseAttributeValue.texts.update,
+          attachments: questionForAttributeConfiguration(nextAttributeConfiguration)
+        };
       } else {
-        this.body = 'Thanks for participating! See you around the Slack.';
+        this.body = `${responseAttributeValue.texts.update} Thanks for participating! See you around the Slack.`;
       }
     }
 

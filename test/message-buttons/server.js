@@ -10,7 +10,8 @@ const firstAttributeConfiguration = {
   values: [{
     value: 'wears jorts',
     texts: {
-      interviewAnswer: 'Yes'
+      interviewAnswer: 'Yes',
+      update: 'We have noted that you wear jorts.'
     }
   }, {
     value: 'does not wear jorts',
@@ -31,7 +32,19 @@ const firstAttributeConfiguration = {
 };
 
 const secondAttributeConfiguration = {
-  name: 'jants'
+  name: 'jants',
+  interviewQuestion: 'Do you wear jants?',
+  values: [{
+    value: 'wears jants',
+    texts: {
+      interviewAnswer: 'Yes'
+    }
+  }, {
+    value: 'does not wear jants',
+    texts: {
+      update: 'We have noted that you do not wear jants.'
+    }
+  }]
 };
 
 const attributeConfigurations = [
@@ -54,7 +67,7 @@ test('it handles acceptance of the initial interview question by responding with
         value: 'yes'
       }]
     })})
-    .expect(200, 'jortsQuestion', t.end);
+    .expect(200, {text: 'Here is the first question???', attachments: 'jortsQuestion'}, t.end);
 });
 
 test('it handles a response to the first attribute question by asking the second attribute question', function(t) {
@@ -65,10 +78,10 @@ test('it handles a response to the first attribute question by asking the second
       callback_id: 'jorts',
       actions: [{
         name: 'yes',
-        value: 'yes'
+        value: 'wears jorts'
       }]
     })})
-    .expect(200, 'jantsQuestion', t.end);
+    .expect(200, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'}, t.end);
 });
 
 test('it handles a response to the last attribute question by thanking and wrapping up', function(t) {
@@ -78,11 +91,11 @@ test('it handles a response to the last attribute question by thanking and wrapp
     .send({payload: JSON.stringify({
       callback_id: 'jants',
       actions: [{
-        name: 'yes',
-        value: 'yes'
+        name: 'irrelevant',
+        value: 'does not wear jants'
       }]
     })})
-    .expect(200, 'Thanks for participating! See you around the Slack.', t.end);
+    .expect(200, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.', t.end);
 });
 
 test('it handles a more information request from the initial interview question', function(t) {

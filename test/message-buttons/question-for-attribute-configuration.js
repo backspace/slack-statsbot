@@ -28,36 +28,33 @@ const attributeConfiguration = {
 };
 
 test('it translates an attribute configuration into a question', function(t) {
-  t.deepEqual(questionForAttributeConfiguration(attributeConfiguration), {
-    text: 'Do you wear jorts?',
-    attachments: [{
-      title: 'Do you wear jorts?',
-      callback_id: 'jorts',
-      color: '#ccc',
-      attachment_type: 'default',
-      actions: [{
-        name: 'jorts',
-        text: 'Yes',
-        type: 'button',
-        value: 'wears jorts'
-      }, {
-        name: 'jorts',
-        text: 'No',
-        type: 'button',
-        value: 'does not wear jorts'
-      }, {
-        name: 'jorts',
-        text: 'Sometimes',
-        type: 'button',
-        value: 'sometimes wears jorts'
-      }, {
-        name: 'jorts',
-        text: 'Decline',
-        type: 'button',
-        value: 'decline'
-      }]
+  t.deepEqual(questionForAttributeConfiguration(attributeConfiguration), [{
+    title: 'Do you wear jorts?',
+    callback_id: 'jorts',
+    color: '#ccc',
+    attachment_type: 'default',
+    actions: [{
+      name: 'jorts',
+      text: 'Yes',
+      type: 'button',
+      value: 'wears jorts'
+    }, {
+      name: 'jorts',
+      text: 'No',
+      type: 'button',
+      value: 'does not wear jorts'
+    }, {
+      name: 'jorts',
+      text: 'Sometimes',
+      type: 'button',
+      value: 'sometimes wears jorts'
+    }, {
+      name: 'jorts',
+      text: 'Decline',
+      type: 'button',
+      value: 'decline'
     }]
-  });
+  }]);
 
   t.end();
 });

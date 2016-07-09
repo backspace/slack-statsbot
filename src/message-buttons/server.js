@@ -23,7 +23,13 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
         this.body = 'Aww!';
       }
     } else {
-      this.body = questionForAttributeConfiguration(getNextAttributeConfiguration(attributeConfigurations, attributeName));
+      const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
+
+      if (nextAttributeConfiguration) {
+        this.body = questionForAttributeConfiguration(nextAttributeConfiguration);
+      } else {
+        this.body = 'Thanks for participating! See you around the Slack.';
+      }
     }
 
     yield next;

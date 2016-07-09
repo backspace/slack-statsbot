@@ -71,6 +71,20 @@ test('it handles a response to the first attribute question by asking the second
     .expect(200, 'jantsQuestion', t.end);
 });
 
+test('it handles a response to the last attribute question by thanking and wrapping up', function(t) {
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
+    .post('/slack/actions')
+    .type('form')
+    .send({payload: JSON.stringify({
+      callback_id: 'jants',
+      actions: [{
+        name: 'yes',
+        value: 'yes'
+      }]
+    })})
+    .expect(200, 'Thanks for participating! See you around the Slack.', t.end);
+});
+
 test('it handles a more information request from the initial interview question', function(t) {
   agent(startServer())
     .post('/slack/actions')

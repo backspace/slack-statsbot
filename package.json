@@ -37,6 +37,7 @@
     "convict": "^0.6.1",
     "cron-parser": "^0.6.1",
     "koa": "^1.2.0",
+    "koa-body": "^1.4.0",
     "koa-router": "^5.4.0",
     "lodash.every": "^3.2.0",
     "lodash.find": "^3.2.0",

@@ -4,8 +4,42 @@ const agent = require('supertest-koa-agent');
 const test = require('tape');
 const sinon = require('sinon');
 
-test('it handles acceptance of the initial interview question', function(t) {
-  agent(startServer())
+const firstAttributeConfiguration = {
+  name: 'jorts',
+  interviewQuestion: 'Do you wear jorts?',
+  values: [{
+    value: 'wears jorts',
+    texts: {
+      interviewAnswer: 'Yes'
+    }
+  }, {
+    value: 'does not wear jorts',
+    texts: {
+      interviewAnswer: 'No'
+    }
+  }, {
+    value: 'sometimes wears jorts',
+    texts: {
+      interviewAnswer: 'Sometimes'
+    }
+  }, {
+    value: null,
+    texts: {
+      interviewAnswer: 'Decline'
+    }
+  }]
+};
+
+const attributeConfigurations = [
+  firstAttributeConfiguration
+];
+
+function questionForAttributeConfiguration() {
+  return 'a question';
+}
+
+test('it handles acceptance of the initial interview question by responding with a question for the first attribute', function(t) {
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
     .post('/slack/actions')
     .type('form')
     .send({payload: JSON.stringify({
@@ -15,7 +49,7 @@ test('it handles acceptance of the initial interview question', function(t) {
         value: 'yes'
       }]
     })})
-    .expect(200, 'Let us continue.', t.end);
+    .expect(200, questionForAttributeConfiguration(), t.end);
 });
 
 test('it handles a more information request from the initial interview question', function(t) {

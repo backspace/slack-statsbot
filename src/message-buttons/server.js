@@ -3,7 +3,7 @@ const Router = require('koa-router');
 
 const bodyParser = require('koa-body');
 
-module.exports = function() {
+module.exports = function({attributeConfigurations, questionForAttributeConfiguration} = {}) {
   const app = koa();
   app.use(bodyParser());
 
@@ -14,7 +14,7 @@ module.exports = function() {
     const action = payload.actions[0];
 
     if (action.value === 'yes') {
-      this.body = 'Let us continue.';
+      this.body = questionForAttributeConfiguration(attributeConfigurations[0]);
     } else if (action.value === 'more') {
       this.body = 'Here is more information.';
     } else {

@@ -13,7 +13,9 @@ module.exports = function() {
     const payload = JSON.parse(this.request.body.payload);
     const action = payload.actions[0];
 
-    if (action.value === 'more') {
+    if (action.value === 'yes') {
+      this.body = 'Let us continue.';
+    } else if (action.value === 'more') {
       this.body = 'Here is more information.';
     } else {
       this.body = 'Aww!';

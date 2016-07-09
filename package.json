@@ -28,12 +28,15 @@
     "grunt-tape": "0.0.2",
     "require-subvert": "^0.1.0",
     "sinon": "^1.12.2",
+    "supertest-koa-agent": "^0.2.1",
     "tape": "^3.4.0"
   },
   "dependencies": {
     "cli-table": "^0.3.1",
     "convict": "^0.6.1",
     "cron-parser": "^0.6.1",
+    "koa": "^1.2.0",
+    "koa-router": "^5.4.0",
     "lodash.every": "^3.2.0",
     "lodash.find": "^3.2.0",
     "lodash.map": "^3.1.4",

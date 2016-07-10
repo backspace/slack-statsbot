@@ -3,7 +3,7 @@ const Router = require('koa-router');
 
 const bodyParser = require('koa-body');
 
-module.exports = function({attributeConfigurations, questionForAttributeConfiguration} = {}) {
+module.exports = function({attributeConfigurations, questionForAttributeConfiguration, userRepository} = {}) {
   const app = koa();
   app.use(bodyParser());
 
@@ -28,6 +28,10 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
     } else {
       const responseAttributeConfiguration = attributeConfigurations.find(configuration => configuration.name === attributeName);
       const responseAttributeValue = responseAttributeConfiguration.values.find(attributeValue => attributeValue.value === action.value);
+
+      const userID = payload.user.id;
+
+      userRepository.storeAttribute(userID, attributeName, action.value);
 
       const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
 

@@ -4,6 +4,10 @@ const agent = require('supertest-koa-agent');
 const test = require('tape');
 const sinon = require('sinon');
 
+const fakeUserRepository = {
+  storeAttribute() {}
+};
+
 const firstAttributeConfiguration = {
   name: 'jorts',
   interviewQuestion: 'Do you wear jorts?',
@@ -70,32 +74,50 @@ test('it handles acceptance of the initial interview question by responding with
     .expect(200, {text: 'Excellent, thank you!', attachments: 'jortsQuestion'}, t.end);
 });
 
-test('it handles a response to the first attribute question by asking the second attribute question', function(t) {
-  agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
+test('it handles a response to the first attribute question by storing it and asking the second attribute question', function(t) {
+  const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
+
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration, userRepository: fakeUserRepository}))
     .post('/slack/actions')
     .type('form')
     .send({payload: JSON.stringify({
       callback_id: 'jorts',
+      user: {
+        id: 'userID'
+      },
       actions: [{
         name: 'yes',
         value: 'wears jorts'
       }]
     })})
-    .expect(200, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'}, t.end);
+    .expect(200, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'}, () => {
+      t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'));
+      storeAttributeStub.restore();
+      t.end();
+    });
 });
 
-test('it handles a response to the last attribute question by thanking and wrapping up', function(t) {
-  agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
+test('it handles a response to the last attribute question by storing it and thanking and wrapping up', function(t) {
+  const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
+
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration, userRepository: fakeUserRepository}))
     .post('/slack/actions')
     .type('form')
     .send({payload: JSON.stringify({
       callback_id: 'jants',
+      user: {
+        id: 'userID'
+      },
       actions: [{
         name: 'irrelevant',
         value: 'does not wear jants'
       }]
     })})
-    .expect(200, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.', t.end);
+    .expect(200, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.', () => {
+      t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'));
+      storeAttributeStub.restore();
+      t.end();
+    });
 });
 
 test('it handles a more information request from the initial interview question', function(t) {

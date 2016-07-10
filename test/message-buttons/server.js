@@ -67,7 +67,7 @@ test('it handles acceptance of the initial interview question by responding with
         value: 'yes'
       }]
     })})
-    .expect(200, {text: 'Here is the first question???', attachments: 'jortsQuestion'}, t.end);
+    .expect(200, {text: 'Excellent, thank you!', attachments: 'jortsQuestion'}, t.end);
 });
 
 test('it handles a response to the first attribute question by asking the second attribute question', function(t) {

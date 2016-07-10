@@ -17,7 +17,7 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
     if (attributeName === 'initial') {
       if (action.value === 'yes') {
         this.body = {
-          text: 'Here is the first question???',
+          text: 'Excellent, thank you!',
           attachments: questionForAttributeConfiguration(attributeConfigurations[0])
         };
       } else if (action.value === 'more') {

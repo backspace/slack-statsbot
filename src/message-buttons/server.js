@@ -26,12 +26,14 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
         this.body = 'Aww!';
       }
     } else {
+      const attributeValueToFind = action.value === 'decline' ? null : action.value;
+
       const responseAttributeConfiguration = attributeConfigurations.find(configuration => configuration.name === attributeName);
-      const responseAttributeValue = responseAttributeConfiguration.values.find(attributeValue => attributeValue.value === action.value);
+      const responseAttributeValue = responseAttributeConfiguration.values.find(attributeValue => attributeValue.value === attributeValueToFind);
 
       const userID = payload.user.id;
 
-      userRepository.storeAttribute(userID, attributeName, action.value);
+      userRepository.storeAttribute(userID, attributeName, attributeValueToFind);
 
       const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
 

@@ -97,6 +97,29 @@ test('it handles a response to the first attribute question by storing it and as
     });
 });
 
+test('it handles a decline response to the first attribute question by storing it as null', function(t) {
+  const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
+
+  agent(startServer({attributeConfigurations, questionForAttributeConfiguration, userRepository: fakeUserRepository}))
+    .post('/slack/actions')
+    .type('form')
+    .send({payload: JSON.stringify({
+      callback_id: 'jorts',
+      user: {
+        id: 'userID'
+      },
+      actions: [{
+        name: 'irrelevant',
+        value: 'decline'
+      }]
+    })})
+    .expect(200, () => {
+      t.ok(storeAttributeStub.calledWith('userID', 'jorts', null));
+      storeAttributeStub.restore();
+      t.end();
+    });
+});
+
 test('it handles a response to the last attribute question by storing it and thanking and wrapping up', function(t) {
   const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 

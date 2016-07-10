@@ -17,7 +17,7 @@
         "table": "not-men",
         "terse": "not-men",
         "short": "NM",
-        "interviewAnswer": "Yes"
+        "interviewAnswer": "No"
       }
     },
     {
@@ -34,7 +34,7 @@
         "statistics": "men",
         "table": "men",
         "short": "M",
-        "interviewAnswer": "No"
+        "interviewAnswer": "Yes"
       }
     },
     {

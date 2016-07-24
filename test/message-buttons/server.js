@@ -180,6 +180,7 @@ test('it responds to an OAuth request with the bot access token', function(t) {
   nock('https://slack.com')
     .post('/api/oauth.access', 'client_id=client-id&client_secret=client-secret&code=a-code')
     .reply(200, {
+      ok: true,
       bot: {
         bot_access_token: 'yesthisisthestring'
       }
@@ -208,3 +209,26 @@ test('it responds to an OAuth request lacking a code with an error', function(t)
       t.end();
     });
 });
+
+test('it handles an error from the Slack API', function(t) {
+  const nock = require('nock');
+
+  nock('https://slack.com')
+    .post('/api/oauth.access')
+    .reply(200, {
+      ok: false,
+      error: 'jorts_crisis'
+    });
+
+  agent(startServer())
+    .get('/oauth')
+    .type('form')
+    .query({code: 'a-code'})
+    .expect(422, (err, res) => {
+      t.ok(err, 'expected an error');
+      t.equal(res.body.error, 'jorts_crisis');
+
+      nock.cleanAll();
+      t.end();
+    });
+})

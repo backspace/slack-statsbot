@@ -64,7 +64,12 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
             code: this.request.query.code
           })
           .end((err, res) => {
-            this.body = {test: res.body.bot.bot_access_token};
+            if (res.body.ok) {
+              this.body = {test: res.body.bot.bot_access_token};
+            } else {
+              this.body = {error: res.body.error};
+            }
+
             resolve();
           });
       });

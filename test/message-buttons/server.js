@@ -170,3 +170,30 @@ test('it handles a rejection of the initial interview question', function(t) {
     })})
     .expect(200, 'Aww!', t.end);
 });
+
+test('it responds to an OAuth request with the bot access token', function(t) {
+  const nock = require('nock');
+
+  process.env.CLIENT_ID = 'client-id';
+  process.env.CLIENT_SECRET = 'client-secret';
+
+  nock('https://slack.com')
+    .post('/api/oauth.access', 'client_id=client-id&client_secret=client-secret&code=a-code')
+    .reply(200, {
+      bot: {
+        bot_access_token: 'yesthisisthestring'
+      }
+    });
+
+  agent(startServer())
+    .get('/oauth')
+    .type('form')
+    .query({
+      code: 'a-code'
+    })
+    .expect(200, (err, res) => {
+      t.notOk(err, 'expected no error');
+      t.equal(res.body.test, 'yesthisisthestring');
+      t.end();
+    });
+});

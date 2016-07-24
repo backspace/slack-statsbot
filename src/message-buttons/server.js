@@ -3,6 +3,8 @@ const Router = require('koa-router');
 
 const bodyParser = require('koa-body');
 
+const request = require('superagent');
+
 module.exports = function({attributeConfigurations, questionForAttributeConfiguration, userRepository} = {}) {
   const app = koa();
   app.use(bodyParser());
@@ -48,6 +50,25 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
     }
 
     yield next;
+  });
+
+  router.get('/oauth', function* (next) {
+    const requestPromise = new Promise((resolve) => {
+      request
+        .post('https://slack.com/api/oauth.access')
+        .type('form')
+        .send({
+          client_id: process.env.CLIENT_ID,
+          client_secret: process.env.CLIENT_SECRET,
+          code: this.request.query.code
+        })
+        .end((err, res) => {
+          this.body = {test: res.body.bot.bot_access_token};
+          resolve();
+        });
+    });
+
+    yield requestPromise;
   });
 
   app.use(router.routes());

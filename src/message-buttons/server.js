@@ -65,7 +65,7 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
           })
           .end((err, res) => {
             if (res.body.ok) {
-              this.body = {test: res.body.bot.bot_access_token};
+              this.body = {bot_access_token: res.body.bot.bot_access_token};
             } else {
               this.body = {error: res.body.error};
             }

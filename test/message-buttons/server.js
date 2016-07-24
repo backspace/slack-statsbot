@@ -194,7 +194,7 @@ test('it responds to an OAuth request with the bot access token', function(t) {
     })
     .expect(200, (err, res) => {
       t.notOk(err, 'expected no error');
-      t.equal(res.body.test, 'yesthisisthestring');
+      t.equal(res.body.bot_access_token, 'yesthisisthestring');
 
       nock.cleanAll();
       t.end();

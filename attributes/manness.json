@@ -3,6 +3,23 @@
   "interviewQuestion": "Are you a man?",
   "values": [
     {
+      "value": "a man",
+      "matcherSets": [
+        [{"matches": "true"}],
+        [{"matches": "man"}, {"doesNotMatch": "not"}, {"doesNotMatch": "woman"}],
+        [{"matches": "woman"}, {"matches": "not"}]
+      ],
+      "texts": {
+        "information": "you are a man",
+        "update": "Okay, we have noted that you are a man. ",
+        "wrong": "If I got it wrong, try saying “I am *not* a man!”",
+        "statistics": "men",
+        "table": "men",
+        "short": "M",
+        "interviewAnswer": "Yes"
+      }
+    },
+    {
       "value": "not a man",
       "matcherSets": [
         [{"matches": "false"}],
@@ -18,23 +35,6 @@
         "terse": "not-men",
         "short": "NM",
         "interviewAnswer": "No"
-      }
-    },
-    {
-      "value": "a man",
-      "matcherSets": [
-        [{"matches": "true"}],
-        [{"matches": "man"}, {"doesNotMatch": "not"}, {"doesNotMatch": "woman"}],
-        [{"matches": "woman"}, {"matches": "not"}]
-      ],
-      "texts": {
-        "information": "you are a man",
-        "update": "Okay, we have noted that you are a man. ",
-        "wrong": "If I got it wrong, try saying “I am *not* a man!”",
-        "statistics": "men",
-        "table": "men",
-        "short": "M",
-        "interviewAnswer": "Yes"
       }
     },
     {

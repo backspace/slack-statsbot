@@ -194,6 +194,17 @@ test('it responds to an OAuth request with the bot access token', function(t) {
     .expect(200, (err, res) => {
       t.notOk(err, 'expected no error');
       t.equal(res.body.test, 'yesthisisthestring');
+
+      nock.cleanAll();
+      t.end();
+    });
+});
+
+test('it responds to an OAuth request lacking a code with an error', function(t) {
+  agent(startServer())
+    .get('/oauth')
+    .type('form')
+    .expect(422, (err, res) => {
       t.end();
     });
 });

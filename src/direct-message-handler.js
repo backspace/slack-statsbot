@@ -1,12 +1,12 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
-var every = require('lodash.every');
 var find = require('lodash.find');
 
 var UpdateParser = require('./update-parser');
 
 var attributeConfigurations = require('./attribute-configurations');
+var userInformation = require('./reports/user-information');
 
 class DirectMessageHandler {
   constructor({userRepository, channelRepository, adapter}) {
@@ -69,34 +69,11 @@ class DirectMessageHandler {
   }
 
   handleInformationRequest(channel, message) {
-    // FIXME fetch the entire user rather than run multiple queries
-    Promise.all(this.attributeConfigurations.map(function(configuration) {
-      return this.userRepository.retrieveAttribute(message.user, configuration.name);
-    }.bind(this))).then(function(values) {
-      var reply;
-
-      if (every(values, function(value) {return value == null || value == undefined})) {
-        reply = `We don’t have you on record! ${DirectMessageHandler.HELP_MESSAGE}`;
-      } else {
-        reply = 'Our records indicate that:\n\n';
-
-        this.attributeConfigurations.forEach(function(attributeConfiguration, index) {
-          var value = values[index];
-
-          var valueConfiguration = find(attributeConfiguration.values, function(valueConfiguration) {
-            return valueConfiguration.value == value;
-          });
-
-          if (valueConfiguration) {
-            reply += `* ${valueConfiguration.texts.information}\n`;
-          } else {
-            reply += `* ${attributeConfiguration.unknownValue.texts.information}\n`;
-          }
-        });
-      }
-
-      channel.send(reply);
-    }.bind(this));
+    userInformation(message.user, {
+      userRepository: this.userRepository,
+      helpMessage: DirectMessageHandler.HELP_MESSAGE,
+      attributeConfigurations: this.attributeConfigurations
+    }).then(reply => channel.send(reply));
   }
 
   handleInformationUpdate(channel, message) {

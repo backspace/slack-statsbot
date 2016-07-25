@@ -5,7 +5,8 @@ const test = require('tape');
 const sinon = require('sinon');
 
 const fakeUserRepository = {
-  storeAttribute() {}
+  storeAttribute() {},
+  retrieveAttribute() {}
 };
 
 const firstAttributeConfiguration = {
@@ -15,7 +16,8 @@ const firstAttributeConfiguration = {
     value: 'wears jorts',
     texts: {
       interviewAnswer: 'Yes',
-      update: 'We have noted that you wear jorts.'
+      update: 'We have noted that you wear jorts.',
+      information: 'you wear jorts'
     }
   }, {
     value: 'does not wear jorts',
@@ -46,7 +48,8 @@ const secondAttributeConfiguration = {
   }, {
     value: 'does not wear jants',
     texts: {
-      update: 'We have noted that you do not wear jants.'
+      update: 'We have noted that you do not wear jants.',
+      information: 'you do not wear jants'
     }
   }]
 };
@@ -121,8 +124,12 @@ test('it handles a decline response to the first attribute question by storing i
     });
 });
 
-test('it handles a response to the last attribute question by storing it and thanking and wrapping up', function(t) {
+test('it handles a response to the last attribute question by storing it, summarising, and thanking', function(t) {
   const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
+
+  const retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
+  retrieveAttributeStub.withArgs('userID', 'jorts').returns(Promise.resolve('wears jorts'));
+  retrieveAttributeStub.withArgs('userID', 'jants').returns(Promise.resolve('does not wear jants'));
 
   agent(startServer({attributeConfigurations, questionForAttributeConfiguration, userRepository: fakeUserRepository}))
     .post('/slack/actions')
@@ -138,7 +145,7 @@ test('it handles a response to the last attribute question by storing it and tha
       }]
     })})
     .expect(200, (err, {res: body}) => {
-      t.equal(body.text, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.');
+      t.equal(body.text, 'We have noted that you do not wear jants. To summarise:\n* you wear jorts* you do not wear jants\n\nThanks for participating! See you around the Slack.');
       t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'));
       storeAttributeStub.restore();
       t.end();

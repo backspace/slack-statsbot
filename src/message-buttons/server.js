@@ -5,6 +5,8 @@ const bodyParser = require('koa-body');
 
 const request = require('superagent');
 
+const userInformation = require('../reports/user-information');
+
 module.exports = function({attributeConfigurations, questionForAttributeConfiguration, userRepository} = {}) {
   const app = koa();
   app.use(bodyParser());
@@ -45,7 +47,12 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
           attachments: questionForAttributeConfiguration(nextAttributeConfiguration)
         };
       } else {
-        this.body = `${responseAttributeValue.texts.update} Thanks for participating! See you around the Slack.`;
+        yield userInformation(userID, {
+          userRepository: userRepository,
+          attributeConfigurations: attributeConfigurations
+        }).then(reply => {
+          this.body = `${responseAttributeValue.texts.update} ${reply}\nThanks for participating! See you around the Slack.`;
+        });
       }
     }
 

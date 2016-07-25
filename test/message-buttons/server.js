@@ -145,7 +145,7 @@ test('it handles a response to the last attribute question by storing it, summar
       }]
     })})
     .expect(200, (err, {res: body}) => {
-      t.equal(body.text, 'We have noted that you do not wear jants. To summarise:\n* you wear jorts* you do not wear jants\n\nThanks for participating! See you around the Slack.');
+      t.equal(body.text, 'We have noted that you do not wear jants. Our records indicate that:\n\n* you wear jorts\n* you do not wear jants\n\nThanks for participating! See you around the Slack.');
       t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'));
       storeAttributeStub.restore();
       t.end();

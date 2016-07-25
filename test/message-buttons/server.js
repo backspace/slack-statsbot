@@ -90,7 +90,8 @@ test('it handles a response to the first attribute question by storing it and as
         value: 'wears jorts'
       }]
     })})
-    .expect(200, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'}, () => {
+    .expect(200, (err, {res: body}) => {
+      t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'});
       t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'));
       storeAttributeStub.restore();
       t.end();
@@ -136,7 +137,8 @@ test('it handles a response to the last attribute question by storing it and tha
         value: 'does not wear jants'
       }]
     })})
-    .expect(200, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.', () => {
+    .expect(200, (err, {res: body}) => {
+      t.equal(body.text, 'We have noted that you do not wear jants. Thanks for participating! See you around the Slack.');
       t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'));
       storeAttributeStub.restore();
       t.end();

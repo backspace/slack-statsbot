@@ -4,6 +4,8 @@ const agent = require('supertest-koa-agent');
 const test = require('tape');
 const sinon = require('sinon');
 
+process.env.SLACK_VERIFICATION_TOKEN = 'a-verification-token';
+
 const fakeUserRepository = {
   storeAttribute() {},
   retrieveAttribute() {}
@@ -72,7 +74,8 @@ test('it handles acceptance of the initial interview question by responding with
       actions: [{
         name: 'yes',
         value: 'yes'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, {text: 'Excellent, thank you!', attachments: 'jortsQuestion'}, t.end);
 });
@@ -91,7 +94,8 @@ test('it handles a response to the first attribute question by storing it and as
       actions: [{
         name: 'yes',
         value: 'wears jorts'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, (err, {res: body}) => {
       t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'});
@@ -115,7 +119,8 @@ test('it handles a decline response to the first attribute question by storing i
       actions: [{
         name: 'irrelevant',
         value: 'decline'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, () => {
       t.ok(storeAttributeStub.calledWith('userID', 'jorts', null));
@@ -142,7 +147,8 @@ test('it handles a response to the last attribute question by storing it, summar
       actions: [{
         name: 'irrelevant',
         value: 'does not wear jants'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, (err, {res: body}) => {
       t.equal(body.text, 'We have noted that you do not wear jants. Our records indicate that:\n\n* you wear jorts\n* you do not wear jants\n\nThanks for participating! See you around the Slack.');
@@ -161,7 +167,8 @@ test('it handles a more information request from the initial interview question'
       actions: [{
         name: 'more',
         value: 'more'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, 'Here is more information.', t.end);
 });
@@ -175,9 +182,20 @@ test('it handles a rejection of the initial interview question', function(t) {
       actions: [{
         name: 'no',
         value: 'no'
-      }]
+      }],
+      token: 'a-verification-token'
     })})
     .expect(200, 'Aww!', t.end);
+});
+
+test('it rejects an action without the correct verification token', function(t) {
+  agent(startServer())
+    .post('/slack/actions')
+    .type('form')
+    .send({payload: JSON.stringify({
+      token: 'an-invalid-token'
+    })})
+    .expect(403, t.end);
 });
 
 test('it responds to an OAuth request with the bot access token', function(t) {

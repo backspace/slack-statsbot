@@ -15,6 +15,13 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
   router.post('/slack/actions', function* (next) {
     const payload = JSON.parse(this.request.body.payload);
+
+    if (payload.token !== process.env.SLACK_VERIFICATION_TOKEN) {
+      this.status = 403;
+      yield next;
+      return;
+    }
+
     const attributeName = payload.callback_id;
     const action = payload.actions[0];
 

@@ -6,6 +6,7 @@ const bodyParser = require('koa-body');
 const request = require('superagent');
 
 const userInformation = require('../reports/user-information');
+const DirectMessageHandler = require('../direct-message-handler');
 
 module.exports = function({attributeConfigurations, questionForAttributeConfiguration, userRepository} = {}) {
   const app = koa();
@@ -27,6 +28,21 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
     if (attributeName === 'initial') {
       if (action.value === 'yes') {
+        request.post(payload.response_url).send({
+          text: DirectMessageHandler.INTERVIEW_INTRODUCTION,
+          attachments: [{
+            title: 'Would you like to self-identify?',
+            text: 'Yes'
+          }],
+          replace_original: true
+        })
+        .end((err, res) => {
+          request.post(payload.response_url).send({
+            attachments: questionForAttributeConfiguration(attributeConfigurations[0]),
+            replace_original: false
+          }).end();
+        });
+
         this.body = {
           text: 'Excellent, thank you!',
           attachments: questionForAttributeConfiguration(attributeConfigurations[0])

@@ -4,6 +4,8 @@ const agent = require('supertest-koa-agent');
 const test = require('tape');
 const sinon = require('sinon');
 
+const DirectMessageHandler = require('../../src/direct-message-handler');
+
 process.env.SLACK_VERIFICATION_TOKEN = 'a-verification-token';
 
 const fakeUserRepository = {
@@ -65,7 +67,41 @@ function questionForAttributeConfiguration(attributeConfiguration) {
   return `${attributeConfiguration.name}Question`;
 }
 
-test('it handles acceptance of the initial interview question by responding with a question for the first attribute', function(t) {
+test('it handles acceptance of the initial interview question by repeating the question and answer and responding with a question for the first attribute', function(t) {
+  const nock = require('nock');
+
+  const responses = [];
+
+  nock('https://example.com')
+    .post('/a-response-url')
+    .times(2)
+    .reply((uri, requestBody) => {
+      responses.push(JSON.parse(requestBody));
+
+      if (responses.length === 2) {
+        const firstResponse = responses[0];
+        const secondResponse = responses[1];
+
+        t.deepEqual(firstResponse, {
+          text: DirectMessageHandler.INTERVIEW_INTRODUCTION,
+          attachments: [{
+            title: 'Would you like to self-identify?',
+            text: 'Yes'
+          }],
+          replace_original: true
+        }, 'should restate the question with the answer attached');
+
+        t.deepEqual(secondResponse, {
+          attachments: 'jortsQuestion',
+          replace_original: false
+        }, 'should follow up with the first attribute question');
+
+        t.end();
+      }
+
+      return [200, 'hello'];
+    });
+
   agent(startServer({attributeConfigurations, questionForAttributeConfiguration}))
     .post('/slack/actions')
     .type('form')
@@ -75,9 +111,10 @@ test('it handles acceptance of the initial interview question by responding with
         name: 'yes',
         value: 'yes'
       }],
-      token: 'a-verification-token'
+      token: 'a-verification-token',
+      response_url: 'https://example.com/a-response-url'
     })})
-    .expect(200, {text: 'Excellent, thank you!', attachments: 'jortsQuestion'}, t.end);
+    .expect(200, () => {});
 });
 
 test('it handles a response to the first attribute question by storing it and asking the second attribute question', function(t) {

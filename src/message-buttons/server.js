@@ -60,10 +60,19 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
       const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
 
       if (nextAttributeConfiguration) {
-        this.body = {
-          text: responseAttributeValue.texts.update,
-          attachments: [questionForAttributeConfiguration(nextAttributeConfiguration)]
-        };
+        request.post(payload.response_url).send({
+          attachments: [{
+            title: responseAttributeConfiguration.interviewQuestion,
+            text: responseAttributeValue.texts.interviewAnswer
+          }],
+          replace_original: true
+        })
+        .end((err, res) => {
+          request.post(payload.response_url).send({
+            attachments: [questionForAttributeConfiguration(nextAttributeConfiguration)],
+            replace_original: false
+          }).end();
+        });
       } else {
         yield userInformation(userID, {
           userRepository: userRepository,

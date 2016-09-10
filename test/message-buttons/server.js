@@ -118,6 +118,39 @@ test('it handles acceptance of the initial interview question by repeating the q
 });
 
 test('it handles a response to the first attribute question by storing it and asking the second attribute question', function(t) {
+  const nock = require('nock');
+
+  const responses = [];
+
+  nock('https://example.com')
+    .post('/a-response-url')
+    .times(2)
+    .reply((uri, requestBody) => {
+      responses.push(JSON.parse(requestBody));
+
+      if (responses.length === 2) {
+        const firstResponse = responses[0];
+        const secondResponse = responses[1];
+
+        t.deepEqual(firstResponse, {
+          attachments: [{
+            title: 'Do you wear jorts?',
+            text: 'Yes'
+          }],
+          replace_original: true
+        }, 'should restate the question with the answer attached');
+
+        t.deepEqual(secondResponse, {
+          attachments: ['jantsQuestion'],
+          replace_original: false
+        }, 'should follow up with the second attribute question');
+
+        t.end();
+      }
+
+      return [200, 'hello'];
+    });
+
   const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
   agent(startServer({attributeConfigurations, questionForAttributeConfiguration, userRepository: fakeUserRepository}))
@@ -125,6 +158,7 @@ test('it handles a response to the first attribute question by storing it and as
     .type('form')
     .send({payload: JSON.stringify({
       callback_id: 'jorts',
+      response_url: 'https://example.com/a-response-url',
       user: {
         id: 'userID'
       },
@@ -135,10 +169,8 @@ test('it handles a response to the first attribute question by storing it and as
       token: 'a-verification-token'
     })})
     .expect(200, (err, {res: body}) => {
-      t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: ['jantsQuestion']});
       t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'), 'stores the attribute value');
       storeAttributeStub.restore();
-      t.end();
     });
 });
 
@@ -150,6 +182,7 @@ test('it handles a decline response to the first attribute question by storing i
     .type('form')
     .send({payload: JSON.stringify({
       callback_id: 'jorts',
+      response_url: 'https://example.com/a-response-url',
       user: {
         id: 'userID'
       },

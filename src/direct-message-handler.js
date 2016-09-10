@@ -20,7 +20,7 @@ class DirectMessageHandler {
 
   handle(channel, message) {
     if (!message.text || message.subtype === 'bot_message') return;
-    var text = message.text.toLowerCase();
+    var text = message.text.toLowerCase().trim();
 
     var user = this.adapter.getUser(message.user);
 

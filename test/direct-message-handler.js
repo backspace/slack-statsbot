@@ -156,8 +156,9 @@ test('DirectMessageHandler handles an information request', function(t) {
     retrieveAttributeStub.withArgs(person.id, 'manness').returns(Promise.resolve(person.manness));
     retrieveAttributeStub.withArgs(person.id, 'pocness').returns(Promise.resolve(person.pocness));
 
+    // The extra spaces are to verify trimming.
     handler.handle(personIDToChannel[person.id], {
-      text: 'info',
+      text: ' info  ',
       user: person.id
     });
   });
@@ -281,7 +282,7 @@ test('DirectMessageHandler updates channel options and reports them', function(t
       user: admin.id
     });
 
-    setTimeout(() => {      
+    setTimeout(() => {
       t.ok(adminDM.send.calledWithMatch(/<#menexplicitid> has no ignored attributes/), 'expected no ignored attributes to be listed');
 
       t.end();

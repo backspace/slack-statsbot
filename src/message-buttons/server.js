@@ -42,11 +42,6 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
             replace_original: false
           }).end();
         });
-
-        this.body = {
-          text: 'Excellent, thank you!',
-          attachments: questionForAttributeConfiguration(attributeConfigurations[0])
-        };
       } else if (action.value === 'more') {
         this.body = 'Here is more information.';
       } else {

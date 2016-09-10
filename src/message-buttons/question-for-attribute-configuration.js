@@ -3,7 +3,6 @@ module.exports = function questionForAttributeConfiguration(attributeConfigurati
   return {
     title: attributeConfiguration.interviewQuestion,
     callback_id: attributeConfiguration.name,
-    color: '#ccc',
     attachment_type: 'default',
     actions: attributeConfiguration.values.map(value => {
       return {

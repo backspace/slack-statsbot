@@ -31,7 +31,6 @@ test('it translates an attribute configuration into a question', function(t) {
   t.deepEqual(questionForAttributeConfiguration(attributeConfiguration), {
     title: 'Do you wear jorts?',
     callback_id: 'jorts',
-    color: '#ccc',
     attachment_type: 'default',
     actions: [{
       name: 'jorts',

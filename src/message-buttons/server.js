@@ -38,7 +38,7 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
         })
         .end((err, res) => {
           request.post(payload.response_url).send({
-            attachments: questionForAttributeConfiguration(attributeConfigurations[0]),
+            attachments: [questionForAttributeConfiguration(attributeConfigurations[0])],
             replace_original: false
           }).end();
         });
@@ -62,7 +62,7 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
       if (nextAttributeConfiguration) {
         this.body = {
           text: responseAttributeValue.texts.update,
-          attachments: questionForAttributeConfiguration(nextAttributeConfiguration)
+          attachments: [questionForAttributeConfiguration(nextAttributeConfiguration)]
         };
       } else {
         yield userInformation(userID, {

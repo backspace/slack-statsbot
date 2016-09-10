@@ -1,6 +1,6 @@
 
 module.exports = function questionForAttributeConfiguration(attributeConfiguration) {
-  return [{
+  return {
     title: attributeConfiguration.interviewQuestion,
     callback_id: attributeConfiguration.name,
     color: '#ccc',
@@ -13,5 +13,5 @@ module.exports = function questionForAttributeConfiguration(attributeConfigurati
         value: value.value || 'decline'
       };
     })
-  }];
+  };
 }

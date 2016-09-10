@@ -92,7 +92,7 @@ test('it handles acceptance of the initial interview question by repeating the q
         }, 'should restate the question with the answer attached');
 
         t.deepEqual(secondResponse, {
-          attachments: 'jortsQuestion',
+          attachments: ['jortsQuestion'],
           replace_original: false
         }, 'should follow up with the first attribute question');
 
@@ -135,7 +135,7 @@ test('it handles a response to the first attribute question by storing it and as
       token: 'a-verification-token'
     })})
     .expect(200, (err, {res: body}) => {
-      t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: 'jantsQuestion'});
+      t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: ['jantsQuestion']});
       t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'));
       storeAttributeStub.restore();
       t.end();

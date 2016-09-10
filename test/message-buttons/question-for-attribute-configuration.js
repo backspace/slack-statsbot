@@ -28,7 +28,7 @@ const attributeConfiguration = {
 };
 
 test('it translates an attribute configuration into a question', function(t) {
-  t.deepEqual(questionForAttributeConfiguration(attributeConfiguration), [{
+  t.deepEqual(questionForAttributeConfiguration(attributeConfiguration), {
     title: 'Do you wear jorts?',
     callback_id: 'jorts',
     color: '#ccc',
@@ -54,7 +54,7 @@ test('it translates an attribute configuration into a question', function(t) {
       type: 'button',
       value: 'decline'
     }]
-  }]);
+  });
 
   t.end();
 });

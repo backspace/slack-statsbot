@@ -28,6 +28,8 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
 
     if (attributeName === 'initial') {
       if (action.value === 'yes') {
+        this.status = 200;
+
         request.post(payload.response_url).send({
           text: DirectMessageHandler.INTERVIEW_INTRODUCTION,
           attachments: [{
@@ -60,6 +62,8 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
       const nextAttributeConfiguration = getNextAttributeConfiguration(attributeConfigurations, attributeName);
 
       if (nextAttributeConfiguration) {
+        this.status = 200;
+
         request.post(payload.response_url).send({
           attachments: [{
             title: responseAttributeConfiguration.interviewQuestion,
@@ -78,6 +82,8 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
           userRepository: userRepository,
           attributeConfigurations: attributeConfigurations
         }).then(reply => {
+          this.status = 200;
+
           request.post(payload.response_url).send({
             attachments: [{
               title: responseAttributeConfiguration.interviewQuestion,

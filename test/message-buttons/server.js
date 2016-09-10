@@ -169,7 +169,7 @@ test('it handles a response to the first attribute question by storing it and as
       }],
       token: 'a-verification-token'
     })})
-    .expect(200, (err, {res: body}) => {
+    .expect(200, () => {
       t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'), 'stores the attribute value');
       storeAttributeStub.restore();
     });
@@ -255,7 +255,7 @@ test('it handles a response to the last attribute question by storing it, repeat
       }],
       token: 'a-verification-token'
     })})
-    .expect(200, (err, {res: body}) => {
+    .expect(200, () => {
       t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'), 'stores the attribute value');
       storeAttributeStub.restore();
     });

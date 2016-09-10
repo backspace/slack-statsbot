@@ -31,7 +31,6 @@ class DirectMessageHandler {
         attachments: [{
           title: 'Would you like to self-identify?',
           callback_id: 'initial',
-          color: '#ccc',
           attachment_type: 'default',
           actions: [
             {

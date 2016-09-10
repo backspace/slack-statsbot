@@ -136,7 +136,7 @@ test('it handles a response to the first attribute question by storing it and as
     })})
     .expect(200, (err, {res: body}) => {
       t.deepEqual(body.body, {text: 'We have noted that you wear jorts.', attachments: ['jantsQuestion']});
-      t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'));
+      t.ok(storeAttributeStub.calledWith('userID', 'jorts', 'wears jorts'), 'stores the attribute value');
       storeAttributeStub.restore();
       t.end();
     });
@@ -160,7 +160,7 @@ test('it handles a decline response to the first attribute question by storing i
       token: 'a-verification-token'
     })})
     .expect(200, () => {
-      t.ok(storeAttributeStub.calledWith('userID', 'jorts', null));
+      t.ok(storeAttributeStub.calledWith('userID', 'jorts', null), 'clears the attribute value');
       storeAttributeStub.restore();
       t.end();
     });
@@ -189,7 +189,7 @@ test('it handles a response to the last attribute question by storing it, summar
     })})
     .expect(200, (err, {res: body}) => {
       t.equal(body.text, 'We have noted that you do not wear jants. Our records indicate that:\n\n* you wear jorts\n* you do not wear jants\n\nThanks for participating! See you around the Slack.');
-      t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'));
+      t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'), 'stores the attribute value');
       storeAttributeStub.restore();
       t.end();
     });

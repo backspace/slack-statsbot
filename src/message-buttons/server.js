@@ -47,7 +47,7 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
       } else if (action.value === 'more') {
         this.body = 'Here is more information.';
       } else {
-        this.body = 'Aww!';
+        this.body = 'Okay!';
       }
     } else {
       const attributeValueToFind = action.value === 'decline' ? null : action.value;

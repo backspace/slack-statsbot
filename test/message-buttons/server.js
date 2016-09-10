@@ -288,7 +288,7 @@ test('it handles a rejection of the initial interview question', function(t) {
       }],
       token: 'a-verification-token'
     })})
-    .expect(200, 'Aww!', t.end);
+    .expect(200, 'Okay!', t.end);
 });
 
 test('it rejects an action without the correct verification token', function(t) {

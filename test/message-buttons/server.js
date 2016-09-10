@@ -53,7 +53,8 @@ const secondAttributeConfiguration = {
     value: 'does not wear jants',
     texts: {
       update: 'We have noted that you do not wear jants.',
-      information: 'you do not wear jants'
+      information: 'you do not wear jants',
+      interviewAnswer: 'No'
     }
   }]
 };
@@ -199,7 +200,40 @@ test('it handles a decline response to the first attribute question by storing i
     });
 });
 
-test('it handles a response to the last attribute question by storing it, summarising, and thanking', function(t) {
+test('it handles a response to the last attribute question by storing it, repeating the question and answer, and thanking', function(t) {
+  const nock = require('nock');
+
+  const responses = [];
+
+  nock('https://example.com')
+    .post('/a-response-url')
+    .times(2)
+    .reply((uri, requestBody) => {
+      responses.push(JSON.parse(requestBody));
+
+      if (responses.length === 2) {
+        const firstResponse = responses[0];
+        const secondResponse = responses[1];
+
+        t.deepEqual(firstResponse, {
+          attachments: [{
+            title: 'Do you wear jants?',
+            text: 'No'
+          }],
+          replace_original: true
+        }, 'should restate the question with the answer attached');
+
+        t.deepEqual(secondResponse, {
+          text: 'Thanks for participating. See you around the Slack!',
+          replace_original: false
+        }, 'should end with a farewell');
+
+        t.end();
+      }
+
+      return [200, 'hello'];
+    });
+
   const storeAttributeStub = sinon.stub(fakeUserRepository, 'storeAttribute');
 
   const retrieveAttributeStub = sinon.stub(fakeUserRepository, 'retrieveAttribute');
@@ -211,6 +245,7 @@ test('it handles a response to the last attribute question by storing it, summar
     .type('form')
     .send({payload: JSON.stringify({
       callback_id: 'jants',
+      response_url: 'https://example.com/a-response-url',
       user: {
         id: 'userID'
       },
@@ -221,10 +256,8 @@ test('it handles a response to the last attribute question by storing it, summar
       token: 'a-verification-token'
     })})
     .expect(200, (err, {res: body}) => {
-      t.equal(body.text, 'We have noted that you do not wear jants. Our records indicate that:\n\n* you wear jorts\n* you do not wear jants\n\nThanks for participating! See you around the Slack.');
       t.ok(storeAttributeStub.calledWith('userID', 'jants', 'does not wear jants'), 'stores the attribute value');
       storeAttributeStub.restore();
-      t.end();
     });
 });
 

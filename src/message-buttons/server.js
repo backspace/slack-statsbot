@@ -78,7 +78,19 @@ module.exports = function({attributeConfigurations, questionForAttributeConfigur
           userRepository: userRepository,
           attributeConfigurations: attributeConfigurations
         }).then(reply => {
-          this.body = `${responseAttributeValue.texts.update} ${reply}\nThanks for participating! See you around the Slack.`;
+          request.post(payload.response_url).send({
+            attachments: [{
+              title: responseAttributeConfiguration.interviewQuestion,
+              text: responseAttributeValue.texts.interviewAnswer
+            }],
+            replace_original: true
+          })
+          .end((err, res) => {
+            request.post(payload.response_url).send({
+              text: 'Thanks for participating. See you around the Slack!',
+              replace_original: false
+            }).end();
+          });
         });
       }
     }

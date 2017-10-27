@@ -1,22 +1,7 @@
 {
   "name": "manness",
+  "interviewQuestion": "Are you a man?",
   "values": [
-    {
-      "value": "not a man",
-      "matcherSets": [
-        [{"matches": "false"}],
-        [{"matches": "man"}, {"matches": "not"}],
-        [{"matches": "woman"}, {"doesNotMatch": "not"}]
-      ],
-      "texts": {
-        "information": "you are not a man",
-        "update": "Okay, we have noted that you are not a man. If I got it wrong, try saying “I am a man”.",
-        "statistics": "notMen",
-        "table": "not-men",
-        "terse": "not-men",
-        "short": "NM"
-      }
-    },
     {
       "value": "a man",
       "matcherSets": [
@@ -26,10 +11,30 @@
       ],
       "texts": {
         "information": "you are a man",
-        "update": "Okay, we have noted that you are a man. If I got it wrong, try saying “I am *not* a man!”",
+        "update": "Okay, we have noted that you are a man. ",
+        "wrong": "If I got it wrong, try saying “I am *not* a man!”",
         "statistics": "men",
         "table": "men",
-        "short": "M"
+        "short": "M",
+        "interviewAnswer": "Yes"
+      }
+    },
+    {
+      "value": "not a man",
+      "matcherSets": [
+        [{"matches": "false"}],
+        [{"matches": "man"}, {"matches": "not"}],
+        [{"matches": "woman"}, {"doesNotMatch": "not"}]
+      ],
+      "texts": {
+        "information": "you are not a man",
+        "update": "Okay, we have noted that you are not a man.",
+        "wrong": "If I got it wrong, try saying “I am a man”.",
+        "statistics": "notMen",
+        "table": "not-men",
+        "terse": "not-men",
+        "short": "NM",
+        "interviewAnswer": "No"
       }
     },
     {
@@ -43,7 +48,8 @@
         "update": "We have noted that it’s complicated whether you are a man. If I got it wrong, try saying “I am not a man.”",
         "statistics": "complicated",
         "table": "complicated",
-        "short": "‽"
+        "short": "‽",
+        "interviewAnswer": "It’s complicated"
       }
     },
     {
@@ -57,7 +63,8 @@
         "update": "Okay, we have erased our record of whether you are a man.",
         "statistics": "unknown",
         "table": "unknown",
-        "short": "?"
+        "short": "?",
+        "interviewAnswer": "Decline"
       }
     }
   ],

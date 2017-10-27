@@ -1,12 +1,12 @@
 // TODO this should probably be further decomposed
 // Also should maybe just return a reply which the bot actually sends?
 
-var every = require('lodash.every');
 var find = require('lodash.find');
 
 var UpdateParser = require('./update-parser');
 
 var attributeConfigurations = require('./attribute-configurations');
+var userInformation = require('./reports/user-information');
 
 class DirectMessageHandler {
   constructor({userRepository, channelRepository, adapter}) {
@@ -20,11 +20,39 @@ class DirectMessageHandler {
 
   handle(channel, message) {
     if (!message.text || message.subtype === 'bot_message') return;
-    var text = message.text.toLowerCase();
+    var text = message.text.toLowerCase().trim();
 
     var user = this.adapter.getUser(message.user);
 
-    if (text === 'info') {
+    // TODO replace the self-identification request with this
+    if (text === 'interview') {
+      channel.postMessage({
+        text: DirectMessageHandler.INTERVIEW_INTRODUCTION,
+        attachments: [{
+          title: 'Would you like to self-identify?',
+          callback_id: 'initial',
+          attachment_type: 'default',
+          actions: [
+            {
+              name: 'yes',
+              text: 'Yes',
+              type: 'button',
+              value: 'yes'
+            }, {
+              name: 'no',
+              text: 'No',
+              type: 'button',
+              value: 'no'
+            }, {
+              name: 'more',
+              text: 'Tell me more',
+              type: 'button',
+              value: 'more'
+            }
+          ]
+        }]
+      });
+    } else if (text === 'info') {
       this.handleInformationRequest(channel, message);
     } else if (text === 'help') {
       this.handleHelpRequest(channel, message);
@@ -40,34 +68,11 @@ class DirectMessageHandler {
   }
 
   handleInformationRequest(channel, message) {
-    // FIXME fetch the entire user rather than run multiple queries
-    Promise.all(this.attributeConfigurations.map(function(configuration) {
-      return this.userRepository.retrieveAttribute(message.user, configuration.name);
-    }.bind(this))).then(function(values) {
-      var reply;
-
-      if (every(values, function(value) {return value == null || value == undefined})) {
-        reply = `We don’t have you on record! ${DirectMessageHandler.HELP_MESSAGE}`;
-      } else {
-        reply = 'Our records indicate that:\n\n';
-
-        this.attributeConfigurations.forEach(function(attributeConfiguration, index) {
-          var value = values[index];
-
-          var valueConfiguration = find(attributeConfiguration.values, function(valueConfiguration) {
-            return valueConfiguration.value == value;
-          });
-
-          if (valueConfiguration) {
-            reply += `* ${valueConfiguration.texts.information}\n`;
-          } else {
-            reply += `* ${attributeConfiguration.unknownValue.texts.information}\n`;
-          }
-        });
-      }
-
-      channel.send(reply);
-    }.bind(this));
+    userInformation(message.user, {
+      userRepository: this.userRepository,
+      helpMessage: DirectMessageHandler.HELP_MESSAGE,
+      attributeConfigurations: this.attributeConfigurations
+    }).then(reply => channel.send(reply));
   }
 
   handleInformationUpdate(channel, message) {
@@ -102,7 +107,7 @@ class DirectMessageHandler {
     });
 
     if (matchingValue) {
-      reply = matchingValue.texts.update;
+      reply = `${matchingValue.texts.update} ${matchingValue.texts.wrong || ''}`;
     }
 
     channel.send(reply);
@@ -179,6 +184,7 @@ class DirectMessageHandler {
 // TODO maybe messages should be collected somewhere central, and parameterised
 
 DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. To erase what you’ve previously told me, say “It is unknown whether I am a man”, “it is unknown whether I am white”, and so on. View my source at https://github.com/backspace/slack-statsbot';
-DirectMessageHandler.VERBOSE_HELP_MESSAGE = `Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. ${DirectMessageHandler.HELP_MESSAGE}. Please note that, while I won’t directly reveal the answers you provide, it is sometimes possible to deduce them from the statistics I provide and channel logs.`;
+DirectMessageHandler.INTERVIEW_INTRODUCTION = 'Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. If you feel comfortable answering questions about this, we can continue.';
+DirectMessageHandler.VERBOSE_HELP_MESSAGE = `${DirectMessageHandler.INTERVIEW_INTRODUCTION} ${DirectMessageHandler.HELP_MESSAGE}`;
 
 module.exports = DirectMessageHandler;

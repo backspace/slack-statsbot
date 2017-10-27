@@ -183,7 +183,7 @@ class DirectMessageHandler {
 
 // TODO maybe messages should be collected somewhere central, and parameterised
 
-DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. View my source at https://github.com/backspace/slack-statsbot';
+DirectMessageHandler.HELP_MESSAGE = 'You can let me know “I’m not a man”, “I am a person of colour”, “it’s complicated whether I am white” and other such variations, or ask for my current information on you with “info”. To erase what you’ve previously told me, say “It is unknown whether I am a man”, “it is unknown whether I am white”, and so on. View my source at https://github.com/backspace/slack-statsbot';
 DirectMessageHandler.INTERVIEW_INTRODUCTION = 'Hey, I’m a bot that collects statistics on who is taking up space in the channels I’m in. For now, I only track whether or not a participant is a man and/or a person of colour. If you feel comfortable answering questions about this, we can continue.';
 DirectMessageHandler.VERBOSE_HELP_MESSAGE = `${DirectMessageHandler.INTERVIEW_INTRODUCTION} ${DirectMessageHandler.HELP_MESSAGE}`;
 
